@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "adc.h"
 #include "dma.h"
 #include "spi.h"
 #include "gpio.h"
@@ -64,12 +65,12 @@ void SystemClock_Config(void);
 uint8_t u8x8_byte_4wire_hw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr) {
   uint8_t *p = (uint8_t *) arg_ptr;
   switch (msg) {
-    /*通过SPI发送arg_int个字节数据*/
+    /*通过SPI发�?�arg_int个字节数�?*/
     case U8X8_MSG_BYTE_SEND:
       for (int i = 0; i < arg_int; i++) HAL_SPI_Transmit(&hspi2, (const uint8_t *) (p + i), 1, 1000);
       break;
 
-      /*设置DC引脚，DC引脚控制发送的是数据还是命令*/
+      /*设置DC引脚，DC引脚控制发�?�的是数据还是命�?*/
     case U8X8_MSG_BYTE_SET_DC:
       if (arg_int) OLED_DC_Set();
       else
@@ -78,7 +79,7 @@ uint8_t u8x8_byte_4wire_hw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void 
 
       /* 下面功能无需定义 */
 
-      /*开始传输前会进行的操作，如果使用软件片选可以在这里进行控制*/
+      /*�?始传输前会进行的操作，如果使用软件片选可以在这里进行控制*/
     case U8X8_MSG_BYTE_START_TRANSFER:break;
 
       /*传输后进行的操作，如果使用软件片选可以在这里进行控制*/
@@ -92,12 +93,12 @@ uint8_t u8x8_stm32_gpio_and_delay(U8X8_UNUSED u8x8_t *u8x8,
                                   U8X8_UNUSED uint8_t msg, U8X8_UNUSED uint8_t arg_int,
                                   U8X8_UNUSED void *arg_ptr) {
   switch (msg) {
-    case U8X8_MSG_GPIO_AND_DELAY_INIT: /*delay和GPIO的初始化，在main中已经初始化完成�???*/
+    case U8X8_MSG_GPIO_AND_DELAY_INIT: /*delay和GPIO的初始化，在main中已经初始化完成�????*/
       break;
     case U8X8_MSG_DELAY_MILLI: /*延时函数*/
       HAL_Delay(arg_int);
       break;
-    case U8X8_MSG_GPIO_CS: /*片�?�信�???*/
+    case U8X8_MSG_GPIO_CS: /*片�?�信�????*/
       //HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, static_cast<GPIO_PinState>(_argInt));
       break;
     case U8X8_MSG_GPIO_DC:
@@ -111,9 +112,9 @@ void u8g2Init(u8g2_t *u8g2) {
   u8g2_Setup_ssd1306_128x64_noname_f(u8g2,
                                      U8G2_R0,
                                      u8x8_byte_4wire_hw_spi,
-                                     u8x8_stm32_gpio_and_delay);  // 初始�??? u8g2 结构�???
-  u8g2_InitDisplay(u8g2); // 根据�???选的芯片进行初始化工作，初始化完成后，显示器处于关闭状�??
-  u8g2_SetPowerSave(u8g2, 0); // 打开显示�???
+                                     u8x8_stm32_gpio_and_delay);  // 初始�???? u8g2 结构�????
+  u8g2_InitDisplay(u8g2); // 根据�????选的芯片进行初始化工作，初始化完成后，显示器处于关闭状�??
+  u8g2_SetPowerSave(u8g2, 0); // 打开显示�????
   u8g2_ClearBuffer(u8g2);
 
   //delay(100);
@@ -207,13 +208,16 @@ void key2Clicked() { key2Cnt++; }
 void key1Pressed() { key1Cnt = 0; }
 void key2Pressed() { key2Cnt = 0; }
 
+uint16_t voltageADC = 0;
+
 /* USER CODE END 0 */
 
 /**
   * @brief  The application entry point.
   * @retval int
   */
-int main(void) {
+int main(void)
+{
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -238,7 +242,12 @@ int main(void) {
   MX_GPIO_Init();
   MX_SPI2_Init();
   MX_DMA_Init();
+  MX_ADC1_Init();
+  MX_ADC2_Init();
   /* USER CODE BEGIN 2 */
+  HAL_ADCEx_Calibration_Start(&hadc1);
+  HAL_ADCEx_Calibration_Start(&hadc2);
+
   oledInit();
   u8g2Init(&u8g2);
 
@@ -250,16 +259,27 @@ int main(void) {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    HAL_ADC_Start(&hadc1);
+    HAL_ADC_PollForConversion(&hadc1, 50);   //等待转换完成，50为最大等待时间，单位为ms
+    HAL_ADC_Start(&hadc2);
+    HAL_ADC_PollForConversion(&hadc2, 50);   //等待转换完成，50为最大等待时间，单位为ms
+
+    if(HAL_IS_BIT_SET(HAL_ADC_GetState(&hadc2), HAL_ADC_STATE_REG_EOC))
+      voltageADC = HAL_ADC_GetValue(&hadc2);
 
     u8g2_ClearBuffer(&u8g2);
     u8g2_SetFont(&u8g2, u8g2_font_Cascadia);
     u8g2_DrawUTF8(&u8g2, 0, 20, "Hello, ");
     u8g2_DrawUTF8(&u8g2, 0, 40, "World!");
     u8g2_SetFont(&u8g2, u8g2_font_myfont);
-    u8g2_DrawUTF8(&u8g2, 80, 10, "测试测试测试测试测试测试");
     u8g2_DrawUTF8(&u8g2, 80, 27, "测试测试测试测试测试测试");
     u8g2_DrawUTF8(&u8g2, 80, 43, "测试测试测试测试测试测试");
-    u8g2_DrawUTF8(&u8g2, 100, 60, "测试测试测试测试测试测试");
+    u8g2_DrawUTF8(&u8g2, 93, 60, "测试测试测试测试测试测试");
+
+    char voltageChar[10];
+    sprintf(voltageChar, "%.3f", (voltageADC*3.3f/4096)*6-0.15);
+    u8g2_DrawStr(&u8g2, 66, 10, "Vol =");
+    u8g2_DrawStr(&u8g2, 98, 10, voltageChar);
 
     keyCallBack(2, key1Clicked, key2Clicked, key1Pressed, key2Pressed);
     char key1CntChar[10];
@@ -267,9 +287,9 @@ int main(void) {
     sprintf(key1CntChar, "%d", key1Cnt);
     sprintf(key2CntChar, "%d", key2Cnt);
     u8g2_DrawStr(&u8g2, 0, 60, "key1: ");
-    u8g2_DrawStr(&u8g2, 35, 60, key1CntChar);
+    u8g2_DrawStr(&u8g2, 28, 60, key1CntChar);
     u8g2_DrawStr(&u8g2, 40, 60, " key2: ");
-    u8g2_DrawStr(&u8g2, 80, 60, key2CntChar);
+    u8g2_DrawStr(&u8g2, 74, 60, key2CntChar);
 
     u8g2_SendBuffer(&u8g2);
   }
@@ -280,9 +300,11 @@ int main(void) {
   * @brief System Clock Configuration
   * @retval None
   */
-void SystemClock_Config(void) {
+void SystemClock_Config(void)
+{
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -294,19 +316,27 @@ void SystemClock_Config(void) {
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
     Error_Handler();
   }
   /** Initializes the CPU, AHB and APB buses clocks
   */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
-                                | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
+  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV2;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+  {
     Error_Handler();
   }
 }
@@ -319,7 +349,8 @@ void SystemClock_Config(void) {
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
-void Error_Handler(void) {
+void Error_Handler(void)
+{
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
