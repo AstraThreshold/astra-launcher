@@ -277,9 +277,10 @@ int main(void)
     u8g2_DrawUTF8(&u8g2, 93, 60, "测试测试测试测试测试测试");
 
     char voltageChar[10];
-    sprintf(voltageChar, "%.3f", (voltageADC*3.3f/4096)*6-0.15);
+    sprintf(voltageChar, "%.2f", (voltageADC*3.3f/4096)*6-0.15);
     u8g2_DrawStr(&u8g2, 66, 10, "Vol =");
     u8g2_DrawStr(&u8g2, 98, 10, voltageChar);
+    u8g2_DrawStr(&u8g2, 121, 10, "V");
 
     keyCallBack(2, key1Clicked, key2Clicked, key1Pressed, key2Pressed);
     char key1CntChar[10];
