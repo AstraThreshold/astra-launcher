@@ -189,7 +189,7 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 1 */
   static uint8_t tick = 0;
   tick++;
-  if (tick % 1000 == 0) {
+  if (tick % 400 == 0) {
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
     tick = 0;
   }

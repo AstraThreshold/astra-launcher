@@ -25,6 +25,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "u8g2/u8g2.h"
+#include "key.h"
+#include "stdio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -197,6 +199,14 @@ void oledInit() {
 
 u8g2_t u8g2;
 
+uint8_t key1Cnt = 0;
+uint8_t key2Cnt = 0;
+
+void key1Clicked() { key1Cnt++; }
+void key2Clicked() { key2Cnt++; }
+void key1Pressed() { key1Cnt = 0; }
+void key2Pressed() { key2Cnt = 0; }
+
 /* USER CODE END 0 */
 
 /**
@@ -240,12 +250,27 @@ int main(void) {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
     u8g2_ClearBuffer(&u8g2);
     u8g2_SetFont(&u8g2, u8g2_font_Cascadia);
     u8g2_DrawUTF8(&u8g2, 0, 20, "Hello, ");
     u8g2_DrawUTF8(&u8g2, 0, 40, "World!");
     u8g2_SetFont(&u8g2, u8g2_font_myfont);
-    u8g2_DrawUTF8(&u8g2, 0, 60, "测试测试测试测试测试测试");
+    u8g2_DrawUTF8(&u8g2, 80, 10, "测试测试测试测试测试测试");
+    u8g2_DrawUTF8(&u8g2, 80, 27, "测试测试测试测试测试测试");
+    u8g2_DrawUTF8(&u8g2, 80, 43, "测试测试测试测试测试测试");
+    u8g2_DrawUTF8(&u8g2, 100, 60, "测试测试测试测试测试测试");
+
+    keyCallBack(2, key1Clicked, key2Clicked, key1Pressed, key2Pressed);
+    char key1CntChar[10];
+    char key2CntChar[10];
+    sprintf(key1CntChar, "%d", key1Cnt);
+    sprintf(key2CntChar, "%d", key2Cnt);
+    u8g2_DrawStr(&u8g2, 0, 60, "key1: ");
+    u8g2_DrawStr(&u8g2, 35, 60, key1CntChar);
+    u8g2_DrawStr(&u8g2, 40, 60, " key2: ");
+    u8g2_DrawStr(&u8g2, 80, 60, key2CntChar);
+
     u8g2_SendBuffer(&u8g2);
   }
   /* USER CODE END 3 */
