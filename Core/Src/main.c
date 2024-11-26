@@ -64,9 +64,7 @@ uint8_t u8x8_byte_4wire_hw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void 
   switch (msg) {
     /*通过SPI发送arg_int个字节数据*/
     case U8X8_MSG_BYTE_SEND:
-
-      for (int i = 0; i < arg_int; i++) HAL_SPI_Transmit(&hspi2, (const uint8_t *)(p + i), 1, 1000);
-
+      for (int i = 0; i < arg_int; i++) HAL_SPI_Transmit(&hspi2, (const uint8_t *) (p + i), 1, 1000);
       break;
 
       /*设置DC引脚，DC引脚控制发送的是数据还是命令*/
@@ -98,7 +96,7 @@ uint8_t u8x8_stm32_gpio_and_delay(U8X8_UNUSED u8x8_t *u8x8,
       HAL_Delay(arg_int);
       break;
     case U8X8_MSG_GPIO_CS: /*片�?�信�???*/
-//HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, static_cast<GPIO_PinState>(_argInt));
+      //HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, static_cast<GPIO_PinState>(_argInt));
       break;
     case U8X8_MSG_GPIO_DC:
     case U8X8_MSG_GPIO_RESET:
@@ -120,13 +118,14 @@ void u8g2Init(u8g2_t *u8g2) {
 
   u8g2_SetFontMode(u8g2, 1); /*字体模式选择*/
   u8g2_SetFontDirection(u8g2, 0); /*字体方向选择*/
-  u8g2_SetFont(u8g2, u8g2_font_inb24_mf); /*字库选择*/
+  u8g2_SetFont(u8g2, u8g2_font_myfont); /*字库选择*/
 }
 
 void _ssd1306_transmit_cmd(unsigned char _cmd) { //NOLINT
   //HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(OLED_DC_GPIO_Port, OLED_DC_Pin, GPIO_PIN_RESET);
-  HAL_SPI_Transmit(&hspi2, &_cmd, 1, 1000);
+  HAL_SPI_Transmit_DMA(&hspi2, &_cmd, 1);
+  //while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
   //HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_SET);
 }
 
@@ -134,7 +133,8 @@ void _ssd1306_transmit_data(unsigned char _data, unsigned char _mode) { //NOLINT
   if (!_mode) _data = ~_data;
   //HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(OLED_DC_GPIO_Port, OLED_DC_Pin, GPIO_PIN_SET);
-  HAL_SPI_Transmit(&hspi2, &_data, 1, 1000);
+  HAL_SPI_Transmit_DMA(&hspi2, &_data, 1);
+  //while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
   //HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_SET);
 }
 
@@ -147,9 +147,9 @@ void _ssd1306_set_cursor(unsigned char _x, unsigned char _y) {
 void _ssd1306_fill(unsigned char _data) {
   uint8_t k, n;
   for (k = 0; k < 8; k++) {
-    _ssd1306_transmit_cmd(0xb0 + k); //ÉèÖÃÐÐÆðÊ¼µØÖ·
-    _ssd1306_transmit_cmd(0x00);   //ÉèÖÃµÍÁÐÆðÊ¼µØÖ·
-    _ssd1306_transmit_cmd(0x10);   //ÉèÖÃ¸ßÁÐÆðÊ¼µØÖ·
+    _ssd1306_transmit_cmd(0xb0 + k);
+    _ssd1306_transmit_cmd(0x00);
+    _ssd1306_transmit_cmd(0x10);
     for (n = 0; n < 128; n++)
       _ssd1306_transmit_data(_data, 1);
   }
@@ -240,9 +240,12 @@ int main(void) {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
     u8g2_ClearBuffer(&u8g2);
-    u8g2_DrawBox(&u8g2, 50, 20, 20, 20);
+    u8g2_SetFont(&u8g2, u8g2_font_Cascadia);
+    u8g2_DrawUTF8(&u8g2, 0, 20, "Hello, ");
+    u8g2_DrawUTF8(&u8g2, 0, 40, "World!");
+    u8g2_SetFont(&u8g2, u8g2_font_myfont);
+    u8g2_DrawUTF8(&u8g2, 0, 60, "测试测试测试测试测试测试");
     u8g2_SendBuffer(&u8g2);
   }
   /* USER CODE END 3 */
