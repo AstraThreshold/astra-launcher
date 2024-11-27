@@ -46,14 +46,15 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-
+extern uint16_t voltageADC;
+extern uint16_t currentADC;
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+extern double kalmanFilter(double inData);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

@@ -17,6 +17,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <math.h>
 #include "main.h"
 #include "adc.h"
 #include "dma.h"
@@ -67,7 +68,11 @@ uint8_t u8x8_byte_4wire_hw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void 
   switch (msg) {
     /*通过SPI发�?�arg_int个字节数�?*/
     case U8X8_MSG_BYTE_SEND:
-      for (int i = 0; i < arg_int; i++) HAL_SPI_Transmit(&hspi2, (const uint8_t *) (p + i), 1, 1000);
+      for (int i = 0; i < arg_int; i++)
+        HAL_SPI_Transmit(&hspi2,
+                         (const uint8_t *) (p + i),
+                         1,
+                         1000);
       break;
 
       /*设置DC引脚，DC引脚控制发�?�的是数据还是命�?*/
@@ -204,11 +209,32 @@ uint8_t key1Cnt = 0;
 uint8_t key2Cnt = 0;
 
 void key1Clicked() { key1Cnt++; }
+
 void key2Clicked() { key2Cnt++; }
+
 void key1Pressed() { key1Cnt = 0; }
+
 void key2Pressed() { key2Cnt = 0; }
 
 uint16_t voltageADC = 0;
+uint16_t currentADC = 0;
+
+//卡尔曼滤波
+double kalmanFilter(double inData)
+{
+  static double prevData = 0;                                 //先前数值
+  static double p = 10;
+  static double q = 0.0005;
+  static double r = 0.01;
+  static double kGain = 0;      // q控制误差  r控制响应速度
+
+  p = p + q;
+  kGain = p / ( p + r );                                     //计算卡尔曼增益
+  inData = prevData + ( kGain * ( inData - prevData ) );     //计算本次滤波估计值
+  p = ( 1 - kGain ) * p;                                     //更新测量方差
+  prevData = inData;
+  return inData;                                             //返回滤波值
+}
 
 /* USER CODE END 0 */
 
@@ -216,8 +242,7 @@ uint16_t voltageADC = 0;
   * @brief  The application entry point.
   * @retval int
   */
-int main(void)
-{
+int main(void) {
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -264,23 +289,27 @@ int main(void)
     HAL_ADC_Start(&hadc2);
     HAL_ADC_PollForConversion(&hadc2, 50);   //等待转换完成，50为最大等待时间，单位为ms
 
-    if(HAL_IS_BIT_SET(HAL_ADC_GetState(&hadc2), HAL_ADC_STATE_REG_EOC))
-      voltageADC = HAL_ADC_GetValue(&hadc2);
-
     u8g2_ClearBuffer(&u8g2);
     u8g2_SetFont(&u8g2, u8g2_font_Cascadia);
     u8g2_DrawUTF8(&u8g2, 0, 20, "Hello, ");
     u8g2_DrawUTF8(&u8g2, 0, 40, "World!");
     u8g2_SetFont(&u8g2, u8g2_font_myfont);
-    u8g2_DrawUTF8(&u8g2, 80, 27, "测试测试测试测试测试测试");
-    u8g2_DrawUTF8(&u8g2, 80, 43, "测试测试测试测试测试测试");
-    u8g2_DrawUTF8(&u8g2, 93, 60, "测试测试测试测试测试测试");
+    u8g2_DrawUTF8(&u8g2, 102, 60, "测试");
 
     char voltageChar[10];
-    sprintf(voltageChar, "%.2f", (voltageADC*3.3f/4096)*6-0.15);
-    u8g2_DrawStr(&u8g2, 66, 10, "Vol =");
-    u8g2_DrawStr(&u8g2, 98, 10, voltageChar);
-    u8g2_DrawStr(&u8g2, 121, 10, "V");
+    sprintf(voltageChar, "%.3f", (voltageADC * 3.3f / 4095.0) * 6 - 0.15);
+    u8g2_DrawStr(&u8g2, 88, 10, voltageChar);
+    u8g2_DrawStr(&u8g2, 119, 10, "V");
+
+    char currentChar[10];
+    sprintf(currentChar, "%.3f", (currentADC * 3.3f / 4095.0) / 5 - 0.01);
+    u8g2_DrawStr(&u8g2, 88, 20, currentChar);
+    u8g2_DrawStr(&u8g2, 119, 20, "A");
+
+    char pwrChar[10];
+    sprintf(pwrChar, "%.3f", ((voltageADC * 3.3f / 4095.0) * 6 - 0.15) * (((currentADC * 3.3f / 4095.0) / 5) - 0.01));
+    u8g2_DrawStr(&u8g2, 88, 30, pwrChar);
+    u8g2_DrawStr(&u8g2, 118, 30, "W");
 
     keyCallBack(2, key1Clicked, key2Clicked, key1Pressed, key2Pressed);
     char key1CntChar[10];
@@ -301,8 +330,7 @@ int main(void)
   * @brief System Clock Configuration
   * @retval None
   */
-void SystemClock_Config(void)
-{
+void SystemClock_Config(void) {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
@@ -317,27 +345,24 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
     Error_Handler();
   }
   /** Initializes the CPU, AHB and APB buses clocks
   */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+                                | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
-  {
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
     Error_Handler();
   }
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
   PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV2;
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
-  {
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) {
     Error_Handler();
   }
 }
@@ -350,8 +375,7 @@ void SystemClock_Config(void)
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
-void Error_Handler(void)
-{
+void Error_Handler(void) {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
