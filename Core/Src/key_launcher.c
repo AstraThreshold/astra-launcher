@@ -2,9 +2,7 @@
 // Created by Fir on 24-11-26.
 //
 
-#include <main.h>
-#include <string.h>
-#include "key.h"
+#include "key_launcher.h"
 
 KEY_ACTION key[KEY_NUM] = {INVALID};
 KEY_TYPE keyFlag = KEY_NOT_PRESSED;
@@ -143,3 +141,11 @@ void keyCallBack(uint8_t _freq, void(*_key1Clicked)(), void(*_key2Clicked)(), vo
     *getKeyFlag() = KEY_NOT_PRESSED;
   }
 }
+
+uint8_t key1Cnt = 0;
+uint8_t key2Cnt = 0;
+
+void key1Clicked() { key1Cnt++; }
+void key2Clicked() { key2Cnt++; }
+void key1Pressed() { key1Cnt = 0; }
+void key2Pressed() { key2Cnt = 0; }

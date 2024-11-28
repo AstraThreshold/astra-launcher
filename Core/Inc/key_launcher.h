@@ -6,6 +6,8 @@
 #define KEY_H_
 
 #include "stdbool.h"
+#include <main.h>
+#include <string.h>
 
 typedef enum keyFilter {
   CHECKING = 0,
@@ -42,5 +44,13 @@ extern void keyScan();
 extern void keyTest();
 
 extern void keyCallBack(uint8_t _freq, void(*_key1Clicked)(), void(*_key2Clicked)(), void(*_key1Pressed)(), void(*_key2Pressed)());
+
+extern uint8_t key1Cnt;
+extern uint8_t key2Cnt;
+
+extern void key1Clicked();
+extern void key2Clicked();
+extern void key1Pressed();
+extern void key2Pressed();
 
 #endif

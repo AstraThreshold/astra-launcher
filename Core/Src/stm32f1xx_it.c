@@ -20,7 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f1xx_it.h"
-#include "adc.h"
+#include "adc_launcher.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -192,11 +192,8 @@ void SysTick_Handler(void)
   tick++;
   if (tick % 100 == 0) {
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-    if (HAL_IS_BIT_SET(HAL_ADC_GetState(&hadc2), HAL_ADC_STATE_REG_EOC))
-      voltageADC = HAL_ADC_GetValue(&hadc2);
-
-    if (HAL_IS_BIT_SET(HAL_ADC_GetState(&hadc1), HAL_ADC_STATE_REG_EOC))
-      currentADC = kalmanFilter(HAL_ADC_GetValue(&hadc1));
+    getValueADC1(rawDataADC1);
+    getValueADC2(rawDataADC2);
     tick = 0;
   }
   /* USER CODE END SysTick_IRQn 1 */

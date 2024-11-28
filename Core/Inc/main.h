@@ -46,15 +46,14 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-extern uint16_t voltageADC;
-extern uint16_t currentADC;
+
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-extern double kalmanFilter(double inData);
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -68,6 +67,8 @@ extern double kalmanFilter(double inData);
 #define KEY2_GPIO_Port GPIOA
 #define IBOARD_Pin GPIO_PIN_0
 #define IBOARD_GPIO_Port GPIOB
+#define IBASE_Pin GPIO_PIN_1
+#define IBASE_GPIO_Port GPIOB
 #define OLED_RST_Pin GPIO_PIN_14
 #define OLED_RST_GPIO_Port GPIOB
 #define OLED_DC_Pin GPIO_PIN_8
