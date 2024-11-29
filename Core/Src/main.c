@@ -27,9 +27,9 @@
 /* USER CODE BEGIN Includes */
 #include "u8g2/u8g2.h"
 #include "key_launcher.h"
-#include "oled_launcher.h"
 #include "adc_launcher.h"
 #include "stdio.h"
+#include "astra-ui-lite/draw_driver.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -103,8 +103,9 @@ int main(void)
   HAL_ADCEx_Calibration_Start(&hadc1);
   HAL_ADCEx_Calibration_Start(&hadc2);
 
-  oledInit();
-  u8g2Init(&u8g2);
+//  oledInit();
+//  u8g2Init(&u8g2);
+  astra_ui_driver_init();
 
   /* USER CODE END 2 */
 
@@ -115,48 +116,86 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     u8g2_ClearBuffer(&u8g2);
-    u8g2_SetFont(&u8g2, u8g2_font_Cascadia);
-    u8g2_DrawUTF8(&u8g2, 0, 20, "Hello, ");
-    u8g2_DrawUTF8(&u8g2, 0, 40, "World!");
-    u8g2_SetFont(&u8g2, u8g2_font_myfont);
 
-    //加入F103和F411的内部温�???
-    //每个adc都是双路 滤波后取平均
-
+    oled_set_draw_color(1);
     char voltageChar[10];
-    sprintf(voltageChar, "%.3f", (volADC1 + volADC2) / 2);
-    u8g2_DrawStr(&u8g2, 88, 10, voltageChar);
-    u8g2_DrawStr(&u8g2, 119, 10, "V");
+    sprintf(voltageChar, "%05.2f", (volADC1 + volADC2) / 2);
+    oled_set_font(u8g2_font_boutique_bitmap_9x9_tn);
+    oled_set_draw_color(1);
+    oled_draw_str(87, 9, voltageChar);
+    oled_draw_R_box(118, 2, 8, 8, 1);
+    oled_set_font(u8g2_font_spleen5x8_mr);
+    oled_set_draw_color(2);
+    oled_draw_str(120, 9, "V");
+    oled_set_draw_color(1);
+    oled_set_font(u8g2_font_spleen5x8_mr);
+    oled_draw_str(75, 9, "u<");
 
     char currentChar[10];
     sprintf(currentChar, "%.3f", (iBoardADC1 + iBoardADC2) / 2);
-    u8g2_DrawStr(&u8g2, 88, 20, currentChar);
-    u8g2_DrawStr(&u8g2, 119, 20, "A");
+    oled_set_font(u8g2_font_boutique_bitmap_9x9_tn);
+    oled_set_draw_color(1);
+    oled_draw_str(87, 18, currentChar);
+    oled_draw_R_box(118, 11, 8, 8, 1);
+    oled_set_font(u8g2_font_spleen5x8_mr);
+    oled_set_draw_color(2);
+    oled_draw_str(120, 18, "A");
+    oled_set_draw_color(1);
+    oled_set_font(u8g2_font_spleen5x8_mr);
+    oled_draw_str(75, 18, "i<");
 
     char pwrChar[10];
-    sprintf(pwrChar, "%.3f", (volADC1 + volADC2) * (iBoardADC1 + iBoardADC2) / 4);
-    u8g2_DrawStr(&u8g2, 88, 30, pwrChar);
-    u8g2_DrawStr(&u8g2, 118, 30, "W");
+    sprintf(pwrChar, "%05.2f", (volADC1 + volADC2) * (iBoardADC1 + iBoardADC2) / 4);
+    oled_set_font(u8g2_font_boutique_bitmap_9x9_tn);
+    oled_set_draw_color(1);
+    oled_draw_str(87, 27, pwrChar);
+    oled_draw_R_box(118, 20, 8, 8, 1);
+    oled_set_font(u8g2_font_spleen5x8_mr);
+    oled_set_draw_color(2);
+    oled_draw_str(120, 27, "W");
+    oled_set_draw_color(1);
+    oled_set_font(u8g2_font_spleen5x8_mr);
+    oled_draw_str(75, 27, "p<");
 
     char currentBaseChar[10];
-    sprintf(currentBaseChar, "%.3f", iBaseADC1);
-    u8g2_DrawStr(&u8g2, 88, 40, currentBaseChar);
-    u8g2_DrawStr(&u8g2, 119, 40, "A");
+    sprintf(currentBaseChar, "%05.2f", iBaseADC1);
+    oled_set_font(u8g2_font_boutique_bitmap_9x9_tn);
+    oled_set_draw_color(1);
+    oled_draw_str(87, 36, currentBaseChar);
+    oled_draw_R_box(118, 29, 8, 8, 1);
+    oled_set_font(u8g2_font_spleen5x8_mr);
+    oled_set_draw_color(2);
+    oled_draw_str(120, 36, "A");
+    oled_set_draw_color(1);
+    oled_set_font(u8g2_font_spleen5x8_mr);
+    oled_draw_str(75, 36, "i>");
 
     char tempChar[10];
-    sprintf(tempChar, "%.2f", innerTempADC1);
-    u8g2_DrawStr(&u8g2, 88, 50, tempChar);
-    u8g2_DrawStr(&u8g2, 119, 50, ".C");
+    sprintf(tempChar, "%05.1f", innerTempADC1);
+    oled_set_font(u8g2_font_boutique_bitmap_9x9_tn);
+    oled_set_draw_color(1);
+    oled_draw_str(87, 45, tempChar);
+    oled_draw_R_box(118, 38, 8, 8, 1);
+    oled_set_font(u8g2_font_spleen5x8_mr);
+    oled_set_draw_color(2);
+    oled_draw_str(120, 45, "W");
+    oled_set_draw_color(1);
+    oled_set_font(u8g2_font_spleen5x8_mr);
+    oled_draw_str(75, 45, "p>");
 
-    keyCallBack(2, key1Clicked, key2Clicked, key1Pressed, key2Pressed);
-    char key1CntChar[10];
-    char key2CntChar[10];
-    sprintf(key1CntChar, "%d", key1Cnt);
-    sprintf(key2CntChar, "%d", key2Cnt);
-    u8g2_DrawStr(&u8g2, 0, 60, "key1: ");
-    u8g2_DrawStr(&u8g2, 28, 60, key1CntChar);
-    u8g2_DrawStr(&u8g2, 40, 60, " key2: ");
-    u8g2_DrawStr(&u8g2, 74, 60, key2CntChar);
+//    keyCallBack(2, key1Clicked, key2Clicked, key1Pressed, key2Pressed);
+//    char key1CntChar[10];
+//    char key2CntChar[10];
+//    sprintf(key1CntChar, "%d", key1Cnt);
+//    sprintf(key2CntChar, "%d", key2Cnt);
+//    oled_draw_str(&u8g2, 0, 60, "key1: ");
+//    oled_draw_str(&u8g2, 28, 60, key1CntChar);
+//    oled_draw_str(&u8g2, 40, 60, " key2: ");
+//    oled_draw_str(&u8g2, 74, 60, key2CntChar);
+
+    oled_draw_R_frame(0, 0, 70, 64, 3);
+    oled_draw_R_frame(72, 0, 56, 48, 3);
+    oled_draw_R_frame(72, 50, 56, 14, 3);
 
     u8g2_SendBuffer(&u8g2);
   }

@@ -2207,6 +2207,7 @@ extern const uint8_t u8g2_font_mystery_quest_48_tn[] U8G2_FONT_SECTION("u8g2_fon
 extern const uint8_t u8g2_font_mystery_quest_56_tn[] U8G2_FONT_SECTION("u8g2_font_mystery_quest_56_tn");
 extern const uint8_t u8g2_font_myfont[] U8G2_FONT_SECTION("u8g2_font_myfont");
 extern const uint8_t u8g2_font_Cascadia[] U8G2_FONT_SECTION("u8g2_font_Cascadia");
+extern const uint8_t u8g2_font_atari[] U8G2_FONT_SECTION("u8g2_font_atari");
 extern const uint8_t u8g2_font_t0_11_tf[] U8G2_FONT_SECTION("u8g2_font_t0_11_tf");
 extern const uint8_t u8g2_font_t0_11_tr[] U8G2_FONT_SECTION("u8g2_font_t0_11_tr");
 extern const uint8_t u8g2_font_t0_11_tn[] U8G2_FONT_SECTION("u8g2_font_t0_11_tn");

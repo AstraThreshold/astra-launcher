@@ -1,10 +1,42 @@
 //
-// Created by Fir on 24-11-28.
+// Created by Fir on 24-11-29.
 //
 
-#include "oled_launcher.h"
+#ifndef FUCKCLION_CORE_SRC_ASTRA_UI_LITE_DRAW_DRIVER_H_
+#define FUCKCLION_CORE_SRC_ASTRA_UI_LITE_DRAW_DRIVER_H_
 
+/* 此处自行添加头文件 */
+#include "../u8g2/u8g2.h"
+#include "main.h"
+#include "spi.h"
+/* 此处自行添加头文件 */
 
+u8g2_t u8g2;
+
+/* 此处修改oled绘制函数 */
+#define delay(ms) HAL_Delay(ms)
+#define oled_set_font(font) u8g2_SetFont(&u8g2, font)
+#define oled_draw_str(x, y, str) u8g2_DrawStr(&u8g2, x, y, str)
+#define oled_draw_UTF8(x, y, str) u8g2_DrawUTF8(&u8g2, x, y, str)
+#define oled_draw_pixel(x, y) u8g2_DrawPixel(&u8g2, x, y)
+#define oled_draw_R_box(x, y, w, h, r) u8g2_DrawRBox(&u8g2, x, y, w, h, r)
+#define oled_draw_box(x, y, w, h) u8g2_DrawBox(&u8g2, x, y, w, h)
+#define oled_draw_frame(x, y, w, h) u8g2_DrawFrame(&u8g2, x, y, w, h)
+#define oled_draw_R_frame(x, y, w, h, r) u8g2_DrawRFrame(&u8g2, x, y, w, h, r)
+#define oled_draw_H_line(x, y, l) u8g2_DrawHLine(&u8g2, x, y, l)
+#define oled_draw_V_line(x, y, h) u8g2_DrawVLine(&u8g2, x, y, h)
+#define oled_draw_H_dotted_line(x, y, l) u8g2_DrawHDottedLine(&u8g2, x, y, l)
+#define oled_draw_V_dotted_line(x, y, h) u8g2_DrawVDottedLine(&u8g2, x, y, h)
+#define oled_draw_bMP(x, y, w, h, bitMap) u8g2_DrawBMP(&u8g2, x, y, w, h, bitMap)
+#define oled_set_draw_color(color) u8g2_SetDrawColor(&u8g2, color)
+#define oled_set_font_mode(mode) u8g2_SetFontMode(&u8g2, mode)
+#define oled_set_font_direction(dir) u8g2_SetFontDirection(&u8g2, dir)
+#define oled_draw_pixel(x, y) u8g2_DrawPixel(&u8g2, x, y)
+#define oled_clear_buffer() u8g2_ClearBuffer(&u8g2)
+#define oled_send_buffer() u8g2_SendBuffer(&u8g2)
+/* 此处修改oled绘制函数 */
+
+/* 此处自行编写oled及图形库初始化函数所需的函数 */
 uint8_t u8x8_byte_4wire_hw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr) {
   uint8_t *p = (uint8_t *) arg_ptr;
   switch (msg) {
@@ -16,20 +48,12 @@ uint8_t u8x8_byte_4wire_hw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void 
                          1,
                          1000);
       break;
-
-      /*设置DC引脚，DC引脚控制发�?�的是数据还是命�??*/
     case U8X8_MSG_BYTE_SET_DC:
-      if (arg_int) OLED_DC_Set();
+      if (arg_int) HAL_GPIO_WritePin(OLED_DC_GPIO_Port, OLED_DC_Pin, GPIO_PIN_SET);
       else
-        OLED_DC_Clr();
+        HAL_GPIO_WritePin(OLED_DC_GPIO_Port, OLED_DC_Pin, GPIO_PIN_RESET);
       break;
-
-      /* 下面功能无需定义 */
-
-      /*�??始传输前会进行的操作，如果使用软件片选可以在这里进行控制*/
     case U8X8_MSG_BYTE_START_TRANSFER:break;
-
-      /*传输后进行的操作，如果使用软件片选可以在这里进行控制*/
     case U8X8_MSG_BYTE_END_TRANSFER:break;
     default:return 0;
   }
@@ -40,13 +64,12 @@ uint8_t u8x8_stm32_gpio_and_delay(U8X8_UNUSED u8x8_t *u8x8,
                                   U8X8_UNUSED uint8_t msg, U8X8_UNUSED uint8_t arg_int,
                                   U8X8_UNUSED void *arg_ptr) {
   switch (msg) {
-    case U8X8_MSG_GPIO_AND_DELAY_INIT: /*delay和GPIO的初始化，在main中已经初始化完成�?????*/
+    case U8X8_MSG_GPIO_AND_DELAY_INIT:
       break;
-    case U8X8_MSG_DELAY_MILLI: /*延时函数*/
+    case U8X8_MSG_DELAY_MILLI:
       HAL_Delay(arg_int);
       break;
-    case U8X8_MSG_GPIO_CS: /*片�?�信�?????*/
-//HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, static_cast<GPIO_PinState>(_argInt));
+    case U8X8_MSG_GPIO_CS:
       break;
     case U8X8_MSG_GPIO_DC:
     case U8X8_MSG_GPIO_RESET:
@@ -55,37 +78,15 @@ uint8_t u8x8_stm32_gpio_and_delay(U8X8_UNUSED u8x8_t *u8x8,
   return 1;
 }
 
-void u8g2Init(u8g2_t *u8g2) {
-  u8g2_Setup_ssd1306_128x64_noname_f(u8g2,
-                                     U8G2_R0,
-                                     u8x8_byte_4wire_hw_spi,
-                                     u8x8_stm32_gpio_and_delay);  // 初始�????? u8g2 结构�?????
-  u8g2_InitDisplay(u8g2); // 根据�?????选的芯片进行初始化工作，初始化完成后，显示器处于关闭状�??
-  u8g2_SetPowerSave(u8g2, 0); // 打开显示�?????
-  u8g2_ClearBuffer(u8g2);
-
-  //delay(100);
-
-  u8g2_SetFontMode(u8g2, 1); /*字体模式选择*/
-  u8g2_SetFontDirection(u8g2, 0); /*字体方向选择*/
-  u8g2_SetFont(u8g2, u8g2_font_myfont); /*字库选择*/
-}
-
 void _ssd1306_transmit_cmd(unsigned char _cmd) { //NOLINT
-  //HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(OLED_DC_GPIO_Port, OLED_DC_Pin, GPIO_PIN_RESET);
   HAL_SPI_Transmit_DMA(&hspi2, &_cmd, 1);
-  //while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
-  //HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_SET);
 }
 
 void _ssd1306_transmit_data(unsigned char _data, unsigned char _mode) { //NOLINT
   if (!_mode) _data = ~_data;
-  //HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(OLED_DC_GPIO_Port, OLED_DC_Pin, GPIO_PIN_SET);
   HAL_SPI_Transmit_DMA(&hspi2, &_data, 1);
-  //while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
-  //HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_SET);
 }
 
 void _ssd1306_set_cursor(unsigned char _x, unsigned char _y) {
@@ -105,13 +106,11 @@ void _ssd1306_fill(unsigned char _data) {
   }
 }
 
-void oledInit() {
+void oled_init() {
   uint32_t i, j;
-
-  OLED_RST_Clr();
+  HAL_GPIO_WritePin(OLED_RST_GPIO_Port, OLED_RST_Pin, GPIO_PIN_RESET);
   HAL_Delay(200);
-  OLED_RST_Set();
-
+  HAL_GPIO_WritePin(OLED_RST_GPIO_Port, OLED_RST_Pin, GPIO_PIN_SET);
   _ssd1306_transmit_cmd(0xAE);                        /* display off */
   _ssd1306_transmit_cmd(0x00); /*set lower column address*/
   _ssd1306_transmit_cmd(0x10);/*set higher column address*/
@@ -139,10 +138,38 @@ void oledInit() {
   _ssd1306_transmit_cmd(0x31); /* Set pump 7.4v */
   _ssd1306_transmit_cmd(0xad); /*set charge pump enable*/
   _ssd1306_transmit_cmd(0x8b); /*Set DC-DC enable (0x8a=disable; 0x8b=enable) */
-
   _ssd1306_fill(0);
-
   _ssd1306_transmit_cmd(0xAF);                        /* display on */
 }
 
-u8g2_t u8g2;
+void u8g2_init(u8g2_t *u8g2) {
+  u8g2_Setup_ssd1306_128x64_noname_f(u8g2,
+                                     U8G2_R0,
+                                     u8x8_byte_4wire_hw_spi,
+                                     u8x8_stm32_gpio_and_delay);
+  u8g2_InitDisplay(u8g2);
+  u8g2_SetPowerSave(u8g2, 0);
+  u8g2_ClearBuffer(u8g2);
+  u8g2_SetFontMode(u8g2, 1);
+  u8g2_SetFontDirection(u8g2, 0);
+  u8g2_SetFont(u8g2, u8g2_font_myfont);
+}
+/* 此处自行编写oled及图形库初始化函数所需的函数 */
+
+/* 此处自行修改内部函数名 */
+void astra_ui_driver_init() {
+  oled_init();
+  u8g2_init(&u8g2);
+}
+/* 此处自行修改内部函数名 */
+
+
+
+
+
+
+
+
+
+
+#endif //FUCKCLION_CORE_SRC_ASTRA_UI_LITE_DRAW_DRIVER_H_
