@@ -25,6 +25,7 @@ u8g2_t u8g2;
 #define oled_draw_R_frame(x, y, w, h, r) u8g2_DrawRFrame(&u8g2, x, y, w, h, r)
 #define oled_draw_H_line(x, y, l) u8g2_DrawHLine(&u8g2, x, y, l)
 #define oled_draw_V_line(x, y, h) u8g2_DrawVLine(&u8g2, x, y, h)
+#define oled_draw_line(x1, y1, x2, y2) u8g2_DrawLine(&u8g2, x1, y1, x2, y2)
 #define oled_draw_H_dotted_line(x, y, l) u8g2_DrawHDottedLine(&u8g2, x, y, l)
 #define oled_draw_V_dotted_line(x, y, h) u8g2_DrawVDottedLine(&u8g2, x, y, h)
 #define oled_draw_bMP(x, y, w, h, bitMap) u8g2_DrawBMP(&u8g2, x, y, w, h, bitMap)
