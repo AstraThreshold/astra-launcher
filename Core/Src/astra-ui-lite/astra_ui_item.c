@@ -45,6 +45,11 @@ void astra_draw_status_box(uint8_t _x, uint8_t _y, astra_status_t _status) {
     oled_set_draw_color(2);
     oled_draw_str(_x + 2, _y + 8, "-Err-");
     oled_set_draw_color(1);
+  } else if (_status == Stop) {
+    oled_draw_R_box(_x, _y, oled_get_str_width("-Stop-") + 3, 10, 1);
+    oled_set_draw_color(2);
+    oled_draw_str(_x + 2, _y + 8, "-Stop-");
+    oled_set_draw_color(1);
   }
 }
 

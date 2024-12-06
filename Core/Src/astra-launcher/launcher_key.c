@@ -2,7 +2,7 @@
 // Created by Fir on 24-11-26.
 //
 
-#include "key_launcher.h"
+#include "launcher_key.h"
 
 KEY_ACTION key[KEY_NUM] = {INVALID};
 KEY_TYPE keyFlag = KEY_NOT_PRESSED;

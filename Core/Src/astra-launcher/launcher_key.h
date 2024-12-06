@@ -6,7 +6,7 @@
 #define KEY_H_
 
 #include "stdbool.h"
-#include <main.h>
+#include "main.h"
 #include <string.h>
 
 typedef enum keyFilter {

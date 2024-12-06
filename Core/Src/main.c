@@ -25,11 +25,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "u8g2/u8g2.h"
-#include "key_launcher.h"
-#include "adc_launcher.h"
+#include "astra-launcher/launcher_key.h"
+#include "astra-launcher/launcher_adc.h"
 #include "stdio.h"
 #include "astra-ui-lite/astra_ui_item.h"
+#include "astra-launcher/launcher_home_page.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -138,49 +138,7 @@ int main(void) {
 //    astra_draw_terminal_prompter(4, 47, "f411");
 //    astra_draw_terminal_prompter(4, 58, "uart");
 
-    //可以遮挡
-    oled_set_font(u8g2_font_wqy12_t_chinese1);
-
-    /*后景文字部分*/
-    oled_set_draw_color(1);
-    if (_offset < 100) _offset += 1;
-    else _offset = -100;
-    oled_draw_UTF8(8, 0 + _offset, "你好20240527你好20240527");
-    oled_draw_UTF8(8, 12 + _offset, "hihihihihihihihihihihihi");
-    oled_draw_UTF8(8, 24 + _offset, "youyouyouyouyouyouyouyouyou");
-    oled_draw_UTF8(8, 36 + _offset, "你好20240527你好20240527");
-    oled_draw_UTF8(8, 48 + _offset, "hihihihihihihihihihihihi");
-    oled_draw_UTF8(8, 60 + _offset, "youyouyouyouyouyouyouyouyou");
-    /*后景文字部分*/
-
-    /*前景遮罩部分*/
-    oled_set_draw_color(0);
-    oled_draw_box(0, 0, 128, 16); //上遮罩
-    oled_draw_box(0, 61, 128, 3); //下遮罩
-    oled_draw_box(0, 0, 3, 64); //左遮罩
-    oled_draw_box(125, 0, 3, 64); //右遮罩
-    oled_draw_pixel(3, 16); //左上圆角像素
-    oled_draw_pixel(3, 60); //左下圆角像素
-    oled_draw_pixel(124, 16); //右上圆角像素
-    oled_draw_pixel(124, 60); //右下圆角像素
-    /*前景遮罩部分*/
-
-    /*前前景status box + ui部分*/
-    oled_set_draw_color(1);
-    astra_draw_status_bar(12, Loading, (volADC1 + volADC2) / 2, "V", iBaseADC1, "A");
-    oled_draw_H_line(2, 14, 124); //上横线
-    oled_draw_H_line(1, 15, 2); //左上圆角
-    oled_draw_box(0, 16, 2, 48); //左边线
-    oled_draw_pixel(2, 61); //左下圆角像素
-    oled_draw_H_line(125, 15, 2); //右上圆角
-    oled_draw_box(126, 16, 2, 48); //右边线
-    oled_draw_pixel(125, 61); //右下圆角像素
-    oled_draw_box(0, 62, 128, 2); //下横线
-
-    oled_set_draw_color(2);
-    oled_draw_H_line(56, 63, 66); //下方logo同步条
-    oled_draw_V_line(123, 18, 20);  //进度条
-    /*前前景status box + ui部分*/
+    launcher_draw_home_page();
 
     oled_send_buffer();
     _tick++;

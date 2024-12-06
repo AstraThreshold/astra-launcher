@@ -20,6 +20,7 @@ typedef enum {
   Wait,
   Loading,
   Err,
+  Stop,
 } astra_status_t;
 
 typedef enum {
