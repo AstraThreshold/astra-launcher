@@ -62,9 +62,6 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-
-
-
 /* USER CODE END 0 */
 
 /**
@@ -106,6 +103,9 @@ int main(void) {
 //  u8g2Init(&u8g2);
   astra_ui_driver_init();
 
+  astra_set_terminal_area(30, 26, 124, 60);
+  static uint32_t _tick = 0;
+  static int32_t _offset = -100;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -114,7 +114,7 @@ int main(void) {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    u8g2_ClearBuffer(&u8g2);
+    oled_clear_buffer();
 
 //    keyCallBack(2, key1Clicked, key2Clicked, key1Pressed, key2Pressed);
 //    char key1CntChar[10];
@@ -126,29 +126,64 @@ int main(void) {
 //    oled_draw_str(&u8g2, 40, 60, " key2: ");
 //    oled_draw_str(&u8g2, 74, 60, key2CntChar);
 
-    oled_draw_R_box(0, 14, 128, 60, 3);
-    oled_set_draw_color(0);
-    oled_draw_R_box(2, 15, 124, 47, 2);
-    oled_set_draw_color(1);
-    oled_draw_R_box(122, 18, 2, 20, 1);
+    if (_tick % 10 == 0 && _tick < 101) astra_add_str_to_terminal_buffer(info, "你好20240527");
+    astra_refresh_terminal_buffer();
+    if (_tick == 101) astra_add_str_to_terminal_buffer(info, "hihihihi");
+    if (_tick == 121) astra_add_str_to_terminal_buffer(info, "youyouyou");
 
-    astra_draw_status_bar(12, Loading, (volADC1 + volADC2) / 2, "V", iBaseADC1, "A");
+    //todo todo在绘制文字和指示器的时候 都加上一个camera-x -y坐标 最初都是0 超过了n行就让camera坐标加上n*行高 可以实现所有文字一次性上移 也不会清除 这样还可以加上进度条和按钮滚动
 
-    //串口打印思路 一个字一个字打印 检测到超过边界就换行 空格的间距因为一个字一个字打印 所以可以缩小
+//    astra_draw_terminal_prompter(4, 25, "info");
+//    astra_draw_terminal_prompter(4, 36, "info");
+//    astra_draw_terminal_prompter(4, 47, "f411");
+//    astra_draw_terminal_prompter(4, 58, "uart");
 
-    astra_draw_terminal_prompter(4, 25, "info");
-    astra_draw_terminal_prompter(4, 36, "info");
-    astra_draw_terminal_prompter(4, 47, "f411");
-    astra_draw_terminal_prompter(4, 58, "uart");
-
+    //可以遮挡
     oled_set_font(u8g2_font_wqy12_t_chinese1);
-    oled_draw_str(30, 25, "20240527.");
-    oled_draw_UTF8(30, 37, "你好我好大家好.");
-    oled_draw_str(30, 48, "forpaindream!");
-    oled_draw_str(30, 59, "hello world!");
-    oled_draw_box(91, 57, 6, 2);
 
-    u8g2_SendBuffer(&u8g2);
+    /*后景文字部分*/
+    oled_set_draw_color(1);
+    if (_offset < 100) _offset += 1;
+    else _offset = -100;
+    oled_draw_UTF8(8, 0 + _offset, "你好20240527你好20240527");
+    oled_draw_UTF8(8, 12 + _offset, "hihihihihihihihihihihihi");
+    oled_draw_UTF8(8, 24 + _offset, "youyouyouyouyouyouyouyouyou");
+    oled_draw_UTF8(8, 36 + _offset, "你好20240527你好20240527");
+    oled_draw_UTF8(8, 48 + _offset, "hihihihihihihihihihihihi");
+    oled_draw_UTF8(8, 60 + _offset, "youyouyouyouyouyouyouyouyou");
+    /*后景文字部分*/
+
+    /*前景遮罩部分*/
+    oled_set_draw_color(0);
+    oled_draw_box(0, 0, 128, 16); //上遮罩
+    oled_draw_box(0, 61, 128, 3); //下遮罩
+    oled_draw_box(0, 0, 3, 64); //左遮罩
+    oled_draw_box(125, 0, 3, 64); //右遮罩
+    oled_draw_pixel(3, 16); //左上圆角像素
+    oled_draw_pixel(3, 60); //左下圆角像素
+    oled_draw_pixel(124, 16); //右上圆角像素
+    oled_draw_pixel(124, 60); //右下圆角像素
+    /*前景遮罩部分*/
+
+    /*前前景status box + ui部分*/
+    oled_set_draw_color(1);
+    astra_draw_status_bar(12, Loading, (volADC1 + volADC2) / 2, "V", iBaseADC1, "A");
+    oled_draw_H_line(2, 14, 124); //上横线
+    oled_draw_H_line(1, 15, 2); //左上圆角
+    oled_draw_box(0, 16, 2, 48); //左边线
+    oled_draw_pixel(2, 61); //左下圆角像素
+    oled_draw_H_line(125, 15, 2); //右上圆角
+    oled_draw_box(126, 16, 2, 48); //右边线
+    oled_draw_pixel(125, 61); //右下圆角像素
+    oled_draw_box(0, 62, 128, 2); //下横线
+
+    oled_set_draw_color(2);
+    oled_draw_H_line(56, 63, 66); //下方logo同步条
+    oled_draw_V_line(123, 18, 20);  //进度条
+    /*前前景status box + ui部分*/
+
+    oled_send_buffer();
+    _tick++;
   }
   /* USER CODE END 3 */
 }

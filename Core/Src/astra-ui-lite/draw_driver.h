@@ -22,6 +22,7 @@ extern u8g2_t u8g2;
 #define oled_draw_str(x, y, str) u8g2_DrawStr(&u8g2, x, y, str)
 #define oled_draw_UTF8(x, y, str) u8g2_DrawUTF8(&u8g2, x, y, str)
 #define oled_get_str_width(str) u8g2_GetStrWidth(&u8g2, str)
+#define oled_get_UTF8_width(str) u8g2_GetUTF8Width(&u8g2, str)
 #define oled_get_str_height() u8g2_GetMaxCharHeight(&u8g2)
 #define oled_draw_pixel(x, y) u8g2_DrawPixel(&u8g2, x, y)
 #define oled_draw_R_box(x, y, w, h, r) u8g2_DrawRBox(&u8g2, x, y, w, h, r)
@@ -40,6 +41,7 @@ extern u8g2_t u8g2;
 #define oled_draw_pixel(x, y) u8g2_DrawPixel(&u8g2, x, y)
 #define oled_clear_buffer() u8g2_ClearBuffer(&u8g2)
 #define oled_send_buffer() u8g2_SendBuffer(&u8g2)
+#define oled_send_area_buffer(x, y, w, h) u8g2_UpdateDisplayArea(&u8g2, x, y, w, h)
 /* 此处修改oled绘制函数 */
 
 extern void astra_ui_driver_init();
