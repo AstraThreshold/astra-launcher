@@ -4,12 +4,15 @@
 
 #include "launcher_home_page.h"
 
+/**
+ * @warning 该函数要在终端字体绘制之后调用
+ */
 void launcher_draw_home_page() {
   oled_set_font(u8g2_font_wqy12_t_chinese1);
 
   /*后景文字部分*/
   oled_set_draw_color(1);
-
+  terminal_print_test();
   /*后景文字部分*/
 
   /*前景遮罩部分*/
@@ -38,6 +41,6 @@ void launcher_draw_home_page() {
 
   oled_set_draw_color(2);
   oled_draw_H_line(56, 63, 66); //下方logo同步条
-  oled_draw_V_line(123, 18, 20);  //进度条
+  oled_draw_V_line(124, 18, 20);  //进度条
   /*前前景status box + ui部分*/
 }

@@ -20,9 +20,11 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f1xx_it.h"
-#include "astra-launcher/launcher_adc.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "astra-ui-lite/draw_driver.h"
+#include "astra-launcher/launcher_adc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -85,11 +87,16 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-
+  static int16_t _x = -128;
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
     /* USER CODE BEGIN W1_HardFault_IRQn 0 */
+    oled_clear_buffer();
+    oled_draw_str(_x, 35, "HardFault FUCK");
+    _x++;
+    if (_x >= 128) _x = -128;
+    oled_send_buffer();
     /* USER CODE END W1_HardFault_IRQn 0 */
   }
 }
@@ -190,11 +197,12 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 1 */
   static uint8_t tick = 0;
   tick++;
-  if (tick % 100 == 0) {
+  if (tick % 200 == 0) {
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
     getValueADC1(rawDataADC1);
     getValueADC2(rawDataADC2);
     tick = 0;
+//    astra_add_str_to_terminal_buffer(info, "你好20240527");
   }
   /* USER CODE END SysTick_IRQn 1 */
 }
