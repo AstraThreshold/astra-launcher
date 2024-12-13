@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
+#include <stdio.h>
 #include "main.h"
 #include "stm32f1xx_it.h"
 
@@ -25,6 +26,7 @@
 /* USER CODE BEGIN Includes */
 #include "astra-ui-lite/draw_driver.h"
 #include "astra-launcher/launcher_adc.h"
+#include "astra-launcher/launcher_home_page.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -195,15 +197,23 @@ void SysTick_Handler(void)
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
-  static uint8_t tick = 0;
+  static uint32_t tick = 0;
   tick++;
   if (tick % 200 == 0) {
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
     getValueADC1(rawDataADC1);
     getValueADC2(rawDataADC2);
     tick = 0;
-//    astra_add_str_to_terminal_buffer(info, "你好20240527");
   }
+
+  if (tick % 1001 == 0) {
+    char str[64];
+    sprintf(str, "tick: %d", tick);
+//    launcher_push_str_to_terminal(info, str);
+//    launcher_push_str_to_terminal(info, "hello, world!");
+  }
+
+//  if (tick % 10000 == 0 && tick < 100001) push_str_to_terminal(info, "hello, world!");
   /* USER CODE END SysTick_IRQn 1 */
 }
 

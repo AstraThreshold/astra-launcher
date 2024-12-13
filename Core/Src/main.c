@@ -104,14 +104,17 @@ int main(void)
 //  u8g2Init(&u8g2);
   astra_ui_driver_init();
 
-  astra_set_terminal_area(4, 26, 124, 62);
+  launcher_set_terminal_area(4, 26, 124, 62);
   static uint32_t _tick = 0;
   static int32_t _offset = -100;
 
-  push_str_to_terminal(info, "你好\r2024\r05\r27 我是forpaindream.");
-  push_str_to_terminal(f411, "hi\rhi\rhi");
-  push_str_to_terminal(uart, "你好\r2024\r05\r27");
-  push_str_to_terminal(info, "你好20240527");
+//  push_str_to_terminal(info, "你好\r2024\r05\r27\nhello, world!");
+//  push_str_to_terminal(f411, "hi\rhi\rhi");
+//  push_str_to_terminal(uart, "你好\r2024\r05\r27");
+//  push_str_to_terminal(info, "你好20240527");
+//  push_str_to_terminal(info, "你好20240527");
+//  push_str_to_terminal(info, "你好20240527");
+//  push_str_to_terminal(info, "你好20240527");
 
   //  astra_add_str_to_terminal_buffer(info, "你好20240527");
   /* USER CODE END 2 */
@@ -134,10 +137,12 @@ int main(void)
 //    oled_draw_str(&u8g2, 40, 60, " key2: ");
 //    oled_draw_str(&u8g2, 74, 60, key2CntChar);
 
-    oled_set_font(u8g2_font_wqy12_t_chinese1);
-//    oled_draw_UTF8(20, 20, terminal_buffer_head->next->str);
-//    astra_refresh_terminal_buffer();
-//    astra_add_str_to_terminal_buffer(info, "你好20240527");
+    if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
+    if (_tick % 301 == 1) launcher_push_str_to_terminal(info, "hello,\r你好\r2");
+    if (_tick % 700 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r3");
+    if (_tick % 1100 == 1) launcher_push_str_to_terminal(info, "hello,\r你好\r4");
+    if (_tick % 1600 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r5");
+
 
 //    astra_draw_terminal_prompter(4, 25, "info");
 //    astra_draw_terminal_prompter(4, 36, "info");
