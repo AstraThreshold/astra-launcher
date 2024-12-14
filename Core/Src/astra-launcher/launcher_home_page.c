@@ -135,20 +135,29 @@ void launcher_push_str_to_terminal(launcher_terminal_prompter_t _type, char *_st
   terminal_buffer_size++;
 }
 
+int16_t line_offset_cnt = 0;
+int16_t y_camera, y_camera_trg = 0;
+
 void launcher_terminal_buffer_pop_front() {
   if (terminal_buffer_head == NULL) return;
   terminal_buffer_t *_old = terminal_buffer_head;
   terminal_buffer_head = terminal_buffer_head->next;
   free(_old);
   _old = NULL;
+  terminal_buffer_size--;
 }
 
-int16_t _line_offset_cnt = 0;
-int16_t _y_camera, _y_camera_trg = 0;
-
 void launcher_refresh_terminal() {
-  _y_camera_trg = 0 - (_line_offset_cnt * LINE_HEIGHT);
-  animation(&_y_camera, _y_camera_trg, 98);
+  y_camera_trg = 0 - (line_offset_cnt * LINE_HEIGHT);
+  animation(&y_camera, y_camera_trg, 98);
+//  if (y_camera_trg != y_camera)
+//    if (y_camera > y_camera_trg) y_camera -= abs(y_camera - y_camera_trg) / 2;
+//    else y_camera += abs(y_camera - y_camera_trg) / 2;
+}
+
+void launcher_refresh_terminal_once() {
+  //todo 惰性更新 lineoffset只存储了当前页面还来不及绘制的行数 不存储总的超出行数
+  //todo 每次trg都-=
 }
 
 /*
@@ -169,30 +178,24 @@ void launcher_terminal_print_test() {
 //  static int16_t _line_offset_cnt = 0;
   static char _str_to_print[3] = {'\0'};
 
-  //todo 现在第一步应该尝试的就是把所有字的坐标都统一成一个坐标加算式的形式 坐标合并
-  //todo 同时还需要考虑 for循环绘制到一半的时候来了新的信息 其他数据就更新了的问题
   _node_cnt = 0;
   _line_cnt = 0;
-  _line_offset_cnt = 0;
+  line_offset_cnt = 0;
   _x_node = terminal_x_min + 26; //加上指示器宽度
   _y_node = terminal_y_min;
   _x_str = _x_node;
   _y_str = _y_node;
   memset(_str_to_print, '\0', 3);
 
-  //todo 超过buffer阈值之后 就会出现反复 这边刚加进去 那边还没来得及做动画渲染 这边就弹出来了 就又得计算新的绘制位置了 所以会闪
-
   while (_node != NULL) {
     _x_node = terminal_x_min + 26;
     _y_node = terminal_y_min + (_line_cnt) * LINE_HEIGHT;
-    if (_y_node > terminal_y_max + (_line_offset_cnt * LINE_HEIGHT)) _line_offset_cnt++; //由于绘制下一句话导致的滚动
+    if (_y_node > terminal_y_max + (line_offset_cnt * LINE_HEIGHT)) line_offset_cnt++; //由于绘制下一句话导致的滚动
     _x_str = _x_node;
     _y_str = _y_node;
 
-    if (terminal_y_min <= _y_node - 1 <= terminal_y_max)
-      launcher_draw_terminal_prompter(4, _y_node + _y_camera - 1, _node->type);
-
-    //todo 其实可以考虑加上如果耦合camera之后 超过了显示范围 就不进行显示
+    if (terminal_y_min - LINE_HEIGHT <= _y_node - 1 <= terminal_y_max + LINE_HEIGHT)
+      launcher_draw_terminal_prompter(4, _y_node + y_camera - 1, _node->type);
 
     //绘制一句话中的每个字
     for (int i = 0; _node->str[i] != '\0'; i++) {
@@ -215,10 +218,10 @@ void launcher_terminal_print_test() {
         _str_to_print[2] = _node->str[i + 2];
 
         if (_x_str >= terminal_x_max - 22) _x_str = terminal_x_min, _y_str += LINE_HEIGHT, _line_cnt++;
-        if (_y_str > terminal_y_max + (_line_offset_cnt * LINE_HEIGHT)) _line_offset_cnt++; //由于句子太长导致的滚动
+        if (_y_str > terminal_y_max + (line_offset_cnt * LINE_HEIGHT)) line_offset_cnt++; //由于句子太长导致的滚动
 
-        if (terminal_y_min <= _y_str <= terminal_y_max)
-          oled_draw_UTF8(_x_str, _y_str + _y_camera, _str_to_print);
+        if (terminal_y_min - LINE_HEIGHT <= _y_str <= terminal_y_max + LINE_HEIGHT)
+          oled_draw_UTF8(_x_str, _y_str + y_camera, _str_to_print);
         _x_str += oled_get_UTF8_width(_str_to_print);
         i += 2;
       } else {
@@ -227,10 +230,10 @@ void launcher_terminal_print_test() {
         _str_to_print[2] = '\0';
 
         if (_x_str >= terminal_x_max - 10) _x_str = terminal_x_min, _y_str += LINE_HEIGHT, _line_cnt++;
-        if (_y_str > terminal_y_max + (_line_offset_cnt * LINE_HEIGHT)) _line_offset_cnt++; //由于句子太长导致的滚动
+        if (_y_str > terminal_y_max + (line_offset_cnt * LINE_HEIGHT)) line_offset_cnt++; //由于句子太长导致的滚动
 
-        if (terminal_y_min <= _y_str <= terminal_y_max)
-          oled_draw_str(_x_str, _y_str + _y_camera, _str_to_print);
+        if (terminal_y_min - LINE_HEIGHT <= _y_str <= terminal_y_max + LINE_HEIGHT)
+          oled_draw_str(_x_str, _y_str + y_camera, _str_to_print);
         _x_str += oled_get_str_width(_str_to_print) + 1;
       }
     }
@@ -250,15 +253,37 @@ void launcher_draw_home_page() {
   /*后景文字部分*/
   oled_set_draw_color(1);
 
-  //设置坐标
-  //todo 滚动的时候上面下面各缺失一半 但是如果有溢出pop之后就正常了
-  launcher_refresh_terminal();
+  char terminal_buffer_size_char[10];
+  sprintf(terminal_buffer_size_char, "%d", terminal_buffer_size);
+  oled_draw_str(110, 30, terminal_buffer_size_char);
 
+  char line_offset_cnt_char[10];
+  sprintf(line_offset_cnt_char, "%d", line_offset_cnt);
+  oled_draw_str(110, 45, line_offset_cnt_char);
+
+  static uint8_t in_case_u_cant_see_clearly = 0;
+
+  //先加入 再绘制 等相机到位 再删除 删除的时候不改变相机位置
+  //现在是删除的太快了
+  //加入的时机不确定 可是问题是 加入了就要立刻立刻就绘制吗？
+
+//  if (terminal_buffer_size > 10) y_camera = y_camera_trg;
   //绘制
   launcher_terminal_print_test();
 
-  if (terminal_buffer_size > 10) //溢出处理
-    for (int i = 0; i < terminal_buffer_size - 10; i++) launcher_terminal_buffer_pop_front(), terminal_buffer_size--;
+  //设置坐标
+  launcher_refresh_terminal();  //todo todo 删除之后执行了这个刷新 刚归位就又刷新到新的位置了 所以会闪
+
+  //todo 如果等待相机到位 就不会进入这个if 因为不断有新的节点进来 相机永远不会到位
+  if (terminal_buffer_size > 10 && y_camera_trg == y_camera) {
+    in_case_u_cant_see_clearly++;
+    if (in_case_u_cant_see_clearly > 6) {
+      //再多渲染6帧
+      for (int i = 0; i < terminal_buffer_size - 10; i++) launcher_terminal_buffer_pop_front();
+      in_case_u_cant_see_clearly = 0;
+    }
+  }
+
 
   /*后景文字部分*/
 
