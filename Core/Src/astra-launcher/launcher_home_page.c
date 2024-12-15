@@ -4,7 +4,7 @@
 
 #include "launcher_home_page.h"
 
-int16_t terminal_x_min = 0;
+int8_t terminal_x_min = 0;
 int16_t terminal_y_min = 0;
 int16_t terminal_x_max = 0;
 int16_t terminal_y_max = 0;
@@ -110,14 +110,63 @@ void animation(int16_t *_pos, int16_t _posTrg, int16_t _speed) {
 //buffer链表的各种函数不需要传入头指针 头指针只有一个
 terminal_buffer_t *terminal_buffer_head = NULL;
 
-//测试ok
+int line_offset_cnt = 0;
+int y_camera, y_camera_trg = 0;
+
+//计算节点内字符行数的函数
+int16_t get_node_line_cnt(terminal_buffer_t *_node) {
+  static int16_t _line_node_cnt = 0;
+  static char _str_temp[3] = {'\0'};
+  static int16_t _x_str = 0;
+
+  memset(_str_temp, '\0', 3);
+  _x_str = terminal_x_min;
+  _line_node_cnt = 1;
+  for (int i = 0; _node->str[i] != '\0'; i++) {
+    if (_node->str[i] == '\n') {
+      _line_node_cnt++;
+      _x_str = terminal_x_min;
+      continue;
+    }
+
+    if (_node->str[i] == '\r') {
+      _x_str += 4;
+      continue;
+    }
+
+    if ((_node->str[i] & 0xF0) == 0xE0) { //如果当前字符是中文字符
+      _str_temp[0] = _node->str[i];
+      _str_temp[1] = _node->str[i + 1];
+      _str_temp[2] = _node->str[i + 2];
+
+      if (_x_str >= terminal_x_max - 22) _x_str = terminal_x_min, _line_node_cnt++;
+
+      _x_str += oled_get_UTF8_width(_str_temp);
+      i += 2;
+    } else {
+      _str_temp[0] = _node->str[i];
+      _str_temp[1] = '\0';
+      _str_temp[2] = '\0';
+
+      if (_x_str >= terminal_x_max - 10) _x_str = terminal_x_min, _line_node_cnt++;
+
+      _x_str += oled_get_str_width(_str_temp) + 1;
+    }
+  }
+  return _line_node_cnt;
+}
+
+/**
+ * @brief 将字符串推入终端缓冲区
+ * @param _type
+ * @param _str
+ * @warning 不要在sysTick中调用该函数
+ */
 void launcher_push_str_to_terminal(launcher_terminal_prompter_t _type, char *_str) {
-  //最高容纳一百条记录 todo 坐标错乱来自于内存溢出
-
-  //todo 绘制部分要在这里调用才行 需要重新整合函数
-
   if (terminal_buffer_head == NULL) {
     terminal_buffer_head = (terminal_buffer_t *) malloc(sizeof(terminal_buffer_t));
+    terminal_buffer_head->x = terminal_x_min + 26;
+    terminal_buffer_head->y = terminal_y_min;
     terminal_buffer_head->type = _type;
     terminal_buffer_head->str = _str;
     terminal_buffer_head->next = NULL;
@@ -129,39 +178,41 @@ void launcher_push_str_to_terminal(launcher_terminal_prompter_t _type, char *_st
   terminal_buffer_t *_p = terminal_buffer_head;
   while (_p->next != NULL) _p = _p->next; //找到末端
   _p->next = _node;
+  _node->x = terminal_x_min + 26;
+  _node->y = _p->y + get_node_line_cnt(_p) * LINE_HEIGHT;
   _node->type = _type;
   _node->str = _str;
   _node->next = NULL;
+  if (line_offset_cnt > 40) {
+    //如果大于50行 行数清零 相机和节点也要同步移动到初始位置
+    line_offset_cnt = 0;
+    y_camera = 0;
+    y_camera_trg = 0;
+    terminal_buffer_t *_temp = terminal_buffer_head;
+    while (_temp != NULL) {
+      //让每个节点的y坐标减去30行的高度
+      _temp->y -= 40 * LINE_HEIGHT;
+      _temp = _temp->next;
+    }
+  }
   terminal_buffer_size++;
-}
 
-int16_t line_offset_cnt = 0;
-int16_t y_camera, y_camera_trg = 0;
+  //如果大于TERMINAL_BUFFER_SIZE个了 那必定已经需要滚动 所以新的节点有多少行 trg就要减多少行
+  if (terminal_buffer_size > TERMINAL_BUFFER_SIZE)
+    y_camera_trg -= get_node_line_cnt(_node) * LINE_HEIGHT;
+}
 
 void launcher_terminal_buffer_pop_front() {
   if (terminal_buffer_head == NULL) return;
   terminal_buffer_t *_old = terminal_buffer_head;
   terminal_buffer_head = terminal_buffer_head->next;
+//  y_camera_trg += get_node_line_cnt(_old) * LINE_HEIGHT;
   free(_old);
   _old = NULL;
   terminal_buffer_size--;
 }
 
-void launcher_refresh_terminal() {
-  y_camera_trg = 0 - (line_offset_cnt * LINE_HEIGHT);
-  animation(&y_camera, y_camera_trg, 98);
-//  if (y_camera_trg != y_camera)
-//    if (y_camera > y_camera_trg) y_camera -= abs(y_camera - y_camera_trg) / 2;
-//    else y_camera += abs(y_camera - y_camera_trg) / 2;
-}
-
-void launcher_refresh_terminal_once() {
-  //todo 惰性更新 lineoffset只存储了当前页面还来不及绘制的行数 不存储总的超出行数
-  //todo 每次trg都-=
-}
-
 /*
- * todo 除了camera其他都ok了
  * 每个节点存储一句话
  * 链表的话就有两个坐标的概念 一个是每句话的起始坐标 一个是每句话里面每个字的坐标
  * 第二个坐标以第一个坐标作为初值开始变化
@@ -171,10 +222,10 @@ void launcher_refresh_terminal_once() {
  */
 void launcher_terminal_print_test() {
   terminal_buffer_t *_node = terminal_buffer_head;
-  static int32_t _x_node, _y_node = 0; //每句话的起始坐标
-  static int32_t _x_str, _y_str = 0;  //每句话里面每个字的坐标
-  static int16_t _node_cnt = 0; //代表当前节点数 从0开始
-  static int16_t _line_cnt = 0; //代表当前行数 从0开始
+  static int _x_node, _y_node = 0; //每句话的起始坐标
+  static int _x_str, _y_str = 0;  //每句话里面每个字的坐标
+  static int _node_cnt = 0; //代表当前节点数 从0开始
+  static int _line_cnt = 0; //代表当前行数 从0开始
 //  static int16_t _line_offset_cnt = 0;
   static char _str_to_print[3] = {'\0'};
 
@@ -183,19 +234,17 @@ void launcher_terminal_print_test() {
   line_offset_cnt = 0;
   _x_node = terminal_x_min + 26; //加上指示器宽度
   _y_node = terminal_y_min;
-  _x_str = _x_node;
-  _y_str = _y_node;
+  _x_str = _node->x;
+  _y_str = _node->y;
   memset(_str_to_print, '\0', 3);
 
   while (_node != NULL) {
-    _x_node = terminal_x_min + 26;
-    _y_node = terminal_y_min + (_line_cnt) * LINE_HEIGHT;
-    if (_y_node > terminal_y_max + (line_offset_cnt * LINE_HEIGHT)) line_offset_cnt++; //由于绘制下一句话导致的滚动
-    _x_str = _x_node;
-    _y_str = _y_node;
+    if (_node->y > terminal_y_max + (line_offset_cnt * LINE_HEIGHT)) line_offset_cnt++; //由于绘制下一句话导致的滚动
+    _x_str = _node->x;
+    _y_str = _node->y;
 
-    if (terminal_y_min - LINE_HEIGHT <= _y_node - 1 <= terminal_y_max + LINE_HEIGHT)
-      launcher_draw_terminal_prompter(4, _y_node + y_camera - 1, _node->type);
+    if (terminal_y_min - LINE_HEIGHT <= _node->y - 1 <= terminal_y_max + LINE_HEIGHT)
+      launcher_draw_terminal_prompter(4, _node->y + y_camera - 1, _node->type);
 
     //绘制一句话中的每个字
     for (int i = 0; _node->str[i] != '\0'; i++) {
@@ -253,37 +302,32 @@ void launcher_draw_home_page() {
   /*后景文字部分*/
   oled_set_draw_color(1);
 
-  char terminal_buffer_size_char[10];
-  sprintf(terminal_buffer_size_char, "%d", terminal_buffer_size);
-  oled_draw_str(110, 30, terminal_buffer_size_char);
+//  char cnt1_char[10];
+//  sprintf(cnt1_char, "%d", terminal_buffer_size);
+//  oled_draw_str(105, 50, cnt1_char);
+//
+//  char cnt2_char[10];
+//  sprintf(cnt2_char, "%d", terminal_buffer_head->y);
+//  oled_draw_str(105, 30, cnt2_char);
+//
+//  char cnt3_char[10];
+//  sprintf(cnt3_char, "%d", y_camera_trg);
+//  oled_draw_str(100, 40, cnt3_char);
 
-  char line_offset_cnt_char[10];
-  sprintf(line_offset_cnt_char, "%d", line_offset_cnt);
-  oled_draw_str(110, 45, line_offset_cnt_char);
+  char cnt4_char[10];
+  sprintf(cnt4_char, "%d", line_offset_cnt);
+  oled_draw_str(110, 60, cnt4_char);
 
-  static uint8_t in_case_u_cant_see_clearly = 0;
-
-  //先加入 再绘制 等相机到位 再删除 删除的时候不改变相机位置
-  //现在是删除的太快了
-  //加入的时机不确定 可是问题是 加入了就要立刻立刻就绘制吗？
-
-//  if (terminal_buffer_size > 10) y_camera = y_camera_trg;
   //绘制
   launcher_terminal_print_test();
 
   //设置坐标
-  launcher_refresh_terminal();  //todo todo 删除之后执行了这个刷新 刚归位就又刷新到新的位置了 所以会闪
+  animation(&y_camera, y_camera_trg, 98);
+  if (terminal_buffer_size <= TERMINAL_BUFFER_SIZE) y_camera_trg = 0 - (line_offset_cnt * LINE_HEIGHT);
 
-  //todo 如果等待相机到位 就不会进入这个if 因为不断有新的节点进来 相机永远不会到位
-  if (terminal_buffer_size > 10 && y_camera_trg == y_camera) {
-    in_case_u_cant_see_clearly++;
-    if (in_case_u_cant_see_clearly > 6) {
-      //再多渲染6帧
-      for (int i = 0; i < terminal_buffer_size - 10; i++) launcher_terminal_buffer_pop_front();
-      in_case_u_cant_see_clearly = 0;
-    }
+  if (terminal_buffer_size > TERMINAL_BUFFER_SIZE) {
+    for (int i = 0; i < terminal_buffer_size - TERMINAL_BUFFER_SIZE; i++) launcher_terminal_buffer_pop_front();
   }
-
 
   /*后景文字部分*/
 

@@ -109,9 +109,18 @@ int main(void)
   static int32_t _offset = -100;
 
   launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
-  launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
-  launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
-  launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
+  launcher_push_str_to_terminal(info, "你好,\rworld!\r2");
+  launcher_push_str_to_terminal(info, "你好,\rworld!\r3");
+//  launcher_push_str_to_terminal(info, "你好,\rworld!\r4");
+//  launcher_push_str_to_terminal(info, "你好,\rworld!\r5");
+//  launcher_push_str_to_terminal(info, "你好,\rworld!\r6");
+//  launcher_push_str_to_terminal(info, "你好,\rworld!\r7");
+//  launcher_push_str_to_terminal(info, "你好,\rworld!\r8");
+//  launcher_push_str_to_terminal(info, "你好,\rworld!\r9");
+//  launcher_push_str_to_terminal(info, "你好,\rworld!\r10");
+//  launcher_push_str_to_terminal(info, "你好,\rworld!\r11");
+//  launcher_push_str_to_terminal(info, "你好,\rworld!\r12");
+//  launcher_push_str_to_terminal(info, "你好,\rworld!\r13");
 
   //  astra_add_str_to_terminal_buffer(info, "你好20240527");
   /* USER CODE END 2 */
@@ -134,12 +143,19 @@ int main(void)
 //    oled_draw_str(&u8g2, 40, 60, " key2: ");
 //    oled_draw_str(&u8g2, 74, 60, key2CntChar);
 
-//    if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
-//    if (_tick % 301 == 1) launcher_push_str_to_terminal(info, "hello,\r你好\r2");
-//    if (_tick % 700 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r3");
-//    if (_tick % 1100 == 1) launcher_push_str_to_terminal(info, "hello,\r你好\r4");
-//    if (_tick % 1600 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r5");
-
+    if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
+    if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
+    if (_tick % 301 == 1) launcher_push_str_to_terminal(uart, "hello,\r你好\r2");
+    if (_tick % 301 == 1) launcher_push_str_to_terminal(uart, "hello,\r你好\r2");
+    if (_tick % 400 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r3");
+    if (_tick % 400 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r3");
+    if (_tick % 500 == 1) launcher_push_str_to_terminal(f411, "hello,\r你好\r4");
+    if (_tick % 500 == 1) launcher_push_str_to_terminal(f411, "hello,\r你好\r4");
+    if (_tick % 600 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
+    if (_tick % 600 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
+    if (_tick % 608 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
+    if (_tick % 708 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
+    if (_tick % 808 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
 
 //    astra_draw_terminal_prompter(4, 25, "info");
 //    astra_draw_terminal_prompter(4, 36, "info");

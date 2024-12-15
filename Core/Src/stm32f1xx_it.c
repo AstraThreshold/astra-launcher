@@ -203,12 +203,11 @@ void SysTick_Handler(void)
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
     getValueADC1(rawDataADC1);
     getValueADC2(rawDataADC2);
-//    tick = 0;
   }
 
-  if (tick >= 200) {
-    launcher_push_str_to_terminal(uart, "hello, world!");
+  if (tick % 2000 == 0) {
     tick = 0;
+//    launcher_push_str_to_terminal(uart, "hello,\n\r你好\r");
   }
   /* USER CODE END SysTick_IRQn 1 */
 }
