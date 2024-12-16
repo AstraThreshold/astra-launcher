@@ -19,6 +19,7 @@ typedef enum {
   Ready,
   Wait,
   Loading,
+  Busy,
   Err,
   Stop,
 } launcher_status_t;

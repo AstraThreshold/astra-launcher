@@ -33,11 +33,16 @@ void launcher_draw_status_box(uint8_t _x, uint8_t _y, launcher_status_t _status)
     oled_set_draw_color(2);
     oled_draw_str(_x + 2, _y + 8, "-Loading-");
     oled_set_draw_color(1);
-  } else if (_status == Err) {
-    oled_draw_R_box(_x, _y, oled_get_str_width("-Err-") + 3, 10, 1);
+  } else if (_status == Busy) {
+    oled_draw_R_box(_x, _y, oled_get_str_width("-Busy-") + 3, 10, 1);
     oled_set_draw_color(2);
-    oled_draw_str(_x + 2, _y + 8, "-Err-");
+    oled_draw_str(_x + 2, _y + 8, "-Busy-");
     oled_set_draw_color(1);
+  } else if (_status == Err) {
+      oled_draw_R_box(_x, _y, oled_get_str_width("-Err-") + 3, 10, 1);
+      oled_set_draw_color(2);
+      oled_draw_str(_x + 2, _y + 8, "-Err-");
+      oled_set_draw_color(1);
   } else if (_status == Stop) {
     oled_draw_R_box(_x, _y, oled_get_str_width("-Stop-") + 3, 10, 1);
     oled_set_draw_color(2);
@@ -183,6 +188,10 @@ void launcher_push_str_to_terminal(launcher_terminal_prompter_t _type, char *_st
   _node->type = _type;
   _node->str = _str;
   _node->next = NULL;
+  terminal_buffer_size++;
+
+  _p = NULL;
+  free(_p);
   if (line_offset_cnt > 40) {
     //如果大于50行 行数清零 相机和节点也要同步移动到初始位置
     line_offset_cnt = 0;
@@ -194,11 +203,12 @@ void launcher_push_str_to_terminal(launcher_terminal_prompter_t _type, char *_st
       _temp->y -= 40 * LINE_HEIGHT;
       _temp = _temp->next;
     }
+    _temp = NULL;
+    free(_temp);
   }
-  terminal_buffer_size++;
 
   //如果大于TERMINAL_BUFFER_SIZE个了 那必定已经需要滚动 所以新的节点有多少行 trg就要减多少行
-  if (terminal_buffer_size > TERMINAL_BUFFER_SIZE)
+  if (terminal_buffer_size > TERMINAL_BUFFER_SIZE && line_offset_cnt <= 40)
     y_camera_trg -= get_node_line_cnt(_node) * LINE_HEIGHT;
 }
 
@@ -206,7 +216,6 @@ void launcher_terminal_buffer_pop_front() {
   if (terminal_buffer_head == NULL) return;
   terminal_buffer_t *_old = terminal_buffer_head;
   terminal_buffer_head = terminal_buffer_head->next;
-//  y_camera_trg += get_node_line_cnt(_old) * LINE_HEIGHT;
   free(_old);
   _old = NULL;
   terminal_buffer_size--;
@@ -291,6 +300,8 @@ void launcher_terminal_print_test() {
     _line_cnt++; //换了新节点必定要换行
     _node = _node->next;
   }
+  _node = NULL;
+  free(_node);
 }
 
 /**
@@ -302,14 +313,14 @@ void launcher_draw_home_page() {
   /*后景文字部分*/
   oled_set_draw_color(1);
 
-//  char cnt1_char[10];
-//  sprintf(cnt1_char, "%d", terminal_buffer_size);
-//  oled_draw_str(105, 50, cnt1_char);
-//
-//  char cnt2_char[10];
-//  sprintf(cnt2_char, "%d", terminal_buffer_head->y);
-//  oled_draw_str(105, 30, cnt2_char);
-//
+  char cnt1_char[10];
+  sprintf(cnt1_char, "%d", terminal_buffer_size);
+  oled_draw_str(105, 50, cnt1_char);
+
+  char cnt2_char[10];
+  sprintf(cnt2_char, "%d", terminal_buffer_head->y);
+  oled_draw_str(105, 30, cnt2_char);
+
 //  char cnt3_char[10];
 //  sprintf(cnt3_char, "%d", y_camera_trg);
 //  oled_draw_str(100, 40, cnt3_char);
@@ -345,7 +356,7 @@ void launcher_draw_home_page() {
 
   /*前前景status box + ui部分*/
   oled_set_draw_color(1);
-  launcher_draw_status_bar(12, Stop, (volADC1 + volADC2) / 2, "V", iBaseADC1, "A");
+  launcher_draw_status_bar(12, Busy, (volADC1 + volADC2) / 2, "V", iBaseADC1, "A");
   oled_draw_H_line(2, 14, 124); //上横线
   oled_draw_H_line(1, 15, 2); //左上圆角
   oled_draw_box(0, 16, 2, 48); //左边线
@@ -357,6 +368,10 @@ void launcher_draw_home_page() {
 
   oled_set_draw_color(2);
   oled_draw_H_line(56, 63, 66); //下方logo同步条
-  oled_draw_V_line(124, 18, 20);  //进度条
+  //在x=124位置绘制进度条 向下对齐 y的最小值为18 最大值为59 进度条的最大长度为42 最小长度为1 根据line_offset_cnt的值来确定长度
+
+  //之前hardfault的原因是因为line_offset_cnt的值超过了42 长度为负数了
+  if (line_offset_cnt > 42) oled_draw_V_line(124, 18 + 42, 2);
+  else oled_draw_V_line(124, 18 + line_offset_cnt, 42 - line_offset_cnt);
   /*前前景status box + ui部分*/
 }

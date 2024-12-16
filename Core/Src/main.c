@@ -144,16 +144,10 @@ int main(void)
 //    oled_draw_str(&u8g2, 74, 60, key2CntChar);
 
     if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
-    if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
-    if (_tick % 301 == 1) launcher_push_str_to_terminal(uart, "hello,\r你好\r2");
     if (_tick % 301 == 1) launcher_push_str_to_terminal(uart, "hello,\r你好\r2");
     if (_tick % 400 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r3");
-    if (_tick % 400 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r3");
-    if (_tick % 500 == 1) launcher_push_str_to_terminal(f411, "hello,\r你好\r4");
     if (_tick % 500 == 1) launcher_push_str_to_terminal(f411, "hello,\r你好\r4");
     if (_tick % 600 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
-    if (_tick % 600 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
-    if (_tick % 608 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
     if (_tick % 708 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
     if (_tick % 808 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
 
