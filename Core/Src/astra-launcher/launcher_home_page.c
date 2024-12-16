@@ -115,8 +115,8 @@ void animation(int16_t *_pos, int16_t _posTrg, int16_t _speed) {
 //buffer链表的各种函数不需要传入头指针 头指针只有一个
 terminal_buffer_t *terminal_buffer_head = NULL;
 
-int line_offset_cnt = 0;
-int y_camera, y_camera_trg = 0;
+int16_t line_offset_cnt = 0;
+int16_t y_camera, y_camera_trg = 0;
 
 //计算节点内字符行数的函数
 int16_t get_node_line_cnt(terminal_buffer_t *_node) {
@@ -231,10 +231,10 @@ void launcher_terminal_buffer_pop_front() {
  */
 void launcher_terminal_print_test() {
   terminal_buffer_t *_node = terminal_buffer_head;
-  static int _x_node, _y_node = 0; //每句话的起始坐标
-  static int _x_str, _y_str = 0;  //每句话里面每个字的坐标
-  static int _node_cnt = 0; //代表当前节点数 从0开始
-  static int _line_cnt = 0; //代表当前行数 从0开始
+  static int16_t _x_node, _y_node = 0; //每句话的起始坐标
+  static int16_t _x_str, _y_str = 0;  //每句话里面每个字的坐标
+  static int16_t _node_cnt = 0; //代表当前节点数 从0开始
+  static int16_t _line_cnt = 0; //代表当前行数 从0开始
 //  static int16_t _line_offset_cnt = 0;
   static char _str_to_print[3] = {'\0'};
 
@@ -313,21 +313,21 @@ void launcher_draw_home_page() {
   /*后景文字部分*/
   oled_set_draw_color(1);
 
-  char cnt1_char[10];
-  sprintf(cnt1_char, "%d", terminal_buffer_size);
-  oled_draw_str(105, 50, cnt1_char);
-
-  char cnt2_char[10];
-  sprintf(cnt2_char, "%d", terminal_buffer_head->y);
-  oled_draw_str(105, 30, cnt2_char);
+//  char cnt1_char[10];
+//  sprintf(cnt1_char, "%d", terminal_buffer_size);
+//  oled_draw_str(105, 50, cnt1_char);
+//
+//  char cnt2_char[10];
+//  sprintf(cnt2_char, "%d", terminal_buffer_head->y);
+//  oled_draw_str(105, 30, cnt2_char);
 
 //  char cnt3_char[10];
 //  sprintf(cnt3_char, "%d", y_camera_trg);
 //  oled_draw_str(100, 40, cnt3_char);
 
-  char cnt4_char[10];
-  sprintf(cnt4_char, "%d", line_offset_cnt);
-  oled_draw_str(110, 60, cnt4_char);
+//  char cnt4_char[10];
+//  sprintf(cnt4_char, "%d", line_offset_cnt);
+//  oled_draw_str(110, 60, cnt4_char);
 
   //绘制
   launcher_terminal_print_test();
@@ -337,7 +337,7 @@ void launcher_draw_home_page() {
   if (terminal_buffer_size <= TERMINAL_BUFFER_SIZE) y_camera_trg = 0 - (line_offset_cnt * LINE_HEIGHT);
 
   if (terminal_buffer_size > TERMINAL_BUFFER_SIZE) {
-    for (int i = 0; i < terminal_buffer_size - TERMINAL_BUFFER_SIZE; i++) launcher_terminal_buffer_pop_front();
+    for (uint8_t i = 0; i < terminal_buffer_size - TERMINAL_BUFFER_SIZE; i++) launcher_terminal_buffer_pop_front();
   }
 
   /*后景文字部分*/

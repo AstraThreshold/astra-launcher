@@ -100,8 +100,6 @@ int main(void)
   HAL_ADCEx_Calibration_Start(&hadc1);
   HAL_ADCEx_Calibration_Start(&hadc2);
 
-//  oledInit();
-//  u8g2Init(&u8g2);
   astra_ui_driver_init();
 
   launcher_set_terminal_area(4, 26, 124, 62);
@@ -111,18 +109,7 @@ int main(void)
   launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
   launcher_push_str_to_terminal(info, "你好,\rworld!\r2");
   launcher_push_str_to_terminal(info, "你好,\rworld!\r3");
-//  launcher_push_str_to_terminal(info, "你好,\rworld!\r4");
-//  launcher_push_str_to_terminal(info, "你好,\rworld!\r5");
-//  launcher_push_str_to_terminal(info, "你好,\rworld!\r6");
-//  launcher_push_str_to_terminal(info, "你好,\rworld!\r7");
-//  launcher_push_str_to_terminal(info, "你好,\rworld!\r8");
-//  launcher_push_str_to_terminal(info, "你好,\rworld!\r9");
-//  launcher_push_str_to_terminal(info, "你好,\rworld!\r10");
-//  launcher_push_str_to_terminal(info, "你好,\rworld!\r11");
-//  launcher_push_str_to_terminal(info, "你好,\rworld!\r12");
-//  launcher_push_str_to_terminal(info, "你好,\rworld!\r13");
 
-  //  astra_add_str_to_terminal_buffer(info, "你好20240527");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -133,15 +120,15 @@ int main(void)
     /* USER CODE BEGIN 3 */
     oled_clear_buffer();
 
-//    keyCallBack(2, key1Clicked, key2Clicked, key1Pressed, key2Pressed);
-//    char key1CntChar[10];
-//    char key2CntChar[10];
-//    sprintf(key1CntChar, "%d", key1Cnt);
-//    sprintf(key2CntChar, "%d", key2Cnt);
-//    oled_draw_str(&u8g2, 0, 60, "key1: ");
-//    oled_draw_str(&u8g2, 28, 60, key1CntChar);
-//    oled_draw_str(&u8g2, 40, 60, " key2: ");
-//    oled_draw_str(&u8g2, 74, 60, key2CntChar);
+    keyCallBack(2, key1Clicked, key2Clicked, key1Pressed, key2Pressed);
+    char key1CntChar[10];
+    char key2CntChar[10];
+    sprintf(key1CntChar, "%d", key1Cnt);
+    sprintf(key2CntChar, "%d", key2Cnt);
+    oled_draw_str(0, 60, "key1: ");
+    oled_draw_str(28, 60, key1CntChar);
+    oled_draw_str(40, 60, " key2: ");
+    oled_draw_str(74, 60, key2CntChar);
 
     if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
     if (_tick % 301 == 1) launcher_push_str_to_terminal(uart, "hello,\r你好\r2");
@@ -150,11 +137,6 @@ int main(void)
     if (_tick % 600 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
     if (_tick % 708 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
     if (_tick % 808 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
-
-//    astra_draw_terminal_prompter(4, 25, "info");
-//    astra_draw_terminal_prompter(4, 36, "info");
-//    astra_draw_terminal_prompter(4, 47, "f411");
-//    astra_draw_terminal_prompter(4, 58, "uart");
 
     launcher_draw_home_page();
 
