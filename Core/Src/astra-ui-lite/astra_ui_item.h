@@ -5,13 +5,9 @@
 #ifndef FUCKCLION_CORE_SRC_ASTRA_UI_LITE_ASTRA_UI_ITEM_H_
 #define FUCKCLION_CORE_SRC_ASTRA_UI_LITE_ASTRA_UI_ITEM_H_
 
-
-
 #include <stdbool.h>
 #include "draw_driver.h"
 
-//todo 把launcher独属的都放在launcher home page里面
-
-
+extern void astra_draw_pop_window(uint8_t _x, uint8_t _y, uint8_t _width, uint8_t _height, char *_title, char *_content);
 
 #endif //FUCKCLION_CORE_SRC_ASTRA_UI_LITE_ASTRA_UI_ITEM_H_

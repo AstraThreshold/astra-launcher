@@ -61,7 +61,9 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void astra_ui_entry_prompt() {
 
+}
 /* USER CODE END 0 */
 
 /**
@@ -120,7 +122,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
     oled_clear_buffer();
 
-    keyCallBack(2, key1Clicked, key2Clicked, key1Pressed, key2Pressed);
+    keyCallBack(2, key1Clicked, key2Clicked, astra_ui_entry_prompt, astra_ui_entry_prompt);
     char key1CntChar[10];
     char key2CntChar[10];
     sprintf(key1CntChar, "%d", key1Cnt);
