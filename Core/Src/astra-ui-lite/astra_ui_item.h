@@ -8,6 +8,9 @@
 #include <stdbool.h>
 #include "draw_driver.h"
 
-extern void astra_draw_pop_window(uint8_t _x, uint8_t _y, uint8_t _width, uint8_t _height, char *_title, char *_content);
+#define POP_HEIGHT 15
+#define POP_OFFSET 4
+
+extern void astra_draw_pop_window(uint16_t _y, const char *_content);
 
 #endif //FUCKCLION_CORE_SRC_ASTRA_UI_LITE_ASTRA_UI_ITEM_H_
