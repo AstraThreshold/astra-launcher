@@ -28,8 +28,10 @@
 #include "astra-launcher/launcher_key.h"
 #include "astra-launcher/launcher_adc.h"
 #include "stdio.h"
+#include "astra-launcher/launcher_delay.h"
 #include "astra-ui-lite/astra_ui_item.h"
 #include "astra-launcher/launcher_home_page.h"
+#include "astra-ui-lite/astra_ui_core.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -106,11 +108,14 @@ int main(void)
 
   launcher_set_terminal_area(4, 26, 124, 62);
   static uint32_t _tick = 0;
-  static int32_t _offset = -100;
 
   launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
   launcher_push_str_to_terminal(info, "你好,\rworld!\r2");
   launcher_push_str_to_terminal(info, "你好,\rworld!\r3");
+
+  char info[100] = {};
+  sprintf(info, "tick: %d", launcher_get_tick_ms());
+  astra_push_info_bar(info,2000);
 
   /* USER CODE END 2 */
 
@@ -122,7 +127,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
     oled_clear_buffer();
 
-    keyCallBack(2, key1Clicked, key2Clicked, astra_ui_entry_prompt, astra_ui_entry_prompt);
+    launcher_key_call_back(2, key1Clicked, key2Clicked, astra_ui_entry_prompt, astra_ui_entry_prompt);
     char key1CntChar[10];
     char key2CntChar[10];
     sprintf(key1CntChar, "%d", key1Cnt);
@@ -140,11 +145,10 @@ int main(void)
     // if (_tick % 708 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
     // if (_tick % 808 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
 
-    oled_set_draw_color(1);
-    oled_draw_box(0,0,128,64);
-    astra_draw_pop_window(POP_OFFSET, "keep");
+    // astra_draw_pop_window(POP_OFFSET, "keep");
 
     // launcher_draw_home_page();
+    astra_ui_core();
 
     oled_send_buffer();
     _tick++;

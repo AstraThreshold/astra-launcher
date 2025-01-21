@@ -5,7 +5,7 @@
 #include <math.h>
 #include "launcher_adc.h"
 
-double vKalmanFilter(double inData)
+double _vKalmanFilter(double inData)
 {
   static double prevData = 0;                                 //先前数�??
   static double p = 10;
@@ -21,7 +21,7 @@ double vKalmanFilter(double inData)
   return inData;                                             //返回滤波�?
 }
 
-double iKalmanFilter(double inData)
+double _iKalmanFilter(double inData)
 {
   static double prevData = 0;                                 //先前数�??
   static double p = 10;
@@ -48,7 +48,7 @@ double iBaseADC1 = 0.0f;
 double iBaseADC2 = 0.0f;
 double innerTempADC1 = 0.0f;
 
-void getValueADC1(double *rawData) {
+void launcher_get_value_adc1(double *rawData) {
   HAL_ADCEx_Calibration_Start(&hadc1);
   for (int i = 0; i < 4; i++) {
     HAL_ADC_Start(&hadc1);
@@ -56,15 +56,15 @@ void getValueADC1(double *rawData) {
     rawData[i] = HAL_ADC_GetValue(&hadc1);
   }
   HAL_ADC_Stop(&hadc1);
-  volADC1 = vKalmanFilter((rawData[0] * 3.3f / 4095.0f) * 6.0f);
-  iBoardADC1 = iKalmanFilter((rawData[1] * 3.3f / 4095.0f) / 5.0f);
+  volADC1 = _vKalmanFilter((rawData[0] * 3.3f / 4095.0f) * 6.0f);
+  iBoardADC1 = _iKalmanFilter((rawData[1] * 3.3f / 4095.0f) / 5.0f);
   iBaseADC1 = (rawData[2] * 3.3f / 4095.0f) / 5.0f;
   double vInnerTempADC1 = (rawData[3] * 3.3f / 4095.0f);
 //  innerTempADC1 = vInnerTempADC1;
   innerTempADC1 =  (1.43 - vInnerTempADC1) / 0.0043 + 25;
 }
 
-void getValueADC2(double *rawData) {
+void launcher_get_value_adc2(double *rawData) {
   HAL_ADCEx_Calibration_Start(&hadc2);
   for (int i = 0; i < 3; i++) {
     HAL_ADC_Start(&hadc2);
@@ -72,7 +72,7 @@ void getValueADC2(double *rawData) {
     rawData[i] = HAL_ADC_GetValue(&hadc2);
   }
   HAL_ADC_Stop(&hadc2);
-  volADC2 = vKalmanFilter((rawData[0] * 3.3f / 4095.0f) * 6.0f);
-  iBoardADC2 = iKalmanFilter((rawData[1] * 3.3f / 4095.0f) / 5.0f);
+  volADC2 = _vKalmanFilter((rawData[0] * 3.3f / 4095.0f) * 6.0f);
+  iBoardADC2 = _iKalmanFilter((rawData[1] * 3.3f / 4095.0f) / 5.0f);
   iBaseADC2 = (rawData[2] * 3.3f / 4095.0f) / 5.0f;
 }

@@ -20,10 +20,10 @@ extern double iBaseADC1;
 extern double iBaseADC2;
 extern double innerTempADC1;
 
-extern double vKalmanFilter(double inData);
-extern double iKalmanFilter(double inData);
+extern double _vKalmanFilter(double inData);
+extern double _iKalmanFilter(double inData);
 
-extern void getValueADC1(double *rawData);
-extern void getValueADC2(double *rawData);
+extern void launcher_get_value_adc1(double *rawData);
+extern void launcher_get_value_adc2(double *rawData);
 
 #endif //FUCKCLION_CORE_SRC_ADC_LAUNCHER_H_

@@ -22,7 +22,7 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "astra-ui-lite/draw_driver.h"
+#include "astra-ui-lite/astra_draw_driver.h"
 #include "astra-launcher/launcher_adc.h"
 #include "astra-launcher/launcher_home_page.h"
 /* USER CODE END Includes */
@@ -199,8 +199,8 @@ void SysTick_Handler(void)
   tick++;
   if (tick % 200 == 0) {
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-    getValueADC1(rawDataADC1);
-    getValueADC2(rawDataADC2);
+    launcher_get_value_adc1(rawDataADC1);
+    launcher_get_value_adc2(rawDataADC2);
   }
 
   if (tick % 2000 == 0) {

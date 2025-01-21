@@ -36,14 +36,14 @@ typedef enum keyIndex {
 extern KEY_ACTION key[KEY_NUM];
 extern KEY_TYPE keyFlag;
 
-extern bool getKey(KEY_INDEX _keyIndex);
-extern bool getAnyKey();
-extern KEY_ACTION *getKeyMap();
-extern KEY_TYPE *getKeyFlag();
-extern void keyScan();
-extern void keyTest();
+extern bool launcher_get_key(KEY_INDEX _keyIndex);
+extern bool launcher_get_any_key();
+extern KEY_ACTION *launcher_get_key_map();
+extern KEY_TYPE *launcher_get_key_flag();
+extern void launcher_key_scan();
+extern void launcher_key_test();
 
-extern void keyCallBack(uint8_t _freq, void(*_key1Clicked)(), void(*_key2Clicked)(), void(*_key1Pressed)(), void(*_key2Pressed)());
+extern void launcher_key_call_back(uint8_t _freq, void(*_key1Clicked)(), void(*_key2Clicked)(), void(*_key1Pressed)(), void(*_key2Pressed)());
 
 extern uint8_t key1Cnt;
 extern uint8_t key2Cnt;
