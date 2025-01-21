@@ -33,7 +33,9 @@ void astra_push_info_bar(char *_content, const uint16_t _span)
   astra_info_bar.w_info_bar_trg = oled_get_UTF8_width(astra_info_bar.content) + INFO_BAR_OFFSET;
 }
 
-void astra_push_pop_up(char *_content, const uint16_t _span) {
+void astra_push_pop_up(char *_content, const uint16_t _span)
+{
+  astra_pop_up.time = launcher_get_tick_ms();
   astra_pop_up.content = _content;
   astra_pop_up.span = _span;
   astra_pop_up.is_running = false;

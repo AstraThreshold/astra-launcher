@@ -121,7 +121,7 @@ int main(void)
 
   char info[100] = {};
   sprintf(info, "boot time: %dms", launcher_get_tick_ms());
-  astra_push_info_bar(info,5000);
+  astra_push_pop_up(info,2000);
 
   /* USER CODE END 2 */
 
@@ -132,6 +132,14 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     oled_clear_buffer();
+
+    //draw pop_up.y and pop_up.y_trg to string
+    char popUpY[10];
+    char popUpYTrg[10];
+    sprintf(popUpY, "%d", astra_pop_up.y_pop_up);
+    sprintf(popUpYTrg, "%d", astra_pop_up.y_pop_up_trg);
+    oled_draw_str(20, 50, popUpY);
+    oled_draw_str(60, 50, popUpYTrg);
 
     launcher_key_call_back(0, astra_ui_entry_prompt_1, astra_ui_entry_prompt_2, astra_ui_entry_prompt_1, astra_ui_entry_prompt_2);
     char key1CntChar[10];
