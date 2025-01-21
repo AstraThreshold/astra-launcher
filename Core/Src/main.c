@@ -63,8 +63,12 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void astra_ui_entry_prompt() {
+void astra_ui_entry_prompt_1() {
+  astra_push_info_bar("key1 pressed.",2000);
+}
 
+void astra_ui_entry_prompt_2() {
+  astra_push_info_bar("key2 pressed. hi.",2000);
 }
 /* USER CODE END 0 */
 
@@ -114,7 +118,7 @@ int main(void)
   launcher_push_str_to_terminal(info, "你好,\rworld!\r3");
 
   char info[100] = {};
-  sprintf(info, "tick: %d", launcher_get_tick_ms());
+  sprintf(info, "boot time: %dms", launcher_get_tick_ms());
   astra_push_info_bar(info,2000);
 
   /* USER CODE END 2 */
@@ -127,7 +131,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
     oled_clear_buffer();
 
-    launcher_key_call_back(2, key1Clicked, key2Clicked, astra_ui_entry_prompt, astra_ui_entry_prompt);
+    launcher_key_call_back(2, astra_ui_entry_prompt_1, astra_ui_entry_prompt_2, astra_ui_entry_prompt_1, astra_ui_entry_prompt_2);
     char key1CntChar[10];
     char key2CntChar[10];
     sprintf(key1CntChar, "%d", key1Cnt);

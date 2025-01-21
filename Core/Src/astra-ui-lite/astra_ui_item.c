@@ -31,6 +31,7 @@ void astra_push_info_bar(char *_content, const uint16_t _span)
 
   astra_info_bar.content = _content;
   astra_info_bar.span = _span;
+  astra_info_bar.is_running = false; //每次进入该函数都代表有新的消息涌入，所以需要重置is_running
 
   //展开弹窗 收回弹窗和同步时间戳需要在循环中进行 所以移到了drawer中
   if (!astra_info_bar.is_running)
