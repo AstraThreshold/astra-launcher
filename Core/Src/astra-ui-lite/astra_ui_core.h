@@ -8,6 +8,7 @@
 #include "astra_ui_item.h"
 
 extern void astra_refresh_info_bar();
+extern void astra_refresh_pop_up();
 
 extern void astra_refresh_position();
 extern void astra_ui_core();

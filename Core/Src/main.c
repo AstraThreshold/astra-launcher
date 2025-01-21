@@ -65,10 +65,12 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 void astra_ui_entry_prompt_1() {
   astra_push_info_bar("key1 pressed.",2000);
+  key1Cnt++;
 }
 
 void astra_ui_entry_prompt_2() {
   astra_push_info_bar("key2 pressed. hi.",2000);
+  key2Cnt++;
 }
 /* USER CODE END 0 */
 
@@ -119,7 +121,7 @@ int main(void)
 
   char info[100] = {};
   sprintf(info, "boot time: %dms", launcher_get_tick_ms());
-  astra_push_info_bar(info,2000);
+  astra_push_info_bar(info,5000);
 
   /* USER CODE END 2 */
 
@@ -131,7 +133,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
     oled_clear_buffer();
 
-    launcher_key_call_back(2, astra_ui_entry_prompt_1, astra_ui_entry_prompt_2, astra_ui_entry_prompt_1, astra_ui_entry_prompt_2);
+    launcher_key_call_back(0, astra_ui_entry_prompt_1, astra_ui_entry_prompt_2, astra_ui_entry_prompt_1, astra_ui_entry_prompt_2);
     char key1CntChar[10];
     char key2CntChar[10];
     sprintf(key1CntChar, "%d", key1Cnt);

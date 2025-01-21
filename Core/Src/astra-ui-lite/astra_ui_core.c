@@ -18,6 +18,11 @@ void astra_refresh_info_bar() {
   astra_animation(&astra_info_bar.w_info_bar, astra_info_bar.w_info_bar_trg, 96);
 }
 
+void astra_refresh_pop_up() {
+  astra_animation(&astra_pop_up.y_pop_up, astra_pop_up.y_pop_up_trg, 92);
+  astra_animation(&astra_pop_up.w_pop_up, astra_pop_up.w_pop_up_trg, 96);
+}
+
 void astra_refresh_position() {
   //需要调用所有的refresh函数
   astra_refresh_info_bar();
