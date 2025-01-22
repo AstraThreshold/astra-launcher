@@ -286,7 +286,7 @@ void launcher_terminal_print_test()
     //绘制一句话中的每个字
     for (int i = 0; _node->str[i] != '\0'; i++)
     {
-      oled_set_font(u8g2_font_wqy12_t_chinese1);
+      oled_set_font(u8g2_font_my_chinese);
       if (_node->str[i] == '\n')
       {
         _line_cnt++;
@@ -343,7 +343,7 @@ void launcher_terminal_print_test()
  */
 void launcher_draw_home_page()
 {
-  oled_set_font(u8g2_font_wqy12_t_chinese1);
+  oled_set_font(u8g2_font_my_chinese);
 
   /*后景文字部分*/
   oled_set_draw_color(1);

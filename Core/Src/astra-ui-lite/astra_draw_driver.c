@@ -131,7 +131,7 @@ void u8g2_init(u8g2_t *u8g2)
   u8g2_ClearBuffer(u8g2);
   u8g2_SetFontMode(u8g2, 1);
   u8g2_SetFontDirection(u8g2, 0);
-  u8g2_SetFont(u8g2, u8g2_font_myfont);
+  u8g2_SetFont(u8g2, u8g2_font_my_chinese);
 }
 
 /* 此处自行编写oled及图形库初始化函数所需的函数 */

@@ -29,7 +29,7 @@ void astra_push_info_bar(char *_content, const uint16_t _span)
     astra_info_bar.is_running = true;
   }
 
-  oled_set_font(u8g2_font_wqy12_t_chinese1);
+  oled_set_font(u8g2_font_my_chinese);
   astra_info_bar.w_info_bar_trg = oled_get_UTF8_width(astra_info_bar.content) + INFO_BAR_OFFSET;
 }
 
@@ -48,6 +48,6 @@ void astra_push_pop_up(char *_content, const uint16_t _span)
     astra_pop_up.is_running = true;
   }
 
-  oled_set_font(u8g2_font_wqy12_t_chinese1);
+  oled_set_font(u8g2_font_my_chinese);
   astra_pop_up.w_pop_up_trg = oled_get_UTF8_width(astra_pop_up.content) + POP_UP_OFFSET;
 }

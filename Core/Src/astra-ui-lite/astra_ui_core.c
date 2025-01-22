@@ -6,12 +6,12 @@
 #include "astra_ui_drawer.h"
 #include <tgmath.h>
 
-void astra_animation(int16_t *_pos, int16_t _posTrg, int16_t _speed)
+void astra_animation(float *_pos, float _posTrg, float _speed)
 {
   if (*_pos != _posTrg)
   {
     if (fabs(*_pos - _posTrg) <= 1.0f) *_pos = _posTrg;
-    else *_pos += (_posTrg - *_pos) / ((100 - _speed) / 1.0f);
+    else *_pos += (_posTrg - *_pos) / (100.0f - _speed) / 1.0f;
   }
 }
 
@@ -23,13 +23,13 @@ void astra_animation_time_based(int16_t *_pos, int16_t _posTrg, int16_t _time)
 
 void astra_refresh_info_bar()
 {
-  astra_animation(&astra_info_bar.y_info_bar, astra_info_bar.y_info_bar_trg, 92);
+  astra_animation(&astra_info_bar.y_info_bar, astra_info_bar.y_info_bar_trg, 96);
   astra_animation(&astra_info_bar.w_info_bar, astra_info_bar.w_info_bar_trg, 96);
 }
 
 void astra_refresh_pop_up()
 {
-  astra_animation(&astra_pop_up.y_pop_up, astra_pop_up.y_pop_up_trg, 92);
+  astra_animation(&astra_pop_up.y_pop_up, astra_pop_up.y_pop_up_trg, 94);
   astra_animation(&astra_pop_up.w_pop_up, astra_pop_up.w_pop_up_trg, 96);
 }
 

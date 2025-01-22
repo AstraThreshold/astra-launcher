@@ -64,12 +64,12 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 void astra_ui_entry_prompt_1() {
-  astra_push_info_bar("key1 pressed.",2000);
+  astra_push_pop_up("按键1被按下.",2000);
   key1Cnt++;
 }
 
 void astra_ui_entry_prompt_2() {
-  astra_push_info_bar("key2 pressed. hi.",2000);
+  astra_push_pop_up("吴昕月最美.",2000);
   key2Cnt++;
 }
 /* USER CODE END 0 */
@@ -120,8 +120,8 @@ int main(void)
   launcher_push_str_to_terminal(info, "你好,\rworld!\r3");
 
   char info[100] = {};
-  sprintf(info, "boot time: %dms", launcher_get_tick_ms());
-  astra_push_pop_up(info,2000);
+  sprintf(info, "启动时间: %dms.", launcher_get_tick_ms());
+  astra_push_info_bar(info,2000);
 
   /* USER CODE END 2 */
 
@@ -133,23 +133,18 @@ int main(void)
     /* USER CODE BEGIN 3 */
     oled_clear_buffer();
 
-    //draw pop_up.y and pop_up.y_trg to string
-    char popUpY[10];
-    char popUpYTrg[10];
-    sprintf(popUpY, "%d", astra_pop_up.y_pop_up);
-    sprintf(popUpYTrg, "%d", astra_pop_up.y_pop_up_trg);
-    oled_draw_str(20, 50, popUpY);
-    oled_draw_str(60, 50, popUpYTrg);
+    // oled_draw_box(0,0,128,64);
 
     launcher_key_call_back(0, astra_ui_entry_prompt_1, astra_ui_entry_prompt_2, astra_ui_entry_prompt_1, astra_ui_entry_prompt_2);
     char key1CntChar[10];
     char key2CntChar[10];
     sprintf(key1CntChar, "%d", key1Cnt);
     sprintf(key2CntChar, "%d", key2Cnt);
-    oled_draw_str(0, 60, "key1: ");
-    oled_draw_str(28, 60, key1CntChar);
-    oled_draw_str(40, 60, " key2: ");
-    oled_draw_str(74, 60, key2CntChar);
+    oled_set_font(u8g2_font_my_chinese);
+    oled_draw_str(5, 60, "key1: ");
+    oled_draw_str(33, 60, key1CntChar);
+    oled_draw_str(45, 60, " key2: ");
+    oled_draw_str(79, 60, key2CntChar);
 
     // if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
     // if (_tick % 301 == 1) launcher_push_str_to_terminal(uart, "hello,\r你好\r2");
@@ -161,7 +156,7 @@ int main(void)
 
     // astra_draw_pop_window(POP_OFFSET, "keep");
 
-    // launcher_draw_home_page();
+    launcher_draw_home_page();
     astra_ui_core();
 
     oled_send_buffer();

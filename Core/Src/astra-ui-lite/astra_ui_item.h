@@ -15,7 +15,7 @@ typedef struct astra_info_bar_t
 {
   char *content;
   uint16_t span;
-  int16_t y_info_bar, y_info_bar_trg, w_info_bar, w_info_bar_trg;
+  float y_info_bar, y_info_bar_trg, w_info_bar, w_info_bar_trg;
   bool is_running;
   uint16_t time_start;
   uint16_t time;
@@ -28,7 +28,7 @@ typedef struct astra_pop_up_t
 {
   char *content;
   uint16_t span;
-  int16_t y_pop_up, y_pop_up_trg, w_pop_up, w_pop_up_trg;
+  float y_pop_up, y_pop_up_trg, w_pop_up, w_pop_up_trg;
   bool is_running;
   uint16_t time_start;
   uint16_t time;
