@@ -25,6 +25,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <sys/types.h>
+
 #include "astra-launcher/launcher_key.h"
 #include "astra-launcher/launcher_adc.h"
 #include "stdio.h"
@@ -52,7 +54,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+bool in_astra = false;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -63,13 +65,15 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void null_function() {}
+
 void astra_ui_entry_prompt_1() {
   astra_push_pop_up("按键1被按下.",2000);
   key1Cnt++;
 }
 
 void astra_ui_entry_prompt_2() {
-  astra_push_pop_up("吴昕月最美.",2000);
+  astra_push_pop_up("key 2 pressed.",2000);
   key2Cnt++;
 }
 /* USER CODE END 0 */
@@ -119,9 +123,13 @@ int main(void)
   launcher_push_str_to_terminal(info, "你好,\rworld!\r2");
   launcher_push_str_to_terminal(info, "你好,\rworld!\r3");
 
-  char info[100] = {};
-  sprintf(info, "启动时间: %dms.", launcher_get_tick_ms());
-  astra_push_info_bar(info,2000);
+  char msg[100] = {};
+  sprintf(msg, "启动时间: %dms.", launcher_get_tick_ms());
+  astra_push_info_bar(msg,2000);
+
+  static int16_t key_press_span = 0;
+  static uint16_t key_start_time = 0;
+  static bool key_clicked = false;
 
   /* USER CODE END 2 */
 
@@ -133,18 +141,43 @@ int main(void)
     /* USER CODE BEGIN 3 */
     oled_clear_buffer();
 
-    // oled_draw_box(0,0,128,64);
+    launcher_key_call_back(0, astra_ui_entry_prompt_1, astra_ui_entry_prompt_2, null_function, null_function);
 
-    launcher_key_call_back(0, astra_ui_entry_prompt_1, astra_ui_entry_prompt_2, astra_ui_entry_prompt_1, astra_ui_entry_prompt_2);
-    char key1CntChar[10];
-    char key2CntChar[10];
-    sprintf(key1CntChar, "%d", key1Cnt);
-    sprintf(key2CntChar, "%d", key2Cnt);
-    oled_set_font(u8g2_font_my_chinese);
-    oled_draw_str(5, 60, "key1: ");
-    oled_draw_str(33, 60, key1CntChar);
-    oled_draw_str(45, 60, " key2: ");
-    oled_draw_str(79, 60, key2CntChar);
+    if (!in_astra)
+    {
+      if (HAL_GPIO_ReadPin(KEY1_GPIO_Port, KEY1_Pin) == GPIO_PIN_RESET || HAL_GPIO_ReadPin(KEY2_GPIO_Port, KEY2_Pin) == GPIO_PIN_RESET)
+      {
+        if (!key_clicked)
+        {
+          key_clicked = true;
+          key_start_time = launcher_get_tick_ms();
+        }
+        if (launcher_get_tick_ms() - key_start_time > 1000 && key_clicked)
+        {
+          key_press_span = launcher_get_tick_ms() - key_start_time;
+          if (key_press_span <= 2500)
+          {
+            sprintf(msg, "继续长按%.2f秒进入.", (2500 - key_press_span) / 1000.0f);
+            astra_push_info_bar(msg, 2000);
+          } else if (key_press_span > 2500)
+          {
+            astra_push_info_bar("玩得开心! :p", 2000);
+            in_astra = true;
+            key_clicked = false;
+            key_start_time = 0;
+            key_press_span = 0;
+          }
+        }
+      } else
+      {
+        key_clicked = false;
+        if (key_press_span > 0)
+        {
+          astra_push_info_bar("bye!", 2000);
+          key_press_span = 0;
+        }
+      }
+    }
 
     // if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
     // if (_tick % 301 == 1) launcher_push_str_to_terminal(uart, "hello,\r你好\r2");
@@ -156,7 +189,7 @@ int main(void)
 
     // astra_draw_pop_window(POP_OFFSET, "keep");
 
-    launcher_draw_home_page();
+    if (!in_astra) launcher_draw_home_page();
     astra_ui_core();
 
     oled_send_buffer();

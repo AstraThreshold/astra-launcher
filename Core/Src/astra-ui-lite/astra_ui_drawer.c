@@ -20,22 +20,28 @@ void astra_draw_info_bar()
 
   oled_set_font(u8g2_font_my_chinese);
   oled_set_draw_color(0); //黑遮罩打底
-  oled_draw_R_box((int16_t)(OLED_WIDTH/2 - (astra_info_bar.w_info_bar + 4)/2 - 2), (int16_t)(astra_info_bar.y_info_bar - 4),
-                  (int16_t)(astra_info_bar.w_info_bar + 8), INFO_BAR_HEIGHT + 8, 6);
+  oled_draw_R_box((int16_t)(OLED_WIDTH/2 - (astra_info_bar.w_info_bar + 4)/2), (int16_t)(astra_info_bar.y_info_bar - 4),
+                  (int16_t)(astra_info_bar.w_info_bar + 4), INFO_BAR_HEIGHT + 6, 4);
 
   oled_set_draw_color(1);
   oled_draw_R_frame((int16_t)(OLED_WIDTH/2 - astra_info_bar.w_info_bar/2), (int16_t)(astra_info_bar.y_info_bar - 4),
                     (int16_t)(astra_info_bar.w_info_bar), INFO_BAR_HEIGHT + 4, 3);
   //向上移动四个像素 同时向下多画四个像素 只用下半部分圆角
 
-  oled_draw_H_line((int16_t)(OLED_WIDTH/2 - astra_info_bar.w_info_bar/2 + 1), (int16_t)(astra_info_bar.y_info_bar + INFO_BAR_HEIGHT - 2),
+  oled_draw_H_line((int16_t)(OLED_WIDTH/2 - astra_info_bar.w_info_bar/2 + 1),
+                   (int16_t)(astra_info_bar.y_info_bar + INFO_BAR_HEIGHT - 2),
                    (int16_t)(astra_info_bar.w_info_bar - 2));
-  oled_draw_V_line((int16_t)(OLED_WIDTH/2 - astra_info_bar.w_info_bar/2 + 1), (int16_t)(astra_info_bar.y_info_bar + 11), INFO_BAR_HEIGHT - 12);
-  oled_draw_pixel((int16_t)(OLED_WIDTH/2 - astra_info_bar.w_info_bar/2 + 2), (int16_t)(astra_info_bar.y_info_bar + INFO_BAR_HEIGHT - 3));
-  oled_draw_V_line((int16_t)(OLED_WIDTH/2 - astra_info_bar.w_info_bar/2 + astra_info_bar.w_info_bar - 2), (int16_t)(astra_info_bar.y_info_bar + 11), INFO_BAR_HEIGHT - 12);
-  oled_draw_pixel((int16_t)(OLED_WIDTH/2 - astra_info_bar.w_info_bar/2 + astra_info_bar.w_info_bar - 3), (int16_t)(astra_info_bar.y_info_bar + INFO_BAR_HEIGHT - 3));
+  oled_draw_V_line((int16_t)(OLED_WIDTH/2 - astra_info_bar.w_info_bar/2 + 1), (int16_t)(astra_info_bar.y_info_bar + 11),
+                   INFO_BAR_HEIGHT - 12);
+  oled_draw_pixel((int16_t)(OLED_WIDTH/2 - astra_info_bar.w_info_bar/2 + 2),
+                  (int16_t)(astra_info_bar.y_info_bar + INFO_BAR_HEIGHT - 3));
+  oled_draw_V_line((int16_t)(OLED_WIDTH/2 - astra_info_bar.w_info_bar/2 + astra_info_bar.w_info_bar - 2),
+                   (int16_t)(astra_info_bar.y_info_bar + 11), INFO_BAR_HEIGHT - 12);
+  oled_draw_pixel((int16_t)(OLED_WIDTH/2 - astra_info_bar.w_info_bar/2 + astra_info_bar.w_info_bar - 3),
+                  (int16_t)(astra_info_bar.y_info_bar + INFO_BAR_HEIGHT - 3));
 
-  oled_draw_UTF8((int16_t)(OLED_WIDTH/2 - astra_info_bar.w_info_bar/2 + 6), (int16_t)(astra_info_bar.y_info_bar + oled_get_str_height() - 3),
+  oled_draw_UTF8((int16_t)(OLED_WIDTH/2 - astra_info_bar.w_info_bar/2 + 6),
+                 (int16_t)(astra_info_bar.y_info_bar + oled_get_str_height() - 3),
                  astra_info_bar.content);
 }
 
@@ -59,15 +65,20 @@ void astra_draw_pop_up()
                   (int16_t)(astra_pop_up.w_pop_up + 12), POP_UP_HEIGHT + 8, 6);
 
   oled_set_draw_color(1);
-  oled_draw_R_frame((int16_t)(OLED_WIDTH/2 - astra_pop_up.w_pop_up/2 - 2), (int16_t)astra_pop_up.y_pop_up, (int16_t)(astra_pop_up.w_pop_up + 4),
+  oled_draw_R_frame((int16_t)(OLED_WIDTH/2 - astra_pop_up.w_pop_up/2 - 2), (int16_t)astra_pop_up.y_pop_up,
+                    (int16_t)(astra_pop_up.w_pop_up + 4),
                     POP_UP_HEIGHT, 3);
 
-  oled_draw_H_line((int16_t)(OLED_WIDTH/2 - astra_pop_up.w_pop_up/2), (int16_t)(astra_pop_up.y_pop_up + POP_UP_HEIGHT - 2),
+  oled_draw_H_line((int16_t)(OLED_WIDTH/2 - astra_pop_up.w_pop_up/2),
+                   (int16_t)(astra_pop_up.y_pop_up + POP_UP_HEIGHT - 2),
                    (int16_t)astra_pop_up.w_pop_up);
-  oled_draw_pixel((int16_t)(OLED_WIDTH/2 - astra_pop_up.w_pop_up/2 - 1), (int16_t)(astra_pop_up.y_pop_up + POP_UP_HEIGHT - 3));
-  oled_draw_pixel((int16_t)(OLED_WIDTH/2 + astra_pop_up.w_pop_up/2), (int16_t)(astra_pop_up.y_pop_up + POP_UP_HEIGHT - 3));
+  oled_draw_pixel((int16_t)(OLED_WIDTH/2 - astra_pop_up.w_pop_up/2 - 1),
+                  (int16_t)(astra_pop_up.y_pop_up + POP_UP_HEIGHT - 3));
+  oled_draw_pixel((int16_t)(OLED_WIDTH/2 + astra_pop_up.w_pop_up/2),
+                  (int16_t)(astra_pop_up.y_pop_up + POP_UP_HEIGHT - 3));
 
-  oled_draw_UTF8((int16_t)(OLED_WIDTH/2 - astra_pop_up.w_pop_up/2 + 3), (int16_t)(astra_pop_up.y_pop_up + oled_get_str_height()),
+  oled_draw_UTF8((int16_t)(OLED_WIDTH/2 - astra_pop_up.w_pop_up/2 + 3),
+                 (int16_t)(astra_pop_up.y_pop_up + oled_get_str_height() + 1),
                  astra_pop_up.content);
 }
 

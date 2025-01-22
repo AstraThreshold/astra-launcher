@@ -64,7 +64,7 @@ void launcher_key_scan()
         _timeCnt++;
 
         //timer
-        if (_timeCnt > 100)
+        if (_timeCnt > 50)
         {
           keyFlag = KEY_PRESSED;
           //long press 1 s
