@@ -197,7 +197,17 @@ int main(void)
     // astra_draw_pop_window(POP_OFFSET, "keep");
 
     if (!in_astra) launcher_draw_home_page();
-    astra_ui_core();
+
+    if (in_astra)
+    {
+      oled_set_draw_color(1);
+      oled_draw_UTF8(0, 64/4 * 1, "你好世界");
+      oled_draw_UTF8(0, 64/4 * 2, "你好世界");
+      oled_draw_UTF8(0, 64/4 * 3, "你好世界");
+      oled_draw_UTF8(0, 64/4 * 4, "你好世界");
+    }
+
+    astra_ui_core(); //最好放在后面
 
     oled_send_buffer();
     _tick++;
