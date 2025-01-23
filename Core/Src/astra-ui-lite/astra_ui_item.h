@@ -17,8 +17,8 @@ typedef struct astra_info_bar_t
   uint16_t span;
   float y_info_bar, y_info_bar_trg, w_info_bar, w_info_bar_trg;
   bool is_running;
-  uint16_t time_start;
-  uint16_t time;
+  uint32_t time_start;
+  uint32_t time;
 } astra_info_bar_t;
 
 #define POP_UP_HEIGHT 20
@@ -30,8 +30,8 @@ typedef struct astra_pop_up_t
   uint16_t span;
   float y_pop_up, y_pop_up_trg, w_pop_up, w_pop_up_trg;
   bool is_running;
-  uint16_t time_start;
-  uint16_t time;
+  uint32_t time_start;
+  uint32_t time;
 } astra_pop_up_t;
 
 extern astra_info_bar_t astra_info_bar;
