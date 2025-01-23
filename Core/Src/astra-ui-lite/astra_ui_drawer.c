@@ -59,8 +59,8 @@ void astra_draw_pop_up()
 
   oled_set_font(u8g2_font_my_chinese);
   oled_set_draw_color(0); //黑遮罩打底
-  oled_draw_R_box((int16_t)(OLED_WIDTH/2 - (astra_pop_up.w_pop_up + 4)/2 - 4), (int16_t)(astra_pop_up.y_pop_up - 4),
-                  (int16_t)(astra_pop_up.w_pop_up + 12), POP_UP_HEIGHT + 8, 6);
+  oled_draw_R_box((int16_t)(OLED_WIDTH/2 - (astra_pop_up.w_pop_up + 4)/2 - 2), (int16_t)(astra_pop_up.y_pop_up - 2),
+                  (int16_t)(astra_pop_up.w_pop_up + 8), POP_UP_HEIGHT + 4, 5);
 
   oled_set_draw_color(1);
   oled_draw_R_box((int16_t)(OLED_WIDTH/2 - astra_pop_up.w_pop_up/2 - 2), (int16_t)astra_pop_up.y_pop_up,
