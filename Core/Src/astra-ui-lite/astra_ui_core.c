@@ -33,16 +33,28 @@ void astra_refresh_pop_up()
   astra_animation(&astra_pop_up.w_pop_up, astra_pop_up.w_pop_up_trg, 96);
 }
 
-void astra_refresh_position()
+void astra_refresh_widget_core_position()
 {
-  //需要调用所有的refresh函数
+  //需要调用所有的widget refresh函数
   astra_refresh_info_bar();
   astra_refresh_pop_up();
 }
 
-void astra_ui_core()
+void astra_refresh_main_core_position()
+{
+  //需要调用所有的core refresh函数
+}
+
+void astra_ui_widget_core()
+{
+  astra_refresh_widget_core_position();
+  astra_draw_info_bar();
+  astra_draw_pop_up();
+}
+
+void astra_ui_main_core()
 {
   //无需修改
-  astra_refresh_position();
-  astra_draw_canvas();
+  astra_refresh_main_core_position();
+  astra_draw_core();
 }

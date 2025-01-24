@@ -214,16 +214,9 @@ int main(void)
 
     if (!in_astra) launcher_draw_home_page();
 
-    if (in_astra)
-    {
-      // oled_set_draw_color(1);
-      // oled_draw_UTF8(0, astra_list_item_root.child_list_item[0]->y_list_item_trg, astra_list_item_root.child_list_item[0]->content);
-      // oled_draw_UTF8(0, astra_list_item_root.child_list_item[1]->y_list_item_trg, astra_list_item_root.child_list_item[1]->content);
-      // oled_draw_UTF8(0, astra_list_item_root.child_list_item[2]->y_list_item_trg, astra_list_item_root.child_list_item[2]->content);
-      // oled_draw_UTF8(0, astra_list_item_root.child_list_item[3]->y_list_item_trg, astra_list_item_root.child_list_item[3]->content);
-    }
+    if (in_astra) astra_ui_main_core(); //最好放在后面
 
-    astra_ui_core(); //最好放在后面
+    astra_ui_widget_core();
 
     oled_send_buffer();
     _tick++;

@@ -11,8 +11,12 @@ extern void astra_refresh_info_bar();
 
 extern void astra_refresh_pop_up();
 
-extern void astra_refresh_position();
+extern void astra_refresh_widget_core_position();
 
-extern void astra_ui_core();
+extern void astra_refresh_main_core_position();
+
+extern void astra_ui_widget_core();
+
+extern void astra_ui_main_core();
 
 #endif //ASTRA_UI_CORE_H

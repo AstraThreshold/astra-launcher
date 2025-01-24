@@ -19,6 +19,10 @@ void astra_draw_info_bar()
   }
 
   oled_set_font(u8g2_font_my_chinese);
+  oled_set_draw_color(1);
+  oled_draw_R_box((int16_t)(OLED_WIDTH/2 - astra_info_bar.w_info_bar/2) + 3, (int16_t)(astra_info_bar.y_info_bar - 4) + 3,
+                  (int16_t)(astra_info_bar.w_info_bar), INFO_BAR_HEIGHT + 4, 4);
+
   oled_set_draw_color(0); //黑遮罩打底
   oled_draw_R_box((int16_t)(OLED_WIDTH/2 - (astra_info_bar.w_info_bar + 4)/2), (int16_t)(astra_info_bar.y_info_bar - 4),
                   (int16_t)(astra_info_bar.w_info_bar + 4), INFO_BAR_HEIGHT + 6, 4);
@@ -58,12 +62,12 @@ void astra_draw_pop_up()
   }
 
   oled_set_font(u8g2_font_my_chinese);
-  oled_set_draw_color(1);
+  oled_set_draw_color(1); //阴影打底
   oled_draw_R_box((int16_t)(OLED_WIDTH/2 - astra_pop_up.w_pop_up/2 + 1), (int16_t)astra_pop_up.y_pop_up + 3,
                     (int16_t)(astra_pop_up.w_pop_up + 4),
                     POP_UP_HEIGHT, 4);
 
-  oled_set_draw_color(0); //黑遮罩打底
+  oled_set_draw_color(0); //黑遮罩
   oled_draw_R_box((int16_t)(OLED_WIDTH/2 - (astra_pop_up.w_pop_up + 4)/2 - 2), (int16_t)(astra_pop_up.y_pop_up - 2),
                   (int16_t)(astra_pop_up.w_pop_up + 8), POP_UP_HEIGHT + 4, 5);
 
@@ -156,10 +160,15 @@ void astra_draw_list_item()
   }
 }
 
-void astra_draw_canvas()
+void astra_draw_widget()
 {
-  //需要调用所有的draw函数
-  astra_draw_list_item();
+  //需要调用所有的控件draw函数 需要在core后面执行 否则会被core覆盖
   astra_draw_info_bar();
   astra_draw_pop_up();
+}
+
+void astra_draw_core()
+{
+  //需要调用所有的主页面draw函数
+  astra_draw_list_item();
 }
