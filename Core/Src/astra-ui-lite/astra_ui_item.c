@@ -9,7 +9,6 @@
 #include "../astra-launcher/launcher_delay.h"
 
 astra_info_bar_t astra_info_bar = {0, 1, 0 - 2 * INFO_BAR_HEIGHT, 0 - 2 * INFO_BAR_HEIGHT, 80, 80, false, 0, 1};
-astra_pop_up_t astra_pop_up = {0, 1, 0 - 2 * POP_UP_HEIGHT, 0 - 2 * POP_UP_HEIGHT, 80, 80, false, 0, 1};
 
 void astra_push_info_bar(char *_content, const uint16_t _span)
 {
@@ -33,6 +32,8 @@ void astra_push_info_bar(char *_content, const uint16_t _span)
   astra_info_bar.w_info_bar_trg = oled_get_UTF8_width(astra_info_bar.content) + INFO_BAR_OFFSET;
 }
 
+astra_pop_up_t astra_pop_up = {0, 1, 0 - 2 * POP_UP_HEIGHT, 0 - 2 * POP_UP_HEIGHT, 80, 80, false, 0, 1};
+
 void astra_push_pop_up(char *_content, const uint16_t _span)
 {
   astra_pop_up.time = launcher_get_tick_ms();
@@ -51,3 +52,36 @@ void astra_push_pop_up(char *_content, const uint16_t _span)
   oled_set_font(u8g2_font_my_chinese);
   astra_pop_up.w_pop_up_trg = oled_get_UTF8_width(astra_pop_up.content) + POP_UP_OFFSET;
 }
+
+astra_list_item_t astra_list_item_root = {0, list_item, "root", 0, 0, 0};
+
+bool astra_bind_value_to_list_item(astra_list_item_t *_item, void *_value)
+{
+  if (_item == NULL) return false;
+  if (_value == NULL) return false;
+  if (_item->type == list_item) return false;
+
+  _item->value = _value;
+
+  return true;
+}
+
+bool astra_push_item_to_list(astra_list_item_t *_parent, astra_list_item_t *_child)
+{
+  if (_parent == NULL) return false;
+  if (_child == NULL) return false;
+  if (_parent->child_num >= MAX_LIST_CHILD_NUM) return false;
+  if (_parent->layer >= MAX_LIST_LAYER) return false;
+
+  _child->layer = _parent->layer + 1;
+  _child->child_num = 0;
+
+  oled_set_font(u8g2_font_my_chinese);
+  if (_parent->child_num == 0) _child->y_list_item_trg = oled_get_str_height() + LIST_INFO_BAR_HEIGHT;
+  else _child->y_list_item_trg = _parent->child_list_item[_parent->child_num - 1]->y_list_item_trg + LIST_ITEM_SPACEING;
+
+  _parent->child_list_item[_parent->child_num++] = _child;
+
+  return true;
+}
+

@@ -25,6 +25,7 @@ extern u8g2_t u8g2;
 #define oled_get_UTF8_width(str) u8g2_GetUTF8Width(&u8g2, str)
 #define oled_get_str_height() u8g2_GetMaxCharHeight(&u8g2)
 #define oled_draw_pixel(x, y) u8g2_DrawPixel(&u8g2, x, y)
+#define oled_draw_circle(x, y, r) u8g2_DrawCircle(&u8g2, x, y, r, U8G2_DRAW_ALL)
 #define oled_draw_R_box(x, y, w, h, r) u8g2_DrawRBox(&u8g2, x, y, w, h, r)
 #define oled_draw_box(x, y, w, h) u8g2_DrawBox(&u8g2, x, y, w, h)
 #define oled_draw_frame(x, y, w, h) u8g2_DrawFrame(&u8g2, x, y, w, h)

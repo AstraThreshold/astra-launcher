@@ -65,6 +65,16 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+astra_list_item_t astra_list_item_test1 = {0, list_item, "返回主页面", 0, 0, 0};
+astra_list_item_t astra_list_item_test2 = {0, button_item, "玩得开心", 0, 0, 0};
+astra_list_item_t astra_list_item_test3 = {0, switch_item, "你好世界", 0, 0, 0};
+astra_list_item_t astra_list_item_test4 = {0, slider_item, "返回主页返回主页", 0, 0, 0};
+astra_list_item_t astra_list_item_test5 = {0, list_item, "test5", 0, 0, 0};
+
+uint8_t button_test_value = 0;
+uint8_t switch_test_value = 1;
+uint8_t slider_test_value = 100;
+
 void null_function() {}
 
 void launcher_ad_astra()
@@ -131,7 +141,15 @@ void astra_ui_entry_prompt_2()
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test1);
+  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test2);
+  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test3);
+  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test4);
+  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test5);
 
+  astra_bind_value_to_list_item(&astra_list_item_test2, &button_test_value);
+  astra_bind_value_to_list_item(&astra_list_item_test3, &switch_test_value);
+  astra_bind_value_to_list_item(&astra_list_item_test4, &slider_test_value);
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -165,9 +183,7 @@ int main(void)
   launcher_set_terminal_area(4, 26, 124, 62);
   static uint32_t _tick = 0;
 
-  launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
-  launcher_push_str_to_terminal(info, "你好,\rworld!\r2");
-  launcher_push_str_to_terminal(info, "你好,\rworld!\r3");
+  launcher_push_str_to_terminal(info, "launcher Rev1.0\nmade by forpaindream");
 
   char msg[100] = {};
   sprintf(msg, "启动时间: %dms.", launcher_get_tick_ms());
@@ -200,11 +216,11 @@ int main(void)
 
     if (in_astra)
     {
-      oled_set_draw_color(1);
-      oled_draw_UTF8(0, 64/4 * 1, "你好世界");
-      oled_draw_UTF8(0, 64/4 * 2, "你好世界");
-      oled_draw_UTF8(0, 64/4 * 3, "你好世界");
-      oled_draw_UTF8(0, 64/4 * 4, "你好世界");
+      // oled_set_draw_color(1);
+      // oled_draw_UTF8(0, astra_list_item_root.child_list_item[0]->y_list_item_trg, astra_list_item_root.child_list_item[0]->content);
+      // oled_draw_UTF8(0, astra_list_item_root.child_list_item[1]->y_list_item_trg, astra_list_item_root.child_list_item[1]->content);
+      // oled_draw_UTF8(0, astra_list_item_root.child_list_item[2]->y_list_item_trg, astra_list_item_root.child_list_item[2]->content);
+      // oled_draw_UTF8(0, astra_list_item_root.child_list_item[3]->y_list_item_trg, astra_list_item_root.child_list_item[3]->content);
     }
 
     astra_ui_core(); //最好放在后面

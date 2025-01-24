@@ -22,7 +22,7 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "astra-ui-lite/astra_draw_driver.h"
+#include "astra-ui-lite/astra_ui_draw_driver.h"
 #include "astra-launcher/launcher_adc.h"
 #include "astra-launcher/launcher_home_page.h"
 /* USER CODE END Includes */
