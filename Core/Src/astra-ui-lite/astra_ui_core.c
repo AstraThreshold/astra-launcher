@@ -15,12 +15,6 @@ void astra_animation(float *_pos, float _posTrg, float _speed)
   }
 }
 
-//新的时基动画
-void astra_animation_time_based(int16_t *_pos, int16_t _posTrg, int16_t _time)
-{
-
-}
-
 void astra_refresh_info_bar()
 {
   astra_animation(&astra_info_bar.y_info_bar, astra_info_bar.y_info_bar_trg, 96);

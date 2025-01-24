@@ -4,6 +4,12 @@
 
 #include "launcher_home_page.h"
 
+#include <stdlib.h>
+
+#include "string.h"
+#include "stdio.h"
+#include "math.h"
+
 int8_t terminal_x_min = 0;
 int16_t terminal_y_min = 0;
 int16_t terminal_x_max = 0;
@@ -348,22 +354,6 @@ void launcher_draw_home_page()
   /*后景文字部分*/
   oled_set_draw_color(1);
 
-  //  char cnt1_char[10];
-  //  sprintf(cnt1_char, "%d", terminal_buffer_size);
-  //  oled_draw_str(105, 50, cnt1_char);
-  //
-  //  char cnt2_char[10];
-  //  sprintf(cnt2_char, "%d", terminal_buffer_head->y);
-  //  oled_draw_str(105, 30, cnt2_char);
-
-  //  char cnt3_char[10];
-  //  sprintf(cnt3_char, "%d", y_camera_trg);
-  //  oled_draw_str(100, 40, cnt3_char);
-
-  //  char cnt4_char[10];
-  //  sprintf(cnt4_char, "%d", line_offset_cnt);
-  //  oled_draw_str(110, 60, cnt4_char);
-
   //绘制
   launcher_terminal_print_test();
 
@@ -392,7 +382,7 @@ void launcher_draw_home_page()
 
   /*前前景status box + ui部分*/
   oled_set_draw_color(1);
-  launcher_draw_status_bar(12, Busy, (volADC1 + volADC2) / 2, "V", iBaseADC1, "A");
+  launcher_draw_status_bar(12, Ready, (volADC1 + volADC2) / 2, "V", iBaseADC1, "A");
   oled_draw_H_line(2, 14, 124); //上横线
   oled_draw_H_line(1, 15, 2); //左上圆角
   oled_draw_box(0, 16, 2, 48); //左边线
@@ -406,7 +396,6 @@ void launcher_draw_home_page()
   oled_draw_H_line(56, 63, 66); //下方logo同步条
   //在x=124位置绘制进度条 向下对齐 y的最小值为18 最大值为59 进度条的最大长度为42 最小长度为1 根据line_offset_cnt的值来确定长度
 
-  //之前hardfault的原因是因为line_offset_cnt的值超过了42 长度为负数了
   if (line_offset_cnt > 42)
     oled_draw_V_line(124, 18 + 42, 2);
   else

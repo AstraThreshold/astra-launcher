@@ -210,8 +210,6 @@ int main(void)
     // if (_tick % 708 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
     // if (_tick % 808 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
 
-    // astra_draw_pop_window(POP_OFFSET, "keep");
-
     if (!in_astra) launcher_draw_home_page();
 
     if (in_astra) astra_ui_main_core(); //最好放在后面

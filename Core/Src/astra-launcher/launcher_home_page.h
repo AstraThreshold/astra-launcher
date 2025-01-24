@@ -7,10 +7,6 @@
 
 #include "launcher_adc.h"
 #include "../astra-ui-lite/astra_ui_draw_driver.h"
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
-#include <stdlib.h>
 
 #define LINE_HEIGHT 11
 
