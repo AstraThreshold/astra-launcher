@@ -75,7 +75,6 @@ typedef struct astra_list_item_t
 } astra_list_item_t;
 
 extern astra_list_item_t astra_list_item_root; //根节点 根列表项
-extern astra_list_item_t astra_list_item_pointer; //当前显示的列表项
 extern bool astra_bind_value_to_list_item(astra_list_item_t *_item, void *_value);
 extern bool astra_push_item_to_list(astra_list_item_t *_parent, astra_list_item_t *_child);
 /*** 列表项 ***/
@@ -83,8 +82,12 @@ extern bool astra_push_item_to_list(astra_list_item_t *_parent, astra_list_item_
 /*** 选择器 ***/
 typedef struct astra_selector_t
 {
-
+  uint8_t selected_index;
+  astra_list_item_t *selected_item;
+  float y_selector, y_selector_trg, w_selector, w_selector_trg;
 } astra_selector_t;
+
+extern astra_selector_t astra_selector;
 /*** 选择器 ***/
 
 #endif //FUCKCLION_CORE_SRC_ASTRA_UI_LITE_ASTRA_UI_ITEM_H_

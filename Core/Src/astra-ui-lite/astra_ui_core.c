@@ -37,7 +37,7 @@ void astra_refresh_widget_core_position()
 void astra_refresh_list_item_position()
 {
   for (uint8_t i = 0; i < astra_list_item_root.child_num; i++)
-    astra_animation(&astra_list_item_root.child_list_item[i]->y_list_item, astra_list_item_root.child_list_item[i]->y_list_item_trg, 88);
+    astra_animation(&astra_list_item_root.child_list_item[i]->y_list_item, astra_list_item_root.child_list_item[i]->y_list_item_trg, 84);
 }
 
 void astra_refresh_main_core_position()
@@ -56,5 +56,5 @@ void astra_ui_main_core()
 {
   //无需修改
   astra_refresh_main_core_position();
-  astra_draw_core();
+  astra_draw_list();
 }

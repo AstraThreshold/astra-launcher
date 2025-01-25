@@ -14,8 +14,10 @@ extern void astra_draw_pop_up();
 
 extern void astra_draw_list_item();
 
+extern void astra_draw_selector();
+
 extern void astra_draw_widget();
 
-extern void astra_draw_core();
+extern void astra_draw_list();
 
 #endif //ASTRA_UI_DRAWER_H

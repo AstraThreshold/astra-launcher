@@ -85,3 +85,6 @@ bool astra_push_item_to_list(astra_list_item_t *_parent, astra_list_item_t *_chi
   return true;
 }
 
+astra_selector_t astra_selector = {0, };
+
+

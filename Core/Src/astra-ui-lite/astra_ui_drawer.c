@@ -160,6 +160,25 @@ void astra_draw_list_item()
   }
 }
 
+void astra_draw_selector()
+{
+  oled_set_draw_color(2);
+  oled_draw_box(0,4,72,15);
+  oled_set_draw_color(1);
+
+  //棋盘格过渡
+  for (uint8_t i = 72; i <= 79; i += 2)
+  {
+    for (uint8_t j = 4; j <= 18; j++)
+    {
+      if (j % 2 == 0) oled_draw_pixel(i + 1, j);
+      if (j % 2 == 1) oled_draw_pixel(i, j);
+    }
+  }
+
+
+}
+
 void astra_draw_widget()
 {
   //需要调用所有的控件draw函数 需要在core后面执行 否则会被core覆盖
@@ -167,8 +186,9 @@ void astra_draw_widget()
   astra_draw_pop_up();
 }
 
-void astra_draw_core()
+void astra_draw_list()
 {
   //需要调用所有的主页面draw函数
   astra_draw_list_item();
+  astra_draw_selector();
 }
