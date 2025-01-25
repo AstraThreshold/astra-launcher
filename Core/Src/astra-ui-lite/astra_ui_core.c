@@ -34,9 +34,15 @@ void astra_refresh_widget_core_position()
   astra_refresh_pop_up();
 }
 
+void astra_refresh_list_item_position()
+{
+  for (uint8_t i = 0; i < astra_list_item_root.child_num; i++)
+    astra_animation(&astra_list_item_root.child_list_item[i]->y_list_item, astra_list_item_root.child_list_item[i]->y_list_item_trg, 88);
+}
+
 void astra_refresh_main_core_position()
 {
-  //需要调用所有的core refresh函数
+  astra_refresh_list_item_position();
 }
 
 void astra_ui_widget_core()

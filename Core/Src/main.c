@@ -70,6 +70,7 @@ astra_list_item_t astra_list_item_test2 = {0, button_item, "玩得开心", 0, 0,
 astra_list_item_t astra_list_item_test3 = {0, switch_item, "你好世界", 0, 0, 0};
 astra_list_item_t astra_list_item_test4 = {0, slider_item, "返回主页返回主页", 0, 0, 0};
 astra_list_item_t astra_list_item_test5 = {0, list_item, "test5", 0, 0, 0};
+astra_list_item_t astra_list_item_test6 = {0, list_item, "test6", 0, 0, 0};
 
 uint8_t button_test_value = 0;
 uint8_t switch_test_value = 1;
@@ -146,6 +147,7 @@ int main(void)
   astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test3);
   astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test4);
   astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test5);
+  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test6);
 
   astra_bind_value_to_list_item(&astra_list_item_test2, &button_test_value);
   astra_bind_value_to_list_item(&astra_list_item_test3, &switch_test_value);

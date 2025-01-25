@@ -80,4 +80,11 @@ extern bool astra_bind_value_to_list_item(astra_list_item_t *_item, void *_value
 extern bool astra_push_item_to_list(astra_list_item_t *_parent, astra_list_item_t *_child);
 /*** 列表项 ***/
 
+/*** 选择器 ***/
+typedef struct astra_selector_t
+{
+
+} astra_selector_t;
+/*** 选择器 ***/
+
 #endif //FUCKCLION_CORE_SRC_ASTRA_UI_LITE_ASTRA_UI_ITEM_H_

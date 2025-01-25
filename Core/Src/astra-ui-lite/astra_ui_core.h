@@ -11,6 +11,8 @@ extern void astra_refresh_pop_up();
 
 extern void astra_refresh_widget_core_position();
 
+extern void astra_refresh_list_item_position();
+
 extern void astra_refresh_main_core_position();
 
 extern void astra_ui_widget_core();
