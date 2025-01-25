@@ -72,6 +72,7 @@ typedef struct astra_list_item_t
   void *value;
   uint8_t child_num;
   struct astra_list_item_t *child_list_item[MAX_LIST_CHILD_NUM];
+  struct astra_list_item_t *parent;
 } astra_list_item_t;
 
 extern astra_list_item_t astra_list_item_root; //根节点 根列表项
@@ -88,6 +89,7 @@ typedef struct astra_selector_t
 } astra_selector_t;
 
 extern astra_selector_t astra_selector;
+extern bool astra_bind_item_to_selector(astra_list_item_t *_item);
 /*** 选择器 ***/
 
 #endif //FUCKCLION_CORE_SRC_ASTRA_UI_LITE_ASTRA_UI_ITEM_H_

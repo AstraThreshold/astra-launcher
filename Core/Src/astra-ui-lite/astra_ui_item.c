@@ -66,6 +66,30 @@ bool astra_bind_value_to_list_item(astra_list_item_t *_item, void *_value)
   return true;
 }
 
+astra_selector_t astra_selector = {0, };
+
+bool astra_bind_item_to_selector(astra_list_item_t *_item)
+{
+  if (_item == NULL) return false;
+
+  //找item在父节点中的序号
+  uint8_t _temp_index = 0;
+  for (uint8_t i = 0; i < astra_list_item_root.child_num; i++)
+  {
+    if (_item->parent->child_list_item[i] == _item)
+    {
+      _temp_index = i;
+      break;
+    }
+  }
+
+  if (astra_selector.selected_item == NULL) astra_selector.y_selector = 2 * SCREEN_HEIGHT;  //给个初始坐标做动画
+  astra_selector.selected_index = _temp_index;
+  astra_selector.selected_item = _item;
+
+  return true;
+}
+
 bool astra_push_item_to_list(astra_list_item_t *_parent, astra_list_item_t *_child)
 {
   if (_parent == NULL) return false;
@@ -80,11 +104,14 @@ bool astra_push_item_to_list(astra_list_item_t *_parent, astra_list_item_t *_chi
   if (_parent->child_num == 0) _child->y_list_item_trg = oled_get_str_height() + LIST_INFO_BAR_HEIGHT;
   else _child->y_list_item_trg = _parent->child_list_item[_parent->child_num - 1]->y_list_item_trg + LIST_ITEM_SPACEING;
 
+  if (_parent->layer == 0 && _parent->child_num == 0) astra_bind_item_to_selector(_child);  //初始化并绑定selector
+
   _parent->child_list_item[_parent->child_num++] = _child;
+  _child->parent = _parent;
 
   return true;
 }
 
-astra_selector_t astra_selector = {0, };
+
 
 

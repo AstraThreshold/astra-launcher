@@ -40,6 +40,14 @@ void astra_refresh_list_item_position()
     astra_animation(&astra_list_item_root.child_list_item[i]->y_list_item, astra_list_item_root.child_list_item[i]->y_list_item_trg, 84);
 }
 
+void astra_refresh_selector_position()
+{
+  astra_selector.y_selector_trg = astra_selector.selected_item->y_list_item_trg - oled_get_str_height() + 1;
+  astra_selector.w_selector_trg = oled_get_UTF8_width(astra_selector.selected_item->content) + 12;
+  astra_animation(&astra_selector.y_selector, astra_selector.y_selector_trg, 92);
+  astra_animation(&astra_selector.w_selector, astra_selector.w_selector_trg, 90);
+}
+
 void astra_refresh_main_core_position()
 {
   astra_refresh_list_item_position();
@@ -48,13 +56,13 @@ void astra_refresh_main_core_position()
 void astra_ui_widget_core()
 {
   astra_refresh_widget_core_position();
-  astra_draw_info_bar();
-  astra_draw_pop_up();
+  astra_draw_widget();
 }
 
 void astra_ui_main_core()
 {
   //无需修改
   astra_refresh_main_core_position();
+  astra_refresh_selector_position();
   astra_draw_list();
 }
