@@ -90,6 +90,8 @@ typedef struct astra_selector_t
 
 extern astra_selector_t astra_selector;
 extern bool astra_bind_item_to_selector(astra_list_item_t *_item);
+extern void astra_selector_go_next_item();
+extern void astra_selector_go_prev_item();
 /*** 选择器 ***/
 
 #endif //FUCKCLION_CORE_SRC_ASTRA_UI_LITE_ASTRA_UI_ITEM_H_

@@ -189,7 +189,7 @@ int main(void)
 
   char msg[100] = {};
   sprintf(msg, "启动时间: %dms.", launcher_get_tick_ms());
-  astra_push_info_bar(msg,2000);
+  astra_push_pop_up(msg,1500);
 
   /* USER CODE END 2 */
 
@@ -202,9 +202,7 @@ int main(void)
     oled_clear_buffer();
 
     launcher_ad_astra();
-    launcher_key_call_back(0, astra_ui_entry_prompt_1, astra_ui_entry_prompt_2, null_function, null_function);
-
-    if (launcher_get_tick_ms() > 6000) astra_bind_item_to_selector(&astra_list_item_test3);
+    launcher_key_call_back(0, astra_selector_go_prev_item, astra_selector_go_next_item, null_function, null_function);
 
     // if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
     // if (_tick % 301 == 1) launcher_push_str_to_terminal(uart, "hello,\r你好\r2");

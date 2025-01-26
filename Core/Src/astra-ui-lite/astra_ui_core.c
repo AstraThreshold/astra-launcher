@@ -17,8 +17,8 @@ void astra_animation(float *_pos, float _posTrg, float _speed)
 
 void astra_refresh_info_bar()
 {
-  astra_animation(&astra_info_bar.y_info_bar, astra_info_bar.y_info_bar_trg, 96);
-  astra_animation(&astra_info_bar.w_info_bar, astra_info_bar.w_info_bar_trg, 96);
+  astra_animation(&astra_info_bar.y_info_bar, astra_info_bar.y_info_bar_trg, 94);
+  astra_animation(&astra_info_bar.w_info_bar, astra_info_bar.w_info_bar_trg, 94);
 }
 
 void astra_refresh_pop_up()
@@ -44,8 +44,8 @@ void astra_refresh_selector_position()
 {
   astra_selector.y_selector_trg = astra_selector.selected_item->y_list_item_trg - oled_get_str_height() + 1;
   astra_selector.w_selector_trg = oled_get_UTF8_width(astra_selector.selected_item->content) + 12;
-  astra_animation(&astra_selector.y_selector, astra_selector.y_selector_trg, 92);
-  astra_animation(&astra_selector.w_selector, astra_selector.w_selector_trg, 90);
+  astra_animation(&astra_selector.y_selector, astra_selector.y_selector_trg, 96);
+  astra_animation(&astra_selector.w_selector, astra_selector.w_selector_trg, 96);
 }
 
 void astra_refresh_main_core_position()
@@ -58,6 +58,8 @@ void astra_ui_widget_core()
   astra_refresh_widget_core_position();
   astra_draw_widget();
 }
+
+void null_function1() {}
 
 void astra_ui_main_core()
 {

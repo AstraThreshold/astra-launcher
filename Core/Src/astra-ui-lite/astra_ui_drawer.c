@@ -120,43 +120,41 @@ void astra_draw_list_item()
   oled_draw_H_line(124, 61, 3);
   oled_draw_pixel(125, 62);
 
-
-  //todo 这里后期都要改成使用pointer来绘制 不能从根节点出发
-  //todo 这里所有的trg都要改成坐标本身 加入camera之后
+  //selector内包含的item的parent即是当前正在被绘制的页面
   oled_set_font(u8g2_font_my_chinese);
-  for (unsigned char i = 0; i < astra_list_item_root.child_num; i++)
+  for (unsigned char i = 0; i < astra_selector.selected_item->parent->child_num; i++)
   {
     oled_set_draw_color(1);
     //绘制开头的指示器
-    if (astra_list_item_root.child_list_item[i]->type == list_item)
+    if (astra_selector.selected_item->parent->child_list_item[i]->type == list_item)
     {
-      oled_draw_H_line(2, astra_list_item_root.child_list_item[i]->y_list_item - oled_get_str_height() / 2 - 2, 4);
-      oled_draw_H_line(2, astra_list_item_root.child_list_item[i]->y_list_item - oled_get_str_height() / 2, 5);
-      oled_draw_H_line(2, astra_list_item_root.child_list_item[i]->y_list_item - oled_get_str_height() / 2 + 2, 3);
+      oled_draw_H_line(2, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 - 2, 4);
+      oled_draw_H_line(2, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2, 5);
+      oled_draw_H_line(2, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 + 2, 3);
     }
-    else if (astra_list_item_root.child_list_item[i]->type == switch_item)
+    else if (astra_selector.selected_item->parent->child_list_item[i]->type == switch_item)
     {
-      oled_draw_circle(4, astra_list_item_root.child_list_item[i]->y_list_item - oled_get_str_height() / 2 + 1, 3);
-      oled_draw_V_line(4, astra_list_item_root.child_list_item[i]->y_list_item - oled_get_str_height() / 2 , 3);
+      oled_draw_circle(4, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 + 1, 3);
+      oled_draw_V_line(4, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 , 3);
     }
-    else if (astra_list_item_root.child_list_item[i]->type == button_item)
+    else if (astra_selector.selected_item->parent->child_list_item[i]->type == button_item)
     {
-      oled_draw_box(2, astra_list_item_root.child_list_item[i]->y_list_item - oled_get_str_height() / 2 - 1, 4, 4);
-      oled_draw_H_line(3, astra_list_item_root.child_list_item[i]->y_list_item - oled_get_str_height() / 2 + 4, 4);
-      oled_draw_V_line(7, astra_list_item_root.child_list_item[i]->y_list_item - oled_get_str_height() / 2, 5);
+      oled_draw_box(2, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 - 1, 4, 4);
+      oled_draw_H_line(3, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 + 4, 4);
+      oled_draw_V_line(7, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2, 5);
     }
-    else if (astra_list_item_root.child_list_item[i]->type == slider_item)
+    else if (astra_selector.selected_item->parent->child_list_item[i]->type == slider_item)
     {
-      oled_draw_V_line(3, astra_list_item_root.child_list_item[i]->y_list_item - oled_get_str_height() / 2 - 1, 5);
-      oled_draw_V_line(6, astra_list_item_root.child_list_item[i]->y_list_item - oled_get_str_height() / 2 - 1, 5);
-      oled_draw_box(2, astra_list_item_root.child_list_item[i]->y_list_item - oled_get_str_height() / 2 - 2, 3, 3);
-      oled_draw_box(5, astra_list_item_root.child_list_item[i]->y_list_item - oled_get_str_height() / 2 + 2, 3, 3);
+      oled_draw_V_line(3, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 - 1, 5);
+      oled_draw_V_line(6, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 - 1, 5);
+      oled_draw_box(2, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 - 2, 3, 3);
+      oled_draw_box(5, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 + 2, 3, 3);
     }
     else
     {
-      oled_draw_str(0, astra_list_item_root.child_list_item[i]->y_list_item, "-");
+      oled_draw_str(0, astra_selector.selected_item->parent->child_list_item[i]->y_list_item, "-");
     }
-    oled_draw_UTF8(10, astra_list_item_root.child_list_item[i]->y_list_item, astra_list_item_root.child_list_item[i]->content);
+    oled_draw_UTF8(10, astra_selector.selected_item->parent->child_list_item[i]->y_list_item, astra_selector.selected_item->parent->child_list_item[i]->content);
   }
 }
 
@@ -170,7 +168,7 @@ void astra_draw_selector()
   oled_set_draw_color(1);
   for (uint8_t i = astra_selector.w_selector; i <= astra_selector.w_selector + 7; i += 2)
   {
-    for (uint8_t j = astra_selector.y_selector; j <= astra_selector.y_selector + 15; j++)
+    for (uint8_t j = astra_selector.y_selector; j <= astra_selector.y_selector + 14; j++)
     {
       if (j % 2 == 0) oled_draw_pixel(i + 1, j);
       if (j % 2 == 1) oled_draw_pixel(i, j);
