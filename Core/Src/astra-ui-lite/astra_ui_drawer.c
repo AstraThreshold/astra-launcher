@@ -90,9 +90,9 @@ void astra_draw_pop_up()
                  astra_pop_up.content);
 }
 
-void astra_draw_list_item()
+void astra_draw_list_appearance()
 {
-  //todo 顶部状态栏样式绘制测试 后期删除掉
+  //顶部状态栏
   oled_draw_H_line(0, 1, 66);
   oled_draw_H_line(0, 0, 67);
   for (uint8_t i = 67; i <= 99; i++) if (i % 2 == 1) oled_draw_pixel(i, 1);
@@ -101,16 +101,25 @@ void astra_draw_list_item()
   for (uint8_t i = 102; i <= 112; i++) if (i % 3 == 1) oled_draw_pixel(i, 0);
   for (uint8_t i = 112; i <= 124; i++) if (i % 5 == 0) oled_draw_pixel(i, 1);
   for (uint8_t i = 114; i <= 124; i++) if (i % 5 == 1) oled_draw_pixel(i, 0);
-  // oled_draw_pixel(126, 1);
 
   //右侧进度条
   oled_draw_V_line(123, 0, 64);
   oled_draw_V_line(127, 0, 64);
-  oled_draw_box(124, 10, 3, 20);
+
+  //滑块以及滑块内的三条横线
+  static uint8_t _length_each_part = 0;
+  _length_each_part = (SCREEN_HEIGHT - 10) / astra_selector.selected_item->parent->child_num;
+  oled_draw_box(124, 5 + astra_selector.selected_index * _length_each_part, 3, _length_each_part);
   oled_set_draw_color(0);
-  oled_draw_H_line(124,18,3);
-  oled_draw_H_line(124,20,3);
-  oled_draw_H_line(124,22,3);
+  oled_draw_H_line(124,_length_each_part + astra_selector.selected_index * _length_each_part,3);  //中间横线
+
+  //两边横线
+  if (_length_each_part >= 9)
+  {
+    oled_draw_H_line(124,_length_each_part - 2 + astra_selector.selected_index * _length_each_part,3);
+    oled_draw_H_line(124,_length_each_part + 2 + astra_selector.selected_index * _length_each_part,3);
+  }
+
   oled_set_draw_color(1);
   oled_draw_box(124, 0, 3, 4);
   oled_draw_box(124, 60, 3, 4);
@@ -119,7 +128,10 @@ void astra_draw_list_item()
   oled_draw_pixel(125, 1);
   oled_draw_H_line(124, 61, 3);
   oled_draw_pixel(125, 62);
+}
 
+void astra_draw_list_item()
+{
   //selector内包含的item的parent即是当前正在被绘制的页面
   oled_set_font(u8g2_font_my_chinese);
   for (unsigned char i = 0; i < astra_selector.selected_item->parent->child_num; i++)
@@ -186,6 +198,7 @@ void astra_draw_widget()
 void astra_draw_list()
 {
   //调用所有的列表相关draw函数
+  astra_draw_list_appearance();
   astra_draw_list_item();
   astra_draw_selector();
 }
