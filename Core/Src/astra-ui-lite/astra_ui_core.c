@@ -39,8 +39,8 @@ void astra_refresh_camera_position()
   if (astra_camera.selector->y_selector_trg + astra_camera.y_camera_trg < 0)  //向上超出屏幕 需要向上移动
     astra_camera.y_camera_trg = 0 - astra_camera.selector->y_selector_trg + LIST_FONT_TOP_MARGIN;
 
-  astra_animation(&astra_camera.x_camera, astra_camera.x_camera_trg, 95);
-  astra_animation(&astra_camera.y_camera, astra_camera.y_camera_trg, 95);
+  astra_animation(&astra_camera.x_camera, astra_camera.x_camera_trg, 96);
+  astra_animation(&astra_camera.y_camera, astra_camera.y_camera_trg, 96);
 }
 
 void astra_refresh_widget_core_position()
@@ -60,8 +60,8 @@ void astra_refresh_selector_position()
 {
   astra_selector.y_selector_trg = astra_selector.selected_item->y_list_item_trg - oled_get_str_height() + 1;
   astra_selector.w_selector_trg = oled_get_UTF8_width(astra_selector.selected_item->content) + 12;
-  astra_animation(&astra_selector.y_selector, astra_selector.y_selector_trg, 93);
-  astra_animation(&astra_selector.w_selector, astra_selector.w_selector_trg, 94);
+  astra_animation(&astra_selector.y_selector, astra_selector.y_selector_trg, 91);
+  astra_animation(&astra_selector.w_selector, astra_selector.w_selector_trg, 93);
 }
 
 void astra_refresh_main_core_position()
