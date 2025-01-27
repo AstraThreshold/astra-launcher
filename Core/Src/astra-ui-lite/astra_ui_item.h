@@ -54,6 +54,7 @@ extern void astra_push_pop_up(char *_content, const uint16_t _span);
 #define LIST_ITEM_SPACEING 15
 #define LIST_ITEM_OFFSET 8
 #define LIST_INFO_BAR_HEIGHT 3
+#define LIST_FONT_TOP_MARGIN 4
 
 typedef enum
 {
@@ -83,9 +84,9 @@ extern bool astra_push_item_to_list(astra_list_item_t *_parent, astra_list_item_
 /*** 选择器 ***/
 typedef struct astra_selector_t
 {
+  float y_selector, y_selector_trg, w_selector, w_selector_trg;
   uint8_t selected_index;
   astra_list_item_t *selected_item;
-  float y_selector, y_selector_trg, w_selector, w_selector_trg;
 } astra_selector_t;
 
 extern astra_selector_t astra_selector;
@@ -93,5 +94,16 @@ extern bool astra_bind_item_to_selector(astra_list_item_t *_item);
 extern void astra_selector_go_next_item();
 extern void astra_selector_go_prev_item();
 /*** 选择器 ***/
+
+/*** 相机 ***/
+typedef struct astra_camera_t
+{
+  float x_camera, x_camera_trg, y_camera, y_camera_trg;
+  astra_selector_t *selector;
+} astra_camera_t;
+
+extern astra_camera_t astra_camera;
+extern void astra_bind_selector_to_camera(astra_selector_t *_selector);
+/*** 相机 ***/
 
 #endif //FUCKCLION_CORE_SRC_ASTRA_UI_LITE_ASTRA_UI_ITEM_H_

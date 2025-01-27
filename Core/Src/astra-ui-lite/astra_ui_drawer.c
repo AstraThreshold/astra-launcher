@@ -4,6 +4,8 @@
 
 #include "astra_ui_drawer.h"
 
+#include <stdio.h>
+
 void astra_draw_info_bar()
 {
   if (!astra_info_bar.is_running) return;
@@ -136,37 +138,40 @@ void astra_draw_list_item()
   oled_set_font(u8g2_font_my_chinese);
   for (unsigned char i = 0; i < astra_selector.selected_item->parent->child_num; i++)
   {
+    static int16_t _temp_y = 0; //just fucking saving time.
+    _temp_y = (int16_t)(astra_selector.selected_item->parent->child_list_item[i]->y_list_item + astra_camera.y_camera);
+
     oled_set_draw_color(1);
     //绘制开头的指示器
     if (astra_selector.selected_item->parent->child_list_item[i]->type == list_item)
     {
-      oled_draw_H_line(2, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 - 2, 4);
-      oled_draw_H_line(2, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2, 5);
-      oled_draw_H_line(2, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 + 2, 3);
+      oled_draw_H_line((int16_t)(2 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 - 2, 4);
+      oled_draw_H_line((int16_t)(2 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2, 5);
+      oled_draw_H_line((int16_t)(2 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 + 2, 3);
     }
     else if (astra_selector.selected_item->parent->child_list_item[i]->type == switch_item)
     {
-      oled_draw_circle(4, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 + 1, 3);
-      oled_draw_V_line(4, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 , 3);
+      oled_draw_circle((int16_t)(4 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 + 1, 3);
+      oled_draw_V_line((int16_t)(4 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 , 3);
     }
     else if (astra_selector.selected_item->parent->child_list_item[i]->type == button_item)
     {
-      oled_draw_box(2, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 - 1, 4, 4);
-      oled_draw_H_line(3, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 + 4, 4);
-      oled_draw_V_line(7, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2, 5);
+      oled_draw_box((int16_t)(2 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 - 1, 4, 4);
+      oled_draw_H_line((int16_t)(3 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 + 4, 4);
+      oled_draw_V_line((int16_t)(7 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2, 5);
     }
     else if (astra_selector.selected_item->parent->child_list_item[i]->type == slider_item)
     {
-      oled_draw_V_line(3, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 - 1, 5);
-      oled_draw_V_line(6, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 - 1, 5);
-      oled_draw_box(2, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 - 2, 3, 3);
-      oled_draw_box(5, astra_selector.selected_item->parent->child_list_item[i]->y_list_item - oled_get_str_height() / 2 + 2, 3, 3);
+      oled_draw_V_line((int16_t)(3 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 - 1, 5);
+      oled_draw_V_line((int16_t)(6 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 - 1, 5);
+      oled_draw_box((int16_t)(2 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 - 2, 3, 3);
+      oled_draw_box((int16_t)(5 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 + 2, 3, 3);
     }
     else
     {
-      oled_draw_str(0, astra_selector.selected_item->parent->child_list_item[i]->y_list_item, "-");
+      oled_draw_str((int16_t)(0 + astra_camera.x_camera), _temp_y, "-");
     }
-    oled_draw_UTF8(10, astra_selector.selected_item->parent->child_list_item[i]->y_list_item, astra_selector.selected_item->parent->child_list_item[i]->content);
+    oled_draw_UTF8((int16_t)(10 + astra_camera.x_camera), _temp_y, astra_selector.selected_item->parent->child_list_item[i]->content);
   }
 }
 
@@ -174,13 +179,13 @@ void astra_draw_selector()
 {
   oled_set_draw_color(2);
   // oled_draw_box(0,4,72,15);
-  oled_draw_box(0,astra_selector.y_selector,astra_selector.w_selector,15);
+  oled_draw_box((int16_t)(0 + astra_camera.x_camera), (int16_t)(astra_selector.y_selector + astra_camera.y_camera), astra_selector.w_selector, 15);
 
   //棋盘格过渡
   oled_set_draw_color(1);
-  for (uint8_t i = astra_selector.w_selector; i <= astra_selector.w_selector + 7; i += 2)
+  for (int16_t i = astra_selector.w_selector + astra_camera.x_camera; i <= astra_selector.w_selector + astra_camera.x_camera + 7; i += 2)
   {
-    for (uint8_t j = astra_selector.y_selector; j <= astra_selector.y_selector + 14; j++)
+    for (int16_t j = astra_selector.y_selector + astra_camera.y_camera; j <= astra_selector.y_selector + astra_camera.y_camera + 14; j++)
     {
       if (j % 2 == 0) oled_draw_pixel(i + 1, j);
       if (j % 2 == 1) oled_draw_pixel(i, j);

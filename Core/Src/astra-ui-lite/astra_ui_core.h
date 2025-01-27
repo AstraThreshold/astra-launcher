@@ -9,6 +9,8 @@ extern void astra_refresh_info_bar();
 
 extern void astra_refresh_pop_up();
 
+extern void astra_refresh_camera_position();
+
 extern void astra_refresh_widget_core_position();
 
 extern void astra_refresh_list_item_position();

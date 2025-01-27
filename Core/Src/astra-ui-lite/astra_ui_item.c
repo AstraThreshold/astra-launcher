@@ -83,6 +83,7 @@ bool astra_bind_item_to_selector(astra_list_item_t *_item)
     }
   }
 
+  //坐标在refresh内部更新
   if (astra_selector.selected_item == NULL) astra_selector.y_selector = 2 * SCREEN_HEIGHT;  //给个初始坐标做动画
   astra_selector.selected_index = _temp_index;
   astra_selector.selected_item = _item;
@@ -127,15 +128,28 @@ bool astra_push_item_to_list(astra_list_item_t *_parent, astra_list_item_t *_chi
   _child->child_num = 0;
 
   oled_set_font(u8g2_font_my_chinese);
-  if (_parent->child_num == 0) _child->y_list_item_trg = oled_get_str_height() + LIST_INFO_BAR_HEIGHT;
+  if (_parent->child_num == 0) _child->y_list_item_trg = oled_get_str_height() + LIST_FONT_TOP_MARGIN - 1;
   else _child->y_list_item_trg = _parent->child_list_item[_parent->child_num - 1]->y_list_item_trg + LIST_ITEM_SPACEING;
 
-  if (_parent->layer == 0 && _parent->child_num == 0) astra_bind_item_to_selector(_child);  //初始化并绑定selector
+  if (_parent->layer == 0 && _parent->child_num == 0)
+  {
+    astra_bind_item_to_selector(_child);  //初始化并绑定selector
+    astra_bind_selector_to_camera(&astra_selector);  //初始化并绑定camera
+  }
 
   _parent->child_list_item[_parent->child_num++] = _child;
   _child->parent = _parent;
 
   return true;
+}
+
+astra_camera_t astra_camera = {0, 0, 0, 0}; //在refresh加上camera的坐标
+
+void astra_bind_selector_to_camera(astra_selector_t *_selector)
+{
+  if (_selector == NULL) return;
+
+  astra_camera.selector = _selector;  //坐标在refresh内部更新
 }
 
 
