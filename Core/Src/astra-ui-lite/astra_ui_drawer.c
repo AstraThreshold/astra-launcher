@@ -132,6 +132,7 @@ void astra_draw_list_appearance()
   oled_draw_pixel(125, 62);
 }
 
+//todo 视野外的部分将不会被渲染 但是现在坐标值小于屏幕范围的左值待定 并未缜密测试
 void astra_draw_list_item()
 {
   //selector内包含的item的parent即是当前正在被绘制的页面
@@ -145,33 +146,45 @@ void astra_draw_list_item()
     //绘制开头的指示器
     if (astra_selector.selected_item->parent->child_list_item[i]->type == list_item)
     {
-      oled_draw_H_line((int16_t)(2 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 - 2, 4);
-      oled_draw_H_line((int16_t)(2 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2, 5);
-      oled_draw_H_line((int16_t)(2 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 + 2, 3);
+      if (_temp_y - oled_get_str_height() / 2 + 2 > LIST_INFO_BAR_HEIGHT && _temp_y - oled_get_str_height() / 2 - 2 < SCREEN_HEIGHT)
+      {
+        oled_draw_H_line((int16_t)(2 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 - 2, 4);
+        oled_draw_H_line((int16_t)(2 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2, 5);
+        oled_draw_H_line((int16_t)(2 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 + 2, 3);
+      }
     }
     else if (astra_selector.selected_item->parent->child_list_item[i]->type == switch_item)
     {
-      oled_draw_circle((int16_t)(4 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 + 1, 3);
-      oled_draw_V_line((int16_t)(4 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 , 3);
+      if (_temp_y - oled_get_str_height() / 2 + 1 + 6 > LIST_INFO_BAR_HEIGHT && _temp_y - oled_get_str_height() / 2 + 1 < SCREEN_HEIGHT)
+      {
+        oled_draw_circle((int16_t)(4 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 + 1, 3);
+        oled_draw_V_line((int16_t)(4 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 , 3);
+      }
     }
     else if (astra_selector.selected_item->parent->child_list_item[i]->type == button_item)
     {
-      oled_draw_box((int16_t)(2 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 - 1, 4, 4);
-      oled_draw_H_line((int16_t)(3 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 + 4, 4);
-      oled_draw_V_line((int16_t)(7 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2, 5);
+      if (_temp_y - oled_get_str_height() / 2 > LIST_INFO_BAR_HEIGHT && _temp_y - oled_get_str_height() / 2 - 1 < SCREEN_HEIGHT)
+      {
+        oled_draw_box((int16_t)(2 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 - 1, 4, 4);
+        oled_draw_H_line((int16_t)(3 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 + 4, 4);
+        oled_draw_V_line((int16_t)(7 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2, 5);
+      }
     }
     else if (astra_selector.selected_item->parent->child_list_item[i]->type == slider_item)
     {
-      oled_draw_V_line((int16_t)(3 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 - 1, 5);
-      oled_draw_V_line((int16_t)(6 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 - 1, 5);
-      oled_draw_box((int16_t)(2 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 - 2, 3, 3);
-      oled_draw_box((int16_t)(5 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 + 2, 3, 3);
+      if (_temp_y - oled_get_str_height() / 2 + 2 + 3 > LIST_INFO_BAR_HEIGHT && _temp_y - oled_get_str_height() / 2 - 2 < SCREEN_HEIGHT)
+      {
+        oled_draw_V_line((int16_t)(3 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 - 1, 5);
+        oled_draw_V_line((int16_t)(6 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 - 1, 5);
+        oled_draw_box((int16_t)(2 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 - 2, 3, 3);
+        oled_draw_box((int16_t)(5 + astra_camera.x_camera), _temp_y - oled_get_str_height() / 2 + 2, 3, 3);
+      }
     }
     else
     {
-      oled_draw_str((int16_t)(0 + astra_camera.x_camera), _temp_y, "-");
+      if (_temp_y > LIST_INFO_BAR_HEIGHT && _temp_y - oled_get_str_height() < SCREEN_HEIGHT) oled_draw_str((int16_t)(0 + astra_camera.x_camera), _temp_y, "-");
     }
-    oled_draw_UTF8((int16_t)(10 + astra_camera.x_camera), _temp_y, astra_selector.selected_item->parent->child_list_item[i]->content);
+    if (_temp_y > LIST_INFO_BAR_HEIGHT && _temp_y - oled_get_str_height() < SCREEN_HEIGHT) oled_draw_UTF8((int16_t)(10 + astra_camera.x_camera), _temp_y, astra_selector.selected_item->parent->child_list_item[i]->content);
   }
 }
 
