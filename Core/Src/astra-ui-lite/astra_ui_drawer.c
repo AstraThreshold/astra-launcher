@@ -182,7 +182,7 @@ void astra_draw_list_item()
     }
     else
     {
-      if (_temp_y > LIST_INFO_BAR_HEIGHT && _temp_y - oled_get_str_height() < SCREEN_HEIGHT) oled_draw_str((int16_t)(0 + astra_camera.x_camera), _temp_y, "-");
+      if (_temp_y > LIST_INFO_BAR_HEIGHT && _temp_y - oled_get_str_height() < SCREEN_HEIGHT) oled_draw_str((int16_t)(2 + astra_camera.x_camera), _temp_y, "-");
     }
     if (_temp_y > LIST_INFO_BAR_HEIGHT && _temp_y - oled_get_str_height() < SCREEN_HEIGHT) oled_draw_UTF8((int16_t)(10 + astra_camera.x_camera), _temp_y, astra_selector.selected_item->parent->child_list_item[i]->content);
   }

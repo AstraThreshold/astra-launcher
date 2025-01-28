@@ -70,7 +70,7 @@ astra_list_item_t astra_list_item_test2 = {0, button_item, "玩得开心", 0, 0,
 astra_list_item_t astra_list_item_test3 = {0, switch_item, "你好世界", 0, 0, 0};
 astra_list_item_t astra_list_item_test4 = {0, slider_item, "返回主页返回主页", 0, 0, 0};
 astra_list_item_t astra_list_item_test5 = {0, list_item, "你好世界你好世界", 0, 0, 0};
-astra_list_item_t astra_list_item_test6 = {0, list_item, "玩得开心玩得开心", 0, 0, 0};
+astra_list_item_t astra_list_item_test6 = {0, 9, "玩得开心玩得开心", 0, 0, 0};
 
 uint8_t button_test_value = 0;
 uint8_t switch_test_value = 1;
