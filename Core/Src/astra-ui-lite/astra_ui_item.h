@@ -93,6 +93,8 @@ extern astra_selector_t astra_selector;
 extern bool astra_bind_item_to_selector(astra_list_item_t *_item);
 extern void astra_selector_go_next_item();
 extern void astra_selector_go_prev_item();
+extern void astra_selector_jump_to_next_layer();
+extern void astra_selector_jump_to_prev_layer();
 /*** 选择器 ***/
 
 /*** 相机 ***/

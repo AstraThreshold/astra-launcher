@@ -54,7 +54,6 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-bool in_astra = false;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -77,50 +76,6 @@ uint8_t switch_test_value = 1;
 uint8_t slider_test_value = 100;
 
 void null_function() {}
-
-void launcher_ad_astra()
-{
-  if (in_astra) return;
-
-  static int64_t _key_press_span = 0;
-  static uint32_t _key_start_time = 0;
-  static bool _key_clicked = false;
-  static char _msg[100] = {};
-
-  if (HAL_GPIO_ReadPin(KEY1_GPIO_Port, KEY1_Pin) == GPIO_PIN_RESET || HAL_GPIO_ReadPin(KEY2_GPIO_Port, KEY2_Pin) == GPIO_PIN_RESET)
-  {
-    if (!_key_clicked)
-    {
-      _key_clicked = true;
-      _key_start_time = launcher_get_tick_ms();
-      //变量上限是0xFFFF 65535
-    }
-    if (launcher_get_tick_ms() - _key_start_time > 1000 && _key_clicked)
-    {
-      _key_press_span = launcher_get_tick_ms() - _key_start_time;
-      if (_key_press_span <= 2500)
-      {
-        sprintf(_msg, "继续长按%.2f秒进入.", (2500 - _key_press_span) / 1000.0f);
-        astra_push_info_bar(_msg, 2000);
-      } else if (_key_press_span > 2500)
-      {
-        astra_push_info_bar("玩得开心! :p", 2000);
-        in_astra = true;
-        _key_clicked = false;
-        _key_start_time = 0;
-        _key_press_span = 0;
-      }
-    }
-  } else
-  {
-    _key_clicked = false;
-    if (_key_press_span != 0)
-    {
-      astra_push_info_bar("bye!", 2000);
-      _key_press_span = 0;
-    }
-  }
-}
 
 void astra_ui_entry_prompt_1()
 {
@@ -201,9 +156,6 @@ int main(void)
     /* USER CODE BEGIN 3 */
     oled_clear_buffer();
 
-    launcher_ad_astra();
-    launcher_key_call_back(0, astra_selector_go_prev_item, astra_selector_go_next_item, null_function, null_function);
-
     // if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
     // if (_tick % 301 == 1) launcher_push_str_to_terminal(uart, "hello,\r你好\r2");
     // if (_tick % 400 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r3");
@@ -212,10 +164,12 @@ int main(void)
     // if (_tick % 708 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
     // if (_tick % 808 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
 
+    ad_astra();
+    launcher_key_call_back(0, astra_selector_go_prev_item, astra_selector_go_next_item, null_function, null_function);
+
     if (!in_astra) launcher_draw_home_page();
 
-    if (in_astra) astra_ui_main_core(); //最好放在后面
-
+    astra_ui_main_core();
     astra_ui_widget_core();
 
     oled_send_buffer();

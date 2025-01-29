@@ -4,6 +4,11 @@
 
 #ifndef ASTRA_UI_CORE_H
 #define ASTRA_UI_CORE_H
+#include <stdbool.h>
+
+extern bool in_astra;
+
+extern void ad_astra();
 
 extern void astra_refresh_info_bar();
 

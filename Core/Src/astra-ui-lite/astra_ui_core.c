@@ -3,11 +3,62 @@
 //
 
 #include "astra_ui_core.h"
-
 #include <stdio.h>
-
 #include "astra_ui_drawer.h"
 #include <tgmath.h>
+
+bool in_astra = false;
+
+/**
+ * @brief 进入astra ui lite
+ *
+ * @note 需要运行在循环中
+ * @note 可以通过按键等传感器进行触发 当in_astra为true时进入astra ui lite
+ */
+void ad_astra()
+{
+  /**自行修改**/
+  if (in_astra) return;
+  static int64_t _key_press_span = 0;
+  static uint32_t _key_start_time = 0;
+  static bool _key_clicked = false;
+  static char _msg[100] = {};
+
+  if (HAL_GPIO_ReadPin(KEY1_GPIO_Port, KEY1_Pin) == GPIO_PIN_RESET || HAL_GPIO_ReadPin(KEY2_GPIO_Port, KEY2_Pin) == GPIO_PIN_RESET)
+  {
+    if (!_key_clicked)
+    {
+      _key_clicked = true;
+      _key_start_time = launcher_get_tick_ms();
+      //变量上限是0xFFFF 65535
+    }
+    if (launcher_get_tick_ms() - _key_start_time > 1000 && _key_clicked)
+    {
+      _key_press_span = launcher_get_tick_ms() - _key_start_time;
+      if (_key_press_span <= 2500)
+      {
+        sprintf(_msg, "继续长按%.2f秒进入.", (2500 - _key_press_span) / 1000.0f);
+        astra_push_info_bar(_msg, 2000);
+      } else if (_key_press_span > 2500)
+      {
+        astra_push_info_bar("玩得开心! :p", 2000);
+        in_astra = true;
+        _key_clicked = false;
+        _key_start_time = 0;
+        _key_press_span = 0;
+      }
+    }
+  } else
+  {
+    _key_clicked = false;
+    if (_key_press_span != 0)
+    {
+      astra_push_info_bar("bye!", 2000);
+      _key_press_span = 0;
+    }
+  }
+  /**自行修改**/
+}
 
 void astra_animation(float *_pos, float _posTrg, float _speed)
 {
@@ -81,6 +132,7 @@ void null_function1() {}
 
 void astra_ui_main_core()
 {
+  if (!in_astra) return;
   //无需修改
   astra_refresh_camera_position();
   astra_refresh_main_core_position();
