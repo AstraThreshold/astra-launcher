@@ -60,8 +60,10 @@ void astra_refresh_selector_position()
 {
   astra_selector.y_selector_trg = astra_selector.selected_item->y_list_item_trg - oled_get_str_height() + 1;
   astra_selector.w_selector_trg = oled_get_UTF8_width(astra_selector.selected_item->content) + 12;
+  astra_selector.h_selector_trg = 15;
   astra_animation(&astra_selector.y_selector, astra_selector.y_selector_trg, 91);
   astra_animation(&astra_selector.w_selector, astra_selector.w_selector_trg, 93);
+  astra_animation(&astra_selector.h_selector, astra_selector.h_selector_trg, 93);
 }
 
 void astra_refresh_main_core_position()

@@ -84,7 +84,7 @@ extern bool astra_push_item_to_list(astra_list_item_t *_parent, astra_list_item_
 /*** 选择器 ***/
 typedef struct astra_selector_t
 {
-  float y_selector, y_selector_trg, w_selector, w_selector_trg;
+  float y_selector, y_selector_trg, w_selector, w_selector_trg, h_selector, h_selector_trg;
   uint8_t selected_index;
   astra_list_item_t *selected_item;
 } astra_selector_t;

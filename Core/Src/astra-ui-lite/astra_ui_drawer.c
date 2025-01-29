@@ -192,13 +192,13 @@ void astra_draw_selector()
 {
   oled_set_draw_color(2);
   // oled_draw_box(0,4,72,15);
-  oled_draw_box((int16_t)(0 + astra_camera.x_camera), (int16_t)(astra_selector.y_selector + astra_camera.y_camera), astra_selector.w_selector, 15);
+  oled_draw_box((int16_t)(0 + astra_camera.x_camera), (int16_t)(astra_selector.y_selector + astra_camera.y_camera), astra_selector.w_selector, astra_selector.h_selector);
 
   //棋盘格过渡
   oled_set_draw_color(1);
   for (int16_t i = astra_selector.w_selector + astra_camera.x_camera; i <= astra_selector.w_selector + astra_camera.x_camera + 7; i += 2)
   {
-    for (int16_t j = astra_selector.y_selector + astra_camera.y_camera; j <= astra_selector.y_selector + astra_camera.y_camera + 14; j++)
+    for (int16_t j = astra_selector.y_selector + astra_camera.y_camera; j <= astra_selector.y_selector + astra_camera.y_camera + astra_selector.h_selector - 1; j++)
     {
       if (j % 2 == 0) oled_draw_pixel(i + 1, j);
       if (j % 2 == 1) oled_draw_pixel(i, j);

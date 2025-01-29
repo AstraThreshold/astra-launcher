@@ -84,7 +84,11 @@ bool astra_bind_item_to_selector(astra_list_item_t *_item)
   }
 
   //坐标在refresh内部更新
-  if (astra_selector.selected_item == NULL) astra_selector.y_selector = 2 * SCREEN_HEIGHT;  //给个初始坐标做动画
+  if (astra_selector.selected_item == NULL)
+  {
+    astra_selector.y_selector = 2 * SCREEN_HEIGHT;  //给个初始坐标做动画
+    astra_selector.h_selector = 160;
+  }
   astra_selector.selected_index = _temp_index;
   astra_selector.selected_item = _item;
 
