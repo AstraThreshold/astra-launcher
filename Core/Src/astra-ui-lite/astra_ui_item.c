@@ -5,7 +5,9 @@
 #include "astra_ui_item.h"
 
 #include <string.h>
+#include <sys/types.h>
 
+#include "astra_ui_core.h"
 #include "../astra-launcher/launcher_delay.h"
 
 astra_info_bar_t astra_info_bar = {0, 1, 0 - 2 * INFO_BAR_HEIGHT, 0 - 2 * INFO_BAR_HEIGHT, 80, 80, false, 0, 1};
@@ -74,7 +76,7 @@ bool astra_bind_item_to_selector(astra_list_item_t *_item)
 
   //找item在父节点中的序号
   uint8_t _temp_index = 0;
-  for (uint8_t i = 0; i < astra_list_item_root.child_num; i++)
+  for (uint8_t i = 0; i < _item->parent->child_num; i++)
   {
     if (_item->parent->child_list_item[i] == _item)
     {
@@ -119,6 +121,44 @@ void astra_selector_go_prev_item()
   }
 
   astra_selector.selected_item = astra_selector.selected_item->parent->child_list_item[--astra_selector.selected_index];
+}
+
+void astra_selector_jump_to_next_layer()
+{
+  if (astra_selector.selected_item->child_num == 0) return;
+
+  //给选择的item的子item坐标清零 做动画
+  for (uint8_t i = 0; i < astra_selector.selected_item->child_num; i++)
+    astra_selector.selected_item->child_list_item[i]->y_list_item = 0;
+
+  astra_selector.selected_index = 0;
+  astra_selector.selected_item = astra_selector.selected_item->child_list_item[0];
+}
+
+void astra_selector_jump_to_prev_layer()
+{
+  if (astra_selector.selected_item->parent->layer == 0)
+  {
+    if (ALLOW_EXIT_ASTRA_UI_BY_USER) in_astra = false;
+    return;
+  }
+
+  //给选择的item的父item的父item的所有子item坐标清零 做动画
+  for (uint8_t i = 0; i < astra_selector.selected_item->parent->parent->child_num; i++)
+      astra_selector.selected_item->parent->parent->child_list_item[i]->y_list_item = 0;
+
+  //找到当前选择的item的父item在它的父item中的位置
+  uint8_t _temp_index = 0;
+  for (uint8_t i = 0; i < astra_selector.selected_item->parent->parent->child_num; i++)
+  {
+    if (astra_selector.selected_item->parent->parent->child_list_item[i] == astra_selector.selected_item->parent)
+    {
+      _temp_index = i;
+      break;
+    }
+  }
+  astra_selector.selected_index = _temp_index;
+  astra_selector.selected_item = astra_selector.selected_item->parent;
 }
 
 bool astra_push_item_to_list(astra_list_item_t *_parent, astra_list_item_t *_child)

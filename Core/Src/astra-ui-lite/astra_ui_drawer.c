@@ -4,6 +4,7 @@
 
 #include "astra_ui_drawer.h"
 
+#include <math.h>
 #include <stdio.h>
 
 void astra_draw_info_bar()
@@ -105,31 +106,37 @@ void astra_draw_list_appearance()
   for (uint8_t i = 114; i <= 124; i++) if (i % 5 == 1) oled_draw_pixel(i, 0);
 
   //右侧进度条
-  oled_draw_V_line(123, 0, 64);
-  oled_draw_V_line(127, 0, 64);
+  oled_draw_V_line(OLED_WIDTH - 5, 0, OLED_HEIGHT);
+  oled_draw_V_line(OLED_WIDTH - 1, 0, OLED_HEIGHT);
 
-  //滑块以及滑块内的三条横线
+  //滑块
   static uint8_t _length_each_part = 0;
   _length_each_part = (SCREEN_HEIGHT - 10) / astra_selector.selected_item->parent->child_num;
-  oled_draw_box(124, 5 + astra_selector.selected_index * _length_each_part, 3, _length_each_part);
-  oled_set_draw_color(0);
-  oled_draw_H_line(124,_length_each_part + astra_selector.selected_index * _length_each_part,3);  //中间横线
+  oled_draw_box(OLED_WIDTH - 4, 5 + astra_selector.selected_index * _length_each_part, 3, _length_each_part);
 
-  //两边横线
+  char test[10];
+  sprintf(test, "%d", astra_selector.selected_index);
+  oled_draw_UTF8(100, 40, test);
+
+  //滑块内横线
+  oled_set_draw_color(0);
+  oled_draw_H_line(OLED_WIDTH - 4, _length_each_part + astra_selector.selected_index * _length_each_part,3);  //中间横线
+
+  //长度允许的情况下绘制上下横线
   if (_length_each_part >= 9)
   {
-    oled_draw_H_line(124,_length_each_part - 2 + astra_selector.selected_index * _length_each_part,3);
-    oled_draw_H_line(124,_length_each_part + 2 + astra_selector.selected_index * _length_each_part,3);
+    oled_draw_H_line(OLED_WIDTH - 4, _length_each_part - 2 + astra_selector.selected_index * _length_each_part, 3);
+    oled_draw_H_line(OLED_WIDTH - 4, _length_each_part + 2 + astra_selector.selected_index * _length_each_part, 3);
   }
 
   oled_set_draw_color(1);
-  oled_draw_box(124, 0, 3, 4);
-  oled_draw_box(124, 60, 3, 4);
+  oled_draw_box(OLED_WIDTH - 4, 0, 3, 4);
+  oled_draw_box(OLED_WIDTH - 4, OLED_HEIGHT - 4, 3, 4);
   oled_set_draw_color(0);
-  oled_draw_H_line(124, 2, 3);
-  oled_draw_pixel(125, 1);
-  oled_draw_H_line(124, 61, 3);
-  oled_draw_pixel(125, 62);
+  oled_draw_H_line(OLED_WIDTH - 4, 2, 3);
+  oled_draw_pixel(OLED_WIDTH - 3, 1);
+  oled_draw_H_line(OLED_WIDTH - 4, OLED_HEIGHT - 3, 3);
+  oled_draw_pixel(OLED_WIDTH - 3, OLED_HEIGHT - 2);
 }
 
 //todo 视野外的部分将不会被渲染 但是现在坐标值小于屏幕范围的左值待定 并未缜密测试

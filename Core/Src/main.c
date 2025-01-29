@@ -68,8 +68,13 @@ astra_list_item_t astra_list_item_test1 = {0, list_item, "返回主页面", 0, 0
 astra_list_item_t astra_list_item_test2 = {0, button_item, "玩得开心", 0, 0, 0};
 astra_list_item_t astra_list_item_test3 = {0, switch_item, "你好世界", 0, 0, 0};
 astra_list_item_t astra_list_item_test4 = {0, slider_item, "返回主页返回主页", 0, 0, 0};
-astra_list_item_t astra_list_item_test5 = {0, list_item, "你好世界你好世界", 0, 0, 0};
-astra_list_item_t astra_list_item_test6 = {0, 9, "玩得开心玩得开心", 0, 0, 0};
+astra_list_item_t astra_list_item_test5 = {0, list_item, "你好世界", 0, 0, 0};
+astra_list_item_t astra_list_item_test6 = {0, 9, "Just Test1", 0, 0, 0};
+astra_list_item_t astra_list_item_test7 = {0, 9, "Just Test11", 0, 0, 0};
+astra_list_item_t astra_list_item_test8 = {0, 9, "Just Test111", 0, 0, 0};
+astra_list_item_t astra_list_item_test9 = {0, 9, "Just Test0", 0, 0, 0};
+astra_list_item_t astra_list_item_test10 = {0, 9, "Just Test00", 0, 0, 0};
+astra_list_item_t astra_list_item_test11 = {0, 9, "Just Test000", 0, 0, 0};
 
 uint8_t button_test_value = 0;
 uint8_t switch_test_value = 1;
@@ -100,9 +105,14 @@ int main(void)
   astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test1);
   astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test2);
   astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test3);
-  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test4);
-  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test5);
-  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test6);
+  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test9);
+  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test10);
+  // astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test11);
+  astra_push_item_to_list(&astra_list_item_test3, &astra_list_item_test4);
+  astra_push_item_to_list(&astra_list_item_test3, &astra_list_item_test5);
+  astra_push_item_to_list(&astra_list_item_test3, &astra_list_item_test6);
+  astra_push_item_to_list(&astra_list_item_test3, &astra_list_item_test7);
+  astra_push_item_to_list(&astra_list_item_test3, &astra_list_item_test8);
 
   astra_bind_value_to_list_item(&astra_list_item_test2, &button_test_value);
   astra_bind_value_to_list_item(&astra_list_item_test3, &switch_test_value);
@@ -165,7 +175,7 @@ int main(void)
     // if (_tick % 808 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
 
     ad_astra();
-    launcher_key_call_back(0, astra_selector_go_prev_item, astra_selector_go_next_item, null_function, null_function);
+    launcher_key_call_back(0, astra_selector_go_prev_item, astra_selector_go_next_item, astra_selector_jump_to_prev_layer, astra_selector_jump_to_next_layer);
 
     if (!in_astra) launcher_draw_home_page();
 

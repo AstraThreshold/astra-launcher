@@ -103,8 +103,8 @@ void astra_refresh_widget_core_position()
 
 void astra_refresh_list_item_position()
 {
-  for (uint8_t i = 0; i < astra_list_item_root.child_num; i++)
-    astra_animation(&astra_list_item_root.child_list_item[i]->y_list_item, astra_list_item_root.child_list_item[i]->y_list_item_trg, 84);
+  for (uint8_t i = 0; i < astra_selector.selected_item->parent->child_num; i++)
+    astra_animation(&astra_selector.selected_item->parent->child_list_item[i]->y_list_item, astra_selector.selected_item->parent->child_list_item[i]->y_list_item_trg, 84);
 }
 
 void astra_refresh_selector_position()
