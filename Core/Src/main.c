@@ -72,7 +72,7 @@ astra_list_item_t astra_list_item_test5 = {0, list_item, "你好世界", 0, 0, 0
 astra_list_item_t astra_list_item_test6 = {0, 9, "Just Test1", 0, 0, 0};
 astra_list_item_t astra_list_item_test7 = {0, 9, "Just Test11", 0, 0, 0};
 astra_list_item_t astra_list_item_test8 = {0, 9, "Just Test111", 0, 0, 0};
-astra_list_item_t astra_list_item_test9 = {0, 9, "Just Test0", 0, 0, 0};
+astra_list_item_t astra_list_item_test9 = {0, 9, "astra ui lite", 0, 0, 0};
 astra_list_item_t astra_list_item_test10 = {0, 9, "Just Test00", 0, 0, 0};
 astra_list_item_t astra_list_item_test11 = {0, 9, "Just Test000", 0, 0, 0};
 

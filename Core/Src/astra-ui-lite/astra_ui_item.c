@@ -125,6 +125,7 @@ void astra_selector_go_prev_item()
 
 void astra_selector_jump_to_next_layer()
 {
+  if (!in_astra) return;
   if (astra_selector.selected_item->child_num == 0) return;
 
   //给选择的item的子item坐标清零 做动画
@@ -137,7 +138,7 @@ void astra_selector_jump_to_next_layer()
 
 void astra_selector_jump_to_prev_layer()
 {
-  if (astra_selector.selected_item->parent->layer == 0)
+  if (astra_selector.selected_item->parent->layer == 0 && in_astra)
   {
     if (ALLOW_EXIT_ASTRA_UI_BY_USER) in_astra = false;
     return;

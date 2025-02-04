@@ -110,23 +110,23 @@ void astra_draw_list_appearance()
   oled_draw_V_line(OLED_WIDTH - 1, 0, OLED_HEIGHT);
 
   //滑块
-  static uint8_t _length_each_part = 0;
-  _length_each_part = (SCREEN_HEIGHT - 10) / astra_selector.selected_item->parent->child_num;
+  static float _length_each_part = 0;
+  _length_each_part = ceilf((SCREEN_HEIGHT - 10.0f) / (float)astra_selector.selected_item->parent->child_num);
   oled_draw_box(OLED_WIDTH - 4, 5 + astra_selector.selected_index * _length_each_part, 3, _length_each_part);
 
-  char test[10];
-  sprintf(test, "%d", astra_selector.selected_index);
-  oled_draw_UTF8(100, 40, test);
+  // char test[10];
+  // sprintf(test, "%.2f", _length_each_part);
+  // oled_draw_UTF8(80, 40, test);
 
   //滑块内横线
   oled_set_draw_color(0);
-  oled_draw_H_line(OLED_WIDTH - 4, _length_each_part + astra_selector.selected_index * _length_each_part,3);  //中间横线
+  oled_draw_H_line(OLED_WIDTH - 4, _length_each_part + (float)astra_selector.selected_index * _length_each_part, 3);  //中间横线
 
   //长度允许的情况下绘制上下横线
   if (_length_each_part >= 9)
   {
-    oled_draw_H_line(OLED_WIDTH - 4, _length_each_part - 2 + astra_selector.selected_index * _length_each_part, 3);
-    oled_draw_H_line(OLED_WIDTH - 4, _length_each_part + 2 + astra_selector.selected_index * _length_each_part, 3);
+    oled_draw_H_line(OLED_WIDTH - 4, floorf(_length_each_part - 2.0f + (float)astra_selector.selected_index * _length_each_part), 3);
+    oled_draw_H_line(OLED_WIDTH - 4, floorf(_length_each_part + 2.0f + (float)astra_selector.selected_index * _length_each_part), 3);
   }
 
   oled_set_draw_color(1);
