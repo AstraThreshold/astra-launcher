@@ -55,7 +55,7 @@ void astra_push_pop_up(char *_content, const uint16_t _span)
   astra_pop_up.w_pop_up_trg = oled_get_UTF8_width(astra_pop_up.content) + POP_UP_OFFSET;
 }
 
-astra_list_item_t astra_list_item_root = {0, list_item, "root", 0, 0, 0};
+astra_list_item_t astra_list_item_root = {};
 
 bool astra_bind_value_to_list_item(astra_list_item_t *_item, void *_value)
 {
@@ -64,6 +64,28 @@ bool astra_bind_value_to_list_item(astra_list_item_t *_item, void *_value)
   if (_item->type == list_item) return false;
 
   _item->value = _value;
+
+  return true;
+}
+
+bool astra_bind_init_function_to_user_item(astra_list_item_t *_user_item, void (*_init_function)())
+{
+  if (_user_item == NULL) return false;
+  if (_user_item->type != user_item) return false;
+  if (_init_function == NULL) return false;
+
+  _user_item->init_function = _init_function;
+
+  return true;
+}
+
+bool astra_bind_loop_function_to_user_item(astra_list_item_t *_user_item, void (*_loop_function)())
+{
+  if (_user_item == NULL) return false;
+  if (_user_item->type != user_item) return false;
+  if (_loop_function == NULL) return false;
+
+  _user_item->loop_function = _loop_function;
 
   return true;
 }
@@ -123,9 +145,21 @@ void astra_selector_go_prev_item()
   astra_selector.selected_item = astra_selector.selected_item->parent->child_list_item[--astra_selector.selected_index];
 }
 
+bool astra_exit_animation_finished = false;
+
 void astra_selector_jump_to_next_layer()
 {
   if (!in_astra) return;
+
+  if (astra_selector.selected_item->type == user_item)
+  {
+    astra_exit_animation_finished = false;
+    astra_selector.selected_item->in_user_item = true;
+    astra_selector.selected_item->user_item_inited = false;
+    astra_selector.selected_item->user_item_looping = false;
+    return;
+  }
+
   if (astra_selector.selected_item->child_num == 0) return;
 
   //给选择的item的子item坐标清零 做动画
@@ -138,6 +172,16 @@ void astra_selector_jump_to_next_layer()
 
 void astra_selector_jump_to_prev_layer()
 {
+  //todo 这个if待测试
+  if (astra_selector.selected_item->type == user_item && astra_selector.selected_item->in_user_item)
+  {
+    astra_exit_animation_finished = false; //需要重新绘制退场动画
+    astra_selector.selected_item->in_user_item = false;
+    astra_selector.selected_item->user_item_inited = false;
+    astra_selector.selected_item->user_item_looping = false;
+    return;
+  }
+
   if (astra_selector.selected_item->parent->layer == 0 && in_astra)
   {
     if (ALLOW_EXIT_ASTRA_UI_BY_USER) in_astra = false;

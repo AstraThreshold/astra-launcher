@@ -64,17 +64,34 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-astra_list_item_t astra_list_item_test1 = {0, list_item, "返回主页面", 0, 0, 0};
-astra_list_item_t astra_list_item_test2 = {0, button_item, "玩得开心", 0, 0, 0};
-astra_list_item_t astra_list_item_test3 = {0, switch_item, "你好世界", 0, 0, 0};
-astra_list_item_t astra_list_item_test4 = {0, slider_item, "返回主页返回主页", 0, 0, 0};
-astra_list_item_t astra_list_item_test5 = {0, list_item, "你好世界", 0, 0, 0};
-astra_list_item_t astra_list_item_test6 = {0, 9, "Just Test1", 0, 0, 0};
-astra_list_item_t astra_list_item_test7 = {0, 9, "Just Test11", 0, 0, 0};
-astra_list_item_t astra_list_item_test8 = {0, 9, "Just Test111", 0, 0, 0};
-astra_list_item_t astra_list_item_test9 = {0, 9, "astra ui lite", 0, 0, 0};
-astra_list_item_t astra_list_item_test10 = {0, 9, "Just Test00", 0, 0, 0};
-astra_list_item_t astra_list_item_test11 = {0, 9, "Just Test000", 0, 0, 0};
+void test_user_item_init_function()
+{
+  // oled_clear_buffer();
+  // oled_draw_str(20, 20, "Just Test");
+  // oled_send_buffer();
+  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+}
+
+void test_user_item_loop_function()
+{
+  oled_draw_R_box(30, 30, 20, 10, 1);
+  char test_str[10] = {};
+  sprintf(test_str, "%d", launcher_get_tick_ms());
+  oled_draw_str(20, 50, "test_str");
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
+}
+
+astra_list_item_t astra_list_item_test1 = {list_item, "返回主页面"};
+astra_list_item_t astra_list_item_test2 = {button_item, "玩得开心"};
+astra_list_item_t astra_list_item_test3 = {switch_item, "你好世界", 0};
+astra_list_item_t astra_list_item_test4 = {slider_item, "返回主页返回主页"};
+astra_list_item_t astra_list_item_test5 = {list_item, "你好世界"};
+astra_list_item_t astra_list_item_test6 = {user_item, "Just Test1"};
+astra_list_item_t astra_list_item_test7 = {user_item, "Just Test11"};
+astra_list_item_t astra_list_item_test8 = {user_item, "Just Test111"};
+astra_list_item_t astra_list_item_test9 = {user_item, "astra ui lite"};
+astra_list_item_t astra_list_item_test10 = {user_item, "Just Test00"};
+astra_list_item_t astra_list_item_test11 = {user_item, "Just Test000"};
 
 uint8_t button_test_value = 0;
 uint8_t switch_test_value = 1;
@@ -102,6 +119,9 @@ void astra_ui_entry_prompt_2()
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+  astra_bind_init_function_to_user_item(&astra_list_item_test9, test_user_item_init_function);
+  astra_bind_loop_function_to_user_item(&astra_list_item_test9, test_user_item_loop_function);
+
   astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test1);
   astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test2);
   astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test3);
@@ -175,7 +195,7 @@ int main(void)
     // if (_tick % 808 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
 
     ad_astra();
-    launcher_key_call_back(0, astra_selector_go_prev_item, astra_selector_go_next_item, astra_selector_jump_to_prev_layer, astra_selector_jump_to_next_layer);
+    launcher_key_call_back(1, astra_selector_go_prev_item, astra_selector_go_next_item, astra_selector_jump_to_prev_layer, astra_selector_jump_to_next_layer);
 
     if (!in_astra) launcher_draw_home_page();
 

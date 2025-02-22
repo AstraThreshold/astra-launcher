@@ -133,6 +133,42 @@ void null_function1() {}
 void astra_ui_main_core()
 {
   if (!in_astra) return;
+
+  if (astra_selector.selected_item->in_user_item)
+  {
+    //退场动画
+    if (!astra_exit_animation_finished)
+    {
+      for (uint8_t i = 0; i < 8; i++)
+      {
+        oled_clear_buffer();
+        astra_refresh_camera_position();
+        astra_refresh_main_core_position();
+        astra_refresh_selector_position();
+        astra_draw_list();
+        astra_draw_exit_animation(i);
+        oled_send_buffer();
+        delay(5);
+      }
+      astra_exit_animation_finished = true;
+      // oled_clear_buffer();  //清除退场动画遮罩
+    }
+
+    //初始化
+    if (!astra_selector.selected_item->user_item_inited)
+    {
+      if (astra_selector.selected_item->init_function != NULL) astra_selector.selected_item->init_function();
+      astra_selector.selected_item->user_item_inited = true;
+    }
+
+    if (astra_selector.selected_item->loop_function != NULL)
+    {
+      astra_selector.selected_item->user_item_looping = true;
+      astra_selector.selected_item->loop_function();
+    }
+
+    return;
+  }
   //无需修改
   astra_refresh_camera_position();
   astra_refresh_main_core_position();

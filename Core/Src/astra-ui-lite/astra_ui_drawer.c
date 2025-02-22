@@ -7,6 +7,13 @@
 #include <math.h>
 #include <stdio.h>
 
+void astra_draw_exit_animation(uint8_t _cnt)
+{
+  oled_set_draw_color(0);
+  oled_draw_box(0, 0, OLED_WIDTH, (_cnt + 1) * 8);
+  oled_set_draw_color(1);
+}
+
 void astra_draw_info_bar()
 {
   if (!astra_info_bar.is_running) return;
@@ -95,6 +102,7 @@ void astra_draw_pop_up()
 
 void astra_draw_list_appearance()
 {
+  oled_set_draw_color(1);
   //顶部状态栏
   oled_draw_H_line(0, 1, 66);
   oled_draw_H_line(0, 0, 67);
@@ -142,6 +150,7 @@ void astra_draw_list_appearance()
 //todo 视野外的部分将不会被渲染 但是现在坐标值小于屏幕范围的左值待定 并未缜密测试
 void astra_draw_list_item()
 {
+  oled_set_draw_color(1);
   //selector内包含的item的parent即是当前正在被绘制的页面
   oled_set_font(u8g2_font_my_chinese);
   for (unsigned char i = 0; i < astra_selector.selected_item->parent->child_num; i++)
@@ -198,7 +207,6 @@ void astra_draw_list_item()
 void astra_draw_selector()
 {
   oled_set_draw_color(2);
-  // oled_draw_box(0,4,72,15);
   oled_draw_box((int16_t)(0 + astra_camera.x_camera), (int16_t)(astra_selector.y_selector + astra_camera.y_camera), astra_selector.w_selector, astra_selector.h_selector);
 
   //棋盘格过渡

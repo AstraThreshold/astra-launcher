@@ -8,6 +8,8 @@
 #include "astra_ui_draw_driver.h"
 #include <stdbool.h>
 
+extern bool astra_exit_animation_finished;
+
 /*** 信息栏 ***/
 #define INFO_BAR_HEIGHT 15
 #define INFO_BAR_OFFSET 10
@@ -62,22 +64,32 @@ typedef enum
   switch_item,
   button_item,
   slider_item,
+  user_item,
 } astra_list_item_type_t;
 
 typedef struct astra_list_item_t
 {
-  uint8_t layer;
   astra_list_item_type_t type;
   char *content;
-  float y_list_item, y_list_item_trg;
   void *value;
+
+  uint8_t layer;
+  float y_list_item, y_list_item_trg;
   uint8_t child_num;
   struct astra_list_item_t *child_list_item[MAX_LIST_CHILD_NUM];
   struct astra_list_item_t *parent;
+
+  bool in_user_item;
+  void (*init_function)();
+  void (*loop_function)();  //user_item的逻辑和item写在一起 方便渲染
+  bool user_item_inited;
+  bool user_item_looping;
 } astra_list_item_t;
 
 extern astra_list_item_t astra_list_item_root; //根节点 根列表项
 extern bool astra_bind_value_to_list_item(astra_list_item_t *_item, void *_value);
+extern bool astra_bind_init_function_to_user_item(astra_list_item_t *_user_item, void (*_init_function)());
+extern bool astra_bind_loop_function_to_user_item(astra_list_item_t *_user_item, void (*_loop_function)());
 extern bool astra_push_item_to_list(astra_list_item_t *_parent, astra_list_item_t *_child);
 /*** 列表项 ***/
 

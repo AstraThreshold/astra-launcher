@@ -198,7 +198,7 @@ void SysTick_Handler(void)
   static uint32_t tick = 0;
   tick++;
   if (tick % 200 == 0) {
-    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+    // HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
     launcher_get_value_adc1(rawDataADC1);
     launcher_get_value_adc2(rawDataADC2);
   }
