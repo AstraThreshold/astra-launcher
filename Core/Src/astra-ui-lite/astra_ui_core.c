@@ -128,31 +128,56 @@ void astra_ui_widget_core()
   astra_draw_widget();
 }
 
-void null_function1() {}
-
 void astra_ui_main_core()
 {
   if (!in_astra) return;
 
-  if (astra_selector.selected_item->in_user_item)
+  //退场动画
+  if (!astra_exit_animation_finished)
   {
-    //退场动画
-    if (!astra_exit_animation_finished)
+    for (uint8_t i = 0; i < 8; i++)
     {
-      for (uint8_t i = 0; i < 8; i++)
+      oled_clear_buffer();
+      //需要执行退场动画了
+      //因为标志位先被置了对应的位 所以如果in_user_item=true就代表刚进user item 需要渲染列表项
+      //如果in_user_item=false 就代表退出user item 需要渲染user item 即继续执行loop
+      //如果就在item里面
+      if (astra_selector.selected_item->in_user_item)
       {
-        oled_clear_buffer();
         astra_refresh_camera_position();
         astra_refresh_main_core_position();
         astra_refresh_selector_position();
         astra_draw_list();
-        astra_draw_exit_animation(i);
-        oled_send_buffer();
-        delay(5);
+      } else if (!astra_selector.selected_item->in_user_item)
+      {
+        astra_selector.selected_item->loop_function();
       }
-      astra_exit_animation_finished = true;
-      // oled_clear_buffer();  //清除退场动画遮罩
+      astra_draw_exit_animation(i);
+      oled_send_buffer();
+      delay(5);
     }
+    astra_exit_animation_finished = true;
+    return;
+  }
+
+  if (astra_selector.selected_item->in_user_item)
+  {
+    // //退场动画
+    // if (!astra_exit_animation_finished)
+    // {
+    //   for (uint8_t i = 0; i < 8; i++)
+    //   {
+    //     oled_clear_buffer();
+    //     astra_refresh_camera_position();
+    //     astra_refresh_main_core_position();
+    //     astra_refresh_selector_position();
+    //     astra_draw_list();
+    //     astra_draw_exit_animation(i);
+    //     oled_send_buffer();
+    //     delay(5);
+    //   }
+    //   astra_exit_animation_finished = true;
+    // }
 
     //初始化
     if (!astra_selector.selected_item->user_item_inited)

@@ -145,7 +145,7 @@ void astra_selector_go_prev_item()
   astra_selector.selected_item = astra_selector.selected_item->parent->child_list_item[--astra_selector.selected_index];
 }
 
-bool astra_exit_animation_finished = false;
+bool astra_exit_animation_finished = true;
 
 void astra_selector_jump_to_next_layer()
 {
