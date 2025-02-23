@@ -7,11 +7,36 @@
 #include <math.h>
 #include <stdio.h>
 
-void astra_draw_exit_animation(uint8_t _cnt)
+void astra_exit_animation(float *_pos, float _posTrg, float _speed)
 {
+  if (*_pos != _posTrg)
+  {
+    if (fabs(*_pos - _posTrg) <= 1.0f) *_pos = _posTrg;
+    else *_pos += (_posTrg - *_pos) / (100.0f - _speed) / 1.0f;
+  }
+}
+
+bool astra_draw_exit_animation()
+{
+  static float _temp_h = 0;
+  static float _temp_h_trg = OLED_HEIGHT + 4;
+
+  if (_temp_h == _temp_h_trg)
+  {
+    _temp_h = 0;
+    return true;
+  }
+
   oled_set_draw_color(0);
-  oled_draw_box(0, 0, OLED_WIDTH, (_cnt + 1) * 8);
+  oled_draw_box(0, 0, OLED_WIDTH, _temp_h);  //遮罩
   oled_set_draw_color(1);
+  oled_draw_box(0, _temp_h, OLED_WIDTH, 4);  //遮罩下方横线
+  oled_set_draw_color(2);
+  oled_draw_H_line(0, _temp_h + 6, OLED_WIDTH);  //横线下方横线
+  astra_exit_animation(&_temp_h, _temp_h_trg, 94);
+  oled_set_draw_color(1);
+
+  return false;
 }
 
 void astra_draw_info_bar()
