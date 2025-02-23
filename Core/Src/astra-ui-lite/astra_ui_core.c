@@ -135,7 +135,8 @@ void astra_ui_main_core()
   //退场动画
   if (!astra_exit_animation_finished)
   {
-    do {
+    do
+    {
       oled_clear_buffer();
       //需要执行退场动画了
       //因为标志位先被置了对应的位 所以如果in_user_item=true就代表刚进user item 需要渲染列表项
@@ -151,9 +152,8 @@ void astra_ui_main_core()
       {
         astra_selector.selected_item->loop_function();
       }
-      astra_draw_exit_animation();
-      oled_send_buffer();
-      delay(5);
+      // astra_draw_exit_animation();
+
     } while (!astra_draw_exit_animation());
     astra_exit_animation_finished = true;
     return;

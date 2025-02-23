@@ -36,6 +36,8 @@ bool astra_draw_exit_animation()
   astra_exit_animation(&_temp_h, _temp_h_trg, 94);
   oled_set_draw_color(1);
 
+  oled_send_buffer();
+
   return false;
 }
 
