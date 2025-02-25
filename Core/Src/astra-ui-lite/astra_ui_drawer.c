@@ -19,7 +19,7 @@ void astra_exit_animation(float *_pos, float _posTrg, float _speed)
 bool astra_draw_exit_animation()
 {
   static float _temp_h = 0;
-  static float _temp_h_trg = OLED_HEIGHT + 4;
+  static float _temp_h_trg = OLED_HEIGHT + 8;
 
   if (_temp_h == _temp_h_trg)
   {
@@ -30,13 +30,20 @@ bool astra_draw_exit_animation()
   oled_set_draw_color(0);
   oled_draw_box(0, 0, OLED_WIDTH, _temp_h);  //遮罩
   oled_set_draw_color(1);
+  oled_draw_str((OLED_WIDTH / 2) - (oled_get_str_width("loading...") / 2), _temp_h - OLED_HEIGHT / 2, "loading...");
   oled_draw_box(0, _temp_h, OLED_WIDTH, 4);  //遮罩下方横线
-  oled_set_draw_color(2);
-  oled_draw_H_line(0, _temp_h + 6, OLED_WIDTH);  //横线下方横线
-  astra_exit_animation(&_temp_h, _temp_h_trg, 94);
-  oled_set_draw_color(1);
 
-  oled_send_buffer();
+  //棋盘格过渡
+  for (int16_t i = 0; i <= OLED_WIDTH ; i += 2)
+  {
+    for (int16_t j = _temp_h - 5; j <= _temp_h - 1; j++)
+    {
+      if (j % 2 == 0) oled_draw_pixel(i + 1, j);
+      if (j % 2 == 1) oled_draw_pixel(i, j);
+    }
+  }
+
+  astra_exit_animation(&_temp_h, _temp_h_trg, 94);
 
   return false;
 }

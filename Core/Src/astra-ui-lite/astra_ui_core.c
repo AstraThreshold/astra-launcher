@@ -132,70 +132,33 @@ void astra_ui_main_core()
 {
   if (!in_astra) return;
 
-  //退场动画
-  if (!astra_exit_animation_finished)
+  if (astra_exit_animation_finished)
   {
-    do
+    if (astra_selector.selected_item->in_user_item)
     {
-      oled_clear_buffer();
-      //需要执行退场动画了
-      //因为标志位先被置了对应的位 所以如果in_user_item=true就代表刚进user item 需要渲染列表项
-      //如果in_user_item=false 就代表退出user item 需要渲染user item 即继续执行loop
-      //如果就在item里面
-      if (astra_selector.selected_item->in_user_item)
+      //初始化
+      if (!astra_selector.selected_item->user_item_inited)
       {
-        astra_refresh_camera_position();
-        astra_refresh_main_core_position();
-        astra_refresh_selector_position();
-        astra_draw_list();
-      } else if (!astra_selector.selected_item->in_user_item)
+        if (astra_selector.selected_item->init_function != NULL) astra_selector.selected_item->init_function();
+        astra_selector.selected_item->user_item_inited = true;
+      }
+
+      if (astra_selector.selected_item->loop_function != NULL)
       {
+        astra_selector.selected_item->user_item_looping = true;
         astra_selector.selected_item->loop_function();
       }
-      // astra_draw_exit_animation();
-
-    } while (!astra_draw_exit_animation());
-    astra_exit_animation_finished = true;
-    return;
-  }
-
-  if (astra_selector.selected_item->in_user_item)
+    } else
+    {
+      astra_refresh_camera_position();
+      astra_refresh_main_core_position();
+      astra_refresh_selector_position();
+      astra_draw_list();
+    }
+  } else
   {
-    // //退场动画
-    // if (!astra_exit_animation_finished)
-    // {
-    //   for (uint8_t i = 0; i < 8; i++)
-    //   {
-    //     oled_clear_buffer();
-    //     astra_refresh_camera_position();
-    //     astra_refresh_main_core_position();
-    //     astra_refresh_selector_position();
-    //     astra_draw_list();
-    //     astra_draw_exit_animation(i);
-    //     oled_send_buffer();
-    //     delay(5);
-    //   }
-    //   astra_exit_animation_finished = true;
-    // }
-
-    //初始化
-    if (!astra_selector.selected_item->user_item_inited)
-    {
-      if (astra_selector.selected_item->init_function != NULL) astra_selector.selected_item->init_function();
-      astra_selector.selected_item->user_item_inited = true;
-    }
-
-    if (astra_selector.selected_item->loop_function != NULL)
-    {
-      astra_selector.selected_item->user_item_looping = true;
-      astra_selector.selected_item->loop_function();
-    }
-
-    return;
+    //退场动画
+    //上面都是正常应当绘制的内容 退场动画需要绘制时 只需要在上面的基础上绘制遮罩即可
+    astra_exit_animation_finished = astra_draw_exit_animation();
   }
-  //无需修改
-  astra_refresh_camera_position();
-  astra_refresh_main_core_position();
-  astra_refresh_selector_position();
-  astra_draw_list();
 }
