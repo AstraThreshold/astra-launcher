@@ -80,6 +80,8 @@ typedef struct astra_list_item_t
   struct astra_list_item_t *parent;
 
   bool in_user_item;
+  bool entering_user_item;
+  bool exiting_user_item;
   void (*init_function)();
   void (*loop_function)();  //user_item的逻辑和item写在一起 方便渲染
   bool user_item_inited;

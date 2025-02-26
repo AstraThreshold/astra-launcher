@@ -132,33 +132,34 @@ void astra_ui_main_core()
 {
   if (!in_astra) return;
 
-  if (astra_exit_animation_finished)
-  {
-    if (astra_selector.selected_item->in_user_item)
-    {
-      //初始化
-      if (!astra_selector.selected_item->user_item_inited)
-      {
-        if (astra_selector.selected_item->init_function != NULL) astra_selector.selected_item->init_function();
-        astra_selector.selected_item->user_item_inited = true;
-      }
+  //todo 这部分写切换in user item的逻辑
 
-      if (astra_selector.selected_item->loop_function != NULL)
-      {
-        astra_selector.selected_item->user_item_looping = true;
-        astra_selector.selected_item->loop_function();
-      }
-    } else
+  //渲染的逻辑
+  if (astra_selector.selected_item->in_user_item)
+  {
+    //初始化
+    if (!astra_selector.selected_item->user_item_inited)
     {
-      astra_refresh_camera_position();
-      astra_refresh_main_core_position();
-      astra_refresh_selector_position();
-      astra_draw_list();
+      if (astra_selector.selected_item->init_function != NULL)
+        astra_selector.selected_item->init_function();
+      astra_selector.selected_item->user_item_inited = true;
+    }
+
+    if (astra_selector.selected_item->loop_function != NULL)
+    {
+      astra_selector.selected_item->user_item_looping = true;
+      astra_selector.selected_item->loop_function();
     }
   } else
   {
-    //退场动画
-    //上面都是正常应当绘制的内容 退场动画需要绘制时 只需要在上面的基础上绘制遮罩即可
-    astra_exit_animation_finished = astra_draw_exit_animation();
+    astra_refresh_camera_position();
+    astra_refresh_main_core_position();
+    astra_refresh_selector_position();
+    astra_draw_list();
   }
+
+  //退场动画
+  //上面都是正常应当绘制的内容 退场动画需要绘制时 只需要在上面的基础上绘制遮罩即可
+  if (!astra_exit_animation_finished)
+    astra_draw_exit_animation();
 }

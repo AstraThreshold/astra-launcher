@@ -154,7 +154,9 @@ void astra_selector_jump_to_next_layer()
   if (astra_selector.selected_item->type == user_item)
   {
     astra_exit_animation_finished = false;
-    astra_selector.selected_item->in_user_item = true;
+    // astra_selector.selected_item->in_user_item = true;
+    astra_selector.selected_item->entering_user_item = true;
+    astra_selector.selected_item->exiting_user_item = false;
     astra_selector.selected_item->user_item_inited = false;
     astra_selector.selected_item->user_item_looping = false;
     return;
@@ -176,7 +178,9 @@ void astra_selector_jump_to_prev_layer()
   if (astra_selector.selected_item->type == user_item && astra_selector.selected_item->in_user_item)
   {
     astra_exit_animation_finished = false; //需要重新绘制退场动画
-    astra_selector.selected_item->in_user_item = false;
+    // astra_selector.selected_item->in_user_item = false;
+    astra_selector.selected_item->entering_user_item = false;
+    astra_selector.selected_item->exiting_user_item = true;
     astra_selector.selected_item->user_item_inited = false;
     astra_selector.selected_item->user_item_looping = false;
     return;

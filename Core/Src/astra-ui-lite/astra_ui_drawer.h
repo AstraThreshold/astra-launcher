@@ -7,7 +7,8 @@
 
 #include "astra_ui_item.h"
 #include "../astra-launcher/launcher_delay.h"
-extern bool astra_draw_exit_animation(); //退场动画
+extern uint8_t astra_exit_animation_status;
+extern void astra_draw_exit_animation(); //退场动画
 
 extern void astra_draw_info_bar();  //前景
 

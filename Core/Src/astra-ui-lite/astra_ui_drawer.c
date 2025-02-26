@@ -16,22 +16,32 @@ void astra_exit_animation(float *_pos, float _posTrg, float _speed)
   }
 }
 
-bool astra_draw_exit_animation()
-{
-  static float _temp_h = 0;
-  static float _temp_h_trg = OLED_HEIGHT + 8;
+uint8_t astra_exit_animation_status = 0;
 
-  if (_temp_h == _temp_h_trg)
-  {
-    _temp_h = 0;
-    return true;
-  }
+void astra_draw_exit_animation()
+{
+  //完成完整的退场动画 astra_exit_animation_status的取值依次如下
+  //0 触发退场动画 遮罩开始落下
+  //1 遮罩落下完成 此时屏幕被遮罩填满 开始变更背景内容
+  //2 遮罩开始抬升
+  //0 遮罩抬升完成 退场动画完成
+  static float _temp_h = -8;
+  static float _temp_h_trg = OLED_HEIGHT + 8;
 
   oled_set_draw_color(0);
   oled_draw_box(0, 0, OLED_WIDTH, _temp_h);  //遮罩
   oled_set_draw_color(1);
-  oled_draw_str((OLED_WIDTH / 2) - (oled_get_str_width("loading...") / 2), _temp_h - OLED_HEIGHT / 2, "loading...");
-  oled_draw_box(0, _temp_h, OLED_WIDTH, 4);  //遮罩下方横线
+  if (_temp_h - OLED_HEIGHT / 2 >= 0)
+    oled_draw_str((OLED_WIDTH / 2) - (oled_get_str_width("loading...") / 2), _temp_h - OLED_HEIGHT / 2, "loading...");
+
+  if (_temp_h + 3 >= 0)
+  {
+    //下面四句是遮罩下方横线
+    oled_draw_H_line(0, _temp_h, OLED_WIDTH);
+    oled_draw_H_line(0, _temp_h+1, OLED_WIDTH);
+    oled_draw_H_line(0, _temp_h+2, OLED_WIDTH);
+    oled_draw_H_line(0, _temp_h+3, OLED_WIDTH);
+  }
 
   //棋盘格过渡
   for (int16_t i = 0; i <= OLED_WIDTH ; i += 2)
@@ -45,7 +55,30 @@ bool astra_draw_exit_animation()
 
   astra_exit_animation(&_temp_h, _temp_h_trg, 94);
 
-  return false;
+  //下落过程
+  if (astra_exit_animation_status == 0 && _temp_h == _temp_h_trg && _temp_h == OLED_HEIGHT + 8)
+  {
+    astra_exit_animation_status = 1; //落下来了
+    return;
+  }
+
+  //上面astra_exit_animation_status=1之后 return了 进到core里刷新了背景显示内容 下一次进到本函数就可以把标志位置为2
+  if (astra_exit_animation_status == 1)
+  {
+    // _temp_h_trg = OLED_HEIGHT + 8;
+    _temp_h_trg = -8; //使其开始上升
+    astra_exit_animation_status = 2; //开始抬起
+    return;
+  }
+
+  if (astra_exit_animation_status == 2 && _temp_h == _temp_h_trg && _temp_h == -8)
+  {
+    astra_exit_animation_finished = true;
+    astra_exit_animation_status = 0; //退场动画完成
+    _temp_h = -8;
+    _temp_h_trg = OLED_HEIGHT + 8;
+    return;
+  }
 }
 
 void astra_draw_info_bar()
