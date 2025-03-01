@@ -31,16 +31,62 @@ void astra_draw_exit_animation()
   oled_set_draw_color(0);
   oled_draw_box(0, 0, OLED_WIDTH, _temp_h);  //遮罩
   oled_set_draw_color(1);
-  if (_temp_h - OLED_HEIGHT / 2 >= 0)
-    oled_draw_str((OLED_WIDTH / 2) - (oled_get_str_width("loading...") / 2), _temp_h - OLED_HEIGHT / 2, "loading...");
+
+  // 沙漏
+  uint8_t _x_hourglass_offset = OLED_WIDTH / 2 - 8;
+  int8_t _y_hourglass = _temp_h - OLED_HEIGHT/2 - 18;
+  if (_y_hourglass + 20 >= 0) {
+    // 绘制顶部和底部矩形及中间擦除
+    oled_draw_box(_x_hourglass_offset, _y_hourglass + 2, 13, 3);
+    oled_set_draw_color(0);
+    oled_draw_H_line(_x_hourglass_offset + 2, _y_hourglass + 3, 9);
+    oled_set_draw_color(1);
+
+    // 主体结构
+    oled_draw_V_line(_x_hourglass_offset + 1, _y_hourglass + 4, 5);
+    oled_draw_V_line(_x_hourglass_offset + 11, _y_hourglass + 4, 5);
+
+    // 斜线部分循环绘制
+    for (uint8_t i = 0; i < 5; ++i) {
+      int8_t _current_y = _y_hourglass + 8 + i;
+      int8_t _left_x = (i < 3) ? (_x_hourglass_offset + 1 + i) : (_x_hourglass_offset + 4);
+      int8_t _right_x = (i < 3) ? (_x_hourglass_offset + 10 - i) : (_x_hourglass_offset + 7);
+      oled_draw_H_line(_left_x, _current_y, 2);
+      oled_draw_H_line(_right_x, _current_y, 2);
+    }
+
+    // 中间收口部分
+    for (uint8_t i = 0; i < 3; ++i) {
+      int8_t _current_y = _y_hourglass + 13 + i;
+      oled_draw_H_line(_x_hourglass_offset + 3 - i, _current_y, 2);
+      oled_draw_H_line(_x_hourglass_offset + 8 + i, _current_y, 2);
+    }
+
+    // 底部竖线
+    oled_draw_V_line(_x_hourglass_offset + 1, _y_hourglass + 16, 3);
+    oled_draw_V_line(_x_hourglass_offset + 11, _y_hourglass + 16, 3);
+
+    // 底部矩形
+    oled_draw_box(_x_hourglass_offset, _y_hourglass + 19, 13, 3);
+    oled_set_draw_color(0);
+    oled_draw_H_line(_x_hourglass_offset + 2, _y_hourglass + 20, 9);
+    oled_set_draw_color(1);
+
+    // 散点像素数组化绘制
+    const uint8_t points[][2] = {{5,7}, {7,7}, {6,8}, {6,10}, {6,14}, {6,16},
+                                 {5,17}, {7,17}, {4,18}, {6,18}, {8,18}};
+    for (uint8_t i = 0; i < sizeof(points)/sizeof(points[0]); ++i) {
+      oled_draw_pixel(_x_hourglass_offset + points[i][0], _y_hourglass + points[i][1]);
+    }
+  }
 
   if (_temp_h + 3 >= 0)
   {
-    //下面四句是遮罩下方横线
-    oled_draw_H_line(0, _temp_h, OLED_WIDTH);
-    oled_draw_H_line(0, _temp_h+1, OLED_WIDTH);
-    oled_draw_H_line(0, _temp_h+2, OLED_WIDTH);
-    oled_draw_H_line(0, _temp_h+3, OLED_WIDTH);
+    //下面是遮罩下方横线
+    for (uint8_t i = 0; i <= 3; ++i)
+    {
+      oled_draw_H_line(0, _temp_h + i, OLED_WIDTH);
+    }
   }
 
   //棋盘格过渡
@@ -118,7 +164,6 @@ void astra_draw_info_bar()
   oled_draw_pixel((int16_t)(OLED_WIDTH/2 + astra_info_bar.w_info_bar/2 - 2),
                   (int16_t)(astra_info_bar.y_info_bar + INFO_BAR_HEIGHT - 3));
 
-
   oled_draw_UTF8((int16_t)(OLED_WIDTH/2 - astra_info_bar.w_info_bar/2 + 6),
                  (int16_t)(astra_info_bar.y_info_bar + oled_get_str_height() - 2),
                  astra_info_bar.content);
@@ -173,12 +218,26 @@ void astra_draw_list_appearance()
   //顶部状态栏
   oled_draw_H_line(0, 1, 66);
   oled_draw_H_line(0, 0, 67);
-  for (uint8_t i = 67; i <= 99; i++) if (i % 2 == 1) oled_draw_pixel(i, 1);
-  for (uint8_t i = 68; i <= 100; i++) if (i % 2 == 0) oled_draw_pixel(i, 0);
-  for (uint8_t i = 101; i <= 111; i++) if (i % 3 == 0) oled_draw_pixel(i, 1);
-  for (uint8_t i = 102; i <= 112; i++) if (i % 3 == 1) oled_draw_pixel(i, 0);
-  for (uint8_t i = 112; i <= 124; i++) if (i % 5 == 0) oled_draw_pixel(i, 1);
-  for (uint8_t i = 114; i <= 124; i++) if (i % 5 == 1) oled_draw_pixel(i, 0);
+  // 参数化绘制配置
+  const struct {
+    uint8_t _start;
+    uint8_t _end;
+    uint8_t _step;
+    uint8_t _y;
+  } draw_cfg[] = {
+    {67,  99, 2, 1},  // 奇数序列优化为步长2
+    {68, 100, 2, 0},  // 偶数序列优化为步长2
+    {102,111, 3, 1},  // 原i%3==0等效步长3（数学变换后起始点+1）
+    {103,112, 3, 0},  // 原i%3==1等效步长3（数学变换后起始点+2）
+    {115,124, 5, 1},  // 原i%5==0等效步长5（数学变换后起始点+3）
+    {116,124, 5, 0}   // 原i%5==1等效步长5（数学变换后起始点+2）
+  };
+
+  for (uint8_t j = 0; j < sizeof(draw_cfg)/sizeof(draw_cfg[0]); ++j) {
+    for (uint8_t i = draw_cfg[j]._start; i <= draw_cfg[j]._end; i += draw_cfg[j]._step) {
+      oled_draw_pixel(i, draw_cfg[j]._y);
+    }
+  }
 
   //右侧进度条
   oled_draw_V_line(OLED_WIDTH - 5, 0, OLED_HEIGHT);

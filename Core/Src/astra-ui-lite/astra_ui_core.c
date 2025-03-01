@@ -109,6 +109,7 @@ void astra_refresh_list_item_position()
 
 void astra_refresh_selector_position()
 {
+  oled_set_font(u8g2_font_my_chinese);
   astra_selector.y_selector_trg = astra_selector.selected_item->y_list_item_trg - oled_get_str_height() + 1;
   astra_selector.w_selector_trg = oled_get_UTF8_width(astra_selector.selected_item->content) + 12;
   astra_selector.h_selector_trg = 15;
