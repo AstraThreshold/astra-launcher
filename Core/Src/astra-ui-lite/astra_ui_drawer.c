@@ -73,10 +73,10 @@ void astra_draw_exit_animation()
     oled_set_draw_color(1);
 
     // 散点像素数组化绘制
-    const uint8_t points[][2] = {{5,7}, {7,7}, {6,8}, {6,10}, {6,14}, {6,16},
+    const uint8_t _points[][2] = {{5,7}, {7,7}, {6,8}, {6,10}, {6,14}, {6,16},
                                  {5,17}, {7,17}, {4,18}, {6,18}, {8,18}};
-    for (uint8_t i = 0; i < sizeof(points)/sizeof(points[0]); ++i) {
-      oled_draw_pixel(_x_hourglass_offset + points[i][0], _y_hourglass + points[i][1]);
+    for (uint8_t i = 0; i < sizeof(_points)/sizeof(_points[0]); ++i) {
+      oled_draw_pixel(_x_hourglass_offset + _points[i][0], _y_hourglass + _points[i][1]);
     }
   }
 
