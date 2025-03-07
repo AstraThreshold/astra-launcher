@@ -72,7 +72,7 @@ void astra_animation(float *_pos, float _posTrg, float _speed)
 void astra_refresh_info_bar()
 {
   astra_animation(&astra_info_bar.y_info_bar, astra_info_bar.y_info_bar_trg, 94);
-  astra_animation(&astra_info_bar.w_info_bar, astra_info_bar.w_info_bar_trg, 94);
+  astra_animation(&astra_info_bar.w_info_bar, astra_info_bar.w_info_bar_trg, 95);
 }
 
 void astra_refresh_pop_up()
@@ -134,6 +134,11 @@ void astra_ui_main_core()
   if (!in_astra) return;
 
   //todo 这部分写切换in user item的逻辑
+  if (astra_exit_animation_status == 1)
+    if (astra_selector.selected_item->entering_user_item)
+      astra_selector.selected_item->in_user_item = 1;
+    else if (astra_selector.selected_item->exiting_user_item)
+      astra_selector.selected_item->in_user_item = 0;
 
   //渲染的逻辑
   if (astra_selector.selected_item->in_user_item)

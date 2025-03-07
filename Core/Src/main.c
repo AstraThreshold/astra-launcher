@@ -74,13 +74,13 @@ void test_user_item_init_function()
 
 void test_user_item_loop_function()
 {
-  oled_draw_R_box(30, 30, 20, 10, 1);
+  oled_set_draw_color(1);
   char test_str[10] = {};
   sprintf(test_str, "%d", launcher_get_tick_ms());
   // oled_draw_str(20, 50, "test_str");
-  oled_draw_box(0,0,128,64);
   oled_set_draw_color(2);
-  oled_draw_str(20, 50, "test_str");
+  oled_draw_box(0,0,128,64);
+  oled_draw_str(3, 30, "this is a test user item");
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
 }
 
