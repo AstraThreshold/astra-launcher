@@ -53,8 +53,9 @@ extern void astra_push_pop_up(char *_content, const uint16_t _span);
 #define MAX_LIST_LAYER 10
 #define SCREEN_HEIGHT 64
 #define SCREEN_WIDTH 128
-#define LIST_ITEM_SPACEING 15
+#define LIST_ITEM_SPACING 15
 #define LIST_ITEM_OFFSET 8
+#define LIST_ITEM_LEFT_MARGIN 4
 #define LIST_INFO_BAR_HEIGHT 3
 #define LIST_FONT_TOP_MARGIN 4
 

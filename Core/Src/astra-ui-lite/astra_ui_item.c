@@ -121,6 +121,8 @@ bool astra_bind_item_to_selector(astra_list_item_t *_item)
 
 void astra_selector_go_next_item()
 {
+  if (astra_selector.selected_item->in_user_item) return;
+
   //到达最末端
   if (astra_selector.selected_index == astra_selector.selected_item->parent->child_num - 1)
   {
@@ -134,6 +136,8 @@ void astra_selector_go_next_item()
 
 void astra_selector_go_prev_item()
 {
+  if (astra_selector.selected_item->in_user_item) return;
+
   //到达最前端
   if (astra_selector.selected_index == 0)
   {
@@ -222,7 +226,7 @@ bool astra_push_item_to_list(astra_list_item_t *_parent, astra_list_item_t *_chi
 
   oled_set_font(u8g2_font_my_chinese);
   if (_parent->child_num == 0) _child->y_list_item_trg = oled_get_str_height() + LIST_FONT_TOP_MARGIN - 1;
-  else _child->y_list_item_trg = _parent->child_list_item[_parent->child_num - 1]->y_list_item_trg + LIST_ITEM_SPACEING;
+  else _child->y_list_item_trg = _parent->child_list_item[_parent->child_num - 1]->y_list_item_trg + LIST_ITEM_SPACING;
 
   if (_parent->layer == 0 && _parent->child_num == 0)
   {
