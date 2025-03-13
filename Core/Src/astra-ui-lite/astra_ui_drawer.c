@@ -6,6 +6,8 @@
 
 #include <math.h>
 
+#include "astra_ui_core.h"
+
 void astra_exit_animation(float *_pos, float _posTrg, float _speed)
 {
   if (*_pos != _posTrg)
@@ -144,7 +146,7 @@ void astra_draw_info_bar()
   int16_t _y_info_bar_1 = astra_info_bar.y_info_bar - 4;
   int16_t _y_info_bar_2 = astra_info_bar.y_info_bar + INFO_BAR_HEIGHT;
 
-  oled_set_font(u8g2_font_my_chinese);
+  astra_set_font(u8g2_font_my_chinese);
   oled_set_draw_color(1);
   oled_draw_R_box(_x_info_bar + 3, _y_info_bar_1 + 3,
                   (int16_t)astra_info_bar.w_info_bar, INFO_BAR_HEIGHT + 4, 4);
@@ -185,7 +187,7 @@ void astra_draw_pop_up()
   int16_t _x_pop_up = OLED_WIDTH/2 - astra_pop_up.w_pop_up/2;
   int16_t _y_pop_up = astra_pop_up.y_pop_up + POP_UP_HEIGHT;
 
-  oled_set_font(u8g2_font_my_chinese);
+  astra_set_font(u8g2_font_my_chinese);
   oled_set_draw_color(1); //阴影打底
   oled_draw_R_box(_x_pop_up + 1, (int16_t)astra_pop_up.y_pop_up + 3,
                   (int16_t)(astra_pop_up.w_pop_up + 4),
@@ -274,7 +276,6 @@ void astra_draw_list_item()
 {
   oled_set_draw_color(1);
   //selector内包含的item的parent即是当前正在被绘制的页面
-  oled_set_font(u8g2_font_my_chinese);
   for (unsigned char i = 0; i < astra_selector.selected_item->parent->child_num; i++)
   {
     int16_t _x_list_item = astra_camera.x_camera + LIST_ITEM_LEFT_MARGIN;
@@ -284,8 +285,7 @@ void astra_draw_list_item()
     //绘制开头的指示器
     if (astra_selector.selected_item->parent->child_list_item[i]->type == list_item)
     {
-      if (_y_list_item + 2 > LIST_INFO_BAR_HEIGHT && _y_list_item - 2 <
-          SCREEN_HEIGHT)
+      if (_y_list_item + 2 > LIST_INFO_BAR_HEIGHT && _y_list_item - 2 < SCREEN_HEIGHT)
       {
         oled_draw_H_line(2 + _x_list_item, _y_list_item - 2, 4);
         oled_draw_H_line(2 + _x_list_item, _y_list_item, 5);
@@ -293,16 +293,19 @@ void astra_draw_list_item()
       }
     } else if (astra_selector.selected_item->parent->child_list_item[i]->type == switch_item)
     {
-      if (_y_list_item + 1 + 6 > LIST_INFO_BAR_HEIGHT && _y_list_item + 1
-          < SCREEN_HEIGHT)
+      if (_y_list_item + 1 + 6 > LIST_INFO_BAR_HEIGHT && _y_list_item + 1 < SCREEN_HEIGHT)
       {
         oled_draw_circle(4 + _x_list_item, _y_list_item + 1, 3);
         oled_draw_V_line(4 + _x_list_item, _y_list_item, 3);
+
+        //todo 绘制开关控件指示器部分
+        oled_draw_H_line(OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN, _y_list_item + 2, 7); //横线
+        if ((bool)astra_selector.selected_item->parent->child_list_item[i]->value == true); //todo
+
       }
     } else if (astra_selector.selected_item->parent->child_list_item[i]->type == button_item)
     {
-      if (_y_list_item > LIST_INFO_BAR_HEIGHT && _y_list_item - 1 <
-          SCREEN_HEIGHT)
+      if (_y_list_item > LIST_INFO_BAR_HEIGHT && _y_list_item - 1 < SCREEN_HEIGHT)
       {
         oled_draw_box(2 + _x_list_item, _y_list_item - 1, 4, 4);
         oled_draw_H_line(3 + _x_list_item, _y_list_item + 4, 4);
@@ -310,8 +313,7 @@ void astra_draw_list_item()
       }
     } else if (astra_selector.selected_item->parent->child_list_item[i]->type == slider_item)
     {
-      if (_y_list_item + 2 + 3 > LIST_INFO_BAR_HEIGHT && _y_list_item - 2
-          < SCREEN_HEIGHT)
+      if (_y_list_item + 2 + 3 > LIST_INFO_BAR_HEIGHT && _y_list_item - 2 < SCREEN_HEIGHT)
       {
         oled_draw_V_line(3 + _x_list_item, _y_list_item - 1, 5);
         oled_draw_V_line(6 + _x_list_item, _y_list_item - 1, 5);
@@ -323,6 +325,8 @@ void astra_draw_list_item()
       if (_y_list_item + oled_get_str_height() / 2 > LIST_INFO_BAR_HEIGHT && _y_list_item + oled_get_str_height() / 2 < SCREEN_HEIGHT)
         oled_draw_str(2 + _x_list_item, _y_list_item + oled_get_str_height() / 2, "-");
     }
+
+    astra_set_font(u8g2_font_my_chinese);
     if (_y_list_item + oled_get_str_height() / 2 > LIST_INFO_BAR_HEIGHT && _y_list_item + oled_get_str_height() / 2 < SCREEN_HEIGHT)
       oled_draw_UTF8(10 + _x_list_item, _y_list_item + oled_get_str_height() / 2,
                    astra_selector.selected_item->parent->child_list_item[i]->content);

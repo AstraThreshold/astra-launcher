@@ -4,11 +4,17 @@
 
 #include "astra_ui_item.h"
 
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 
 #include "astra_ui_core.h"
 #include "../astra-launcher/launcher_delay.h"
+
+void astra_set_font(void *_font)
+{
+  if (_font != astra_font) oled_set_font(_font);
+}
 
 astra_info_bar_t astra_info_bar = {0, 1, 0 - 2 * INFO_BAR_HEIGHT, 0 - 2 * INFO_BAR_HEIGHT, 80, 80, false, 0, 1};
 
@@ -30,7 +36,7 @@ void astra_push_info_bar(char *_content, const uint16_t _span)
     astra_info_bar.is_running = true;
   }
 
-  oled_set_font(u8g2_font_my_chinese);
+  astra_set_font(u8g2_font_my_chinese);
   astra_info_bar.w_info_bar_trg = oled_get_UTF8_width(astra_info_bar.content) + INFO_BAR_OFFSET;
 }
 
@@ -51,46 +57,62 @@ void astra_push_pop_up(char *_content, const uint16_t _span)
     astra_pop_up.is_running = true;
   }
 
-  oled_set_font(u8g2_font_my_chinese);
+  astra_set_font(u8g2_font_my_chinese);
   astra_pop_up.w_pop_up_trg = oled_get_UTF8_width(astra_pop_up.content) + POP_UP_OFFSET;
 }
 
-astra_list_item_t astra_list_item_root = {};
+// astra_list_item_t astra_list_item_root = {};
 
-bool astra_bind_value_to_list_item(astra_list_item_t *_item, void *_value)
+astra_user_item_t *astra_to_user_item(astra_list_item_t *_astra_list_item)
 {
-  if (_item == NULL) return false;
-  if (_value == NULL) return false;
-  if (_item->type == list_item) return false;
+  if (_astra_list_item != NULL && _astra_list_item->type == user_item)
+    return (astra_user_item_t*)_astra_list_item;
 
-  _item->value = _value;
-
-  return true;
+  return (astra_user_item_t*)astra_get_root_list();
 }
 
-bool astra_bind_init_function_to_user_item(astra_list_item_t *_user_item, void (*_init_function)())
+//tips: 不会重复创建root节点
+astra_list_item_t *astra_get_root_list()
 {
-  if (_user_item == NULL) return false;
-  if (_user_item->type != user_item) return false;
-  if (_init_function == NULL) return false;
-
-  _user_item->init_function = _init_function;
-
-  return true;
+  static astra_list_item_t* _astra_list_root_item = NULL;
+  if (_astra_list_root_item == NULL)
+  {
+    _astra_list_root_item = malloc(sizeof(astra_list_item_t));
+    memset(_astra_list_root_item, 0, sizeof(astra_list_item_t));
+    _astra_list_root_item->type = list_item;
+    _astra_list_root_item->content = "root";
+  }
+  return _astra_list_root_item;
 }
 
-bool astra_bind_loop_function_to_user_item(astra_list_item_t *_user_item, void (*_loop_function)())
+astra_list_item_t *astra_new_list_item(astra_list_item_type_t _type, char *_content, void *_value)
 {
-  if (_user_item == NULL) return false;
-  if (_user_item->type != user_item) return false;
-  if (_loop_function == NULL) return false;
+  astra_list_item_t *_astra_list_item = malloc(sizeof(astra_list_item_t));
+  memset(_astra_list_item, 0, sizeof(astra_list_item_t));
+  _astra_list_item->type = _type;
+  _astra_list_item->content = _content;
+  _astra_list_item->value = _value;
+  return _astra_list_item;
+}
 
-  _user_item->loop_function = _loop_function;
-
-  return true;
+astra_list_item_t *astra_new_user_item(char *_content, void (*_init_function)(), void (*_loop_function)(), void (*_exit_function)())
+{
+  astra_user_item_t *_astra_user_item = malloc(sizeof(astra_user_item_t));
+  memset(_astra_user_item, 0, sizeof(astra_user_item_t));
+  _astra_user_item->base_item.type = user_item;
+  _astra_user_item->base_item.content = _content;
+  _astra_user_item->init_function = _init_function;
+  _astra_user_item->loop_function = _loop_function;
+  _astra_user_item->exit_function = _exit_function;
+  return (astra_list_item_t*)_astra_user_item;  //转换回基类 但保留专有数据
 }
 
 astra_selector_t astra_selector = {0, };
+
+astra_selector_t *astra_get_selector()
+{
+  return &astra_selector;
+}
 
 bool astra_bind_item_to_selector(astra_list_item_t *_item)
 {
@@ -121,7 +143,7 @@ bool astra_bind_item_to_selector(astra_list_item_t *_item)
 
 void astra_selector_go_next_item()
 {
-  if (astra_selector.selected_item->in_user_item) return;
+  if (astra_selector.selected_item->type == user_item && astra_to_user_item(astra_selector.selected_item)->in_user_item) return;
 
   //到达最末端
   if (astra_selector.selected_index == astra_selector.selected_item->parent->child_num - 1)
@@ -136,7 +158,7 @@ void astra_selector_go_next_item()
 
 void astra_selector_go_prev_item()
 {
-  if (astra_selector.selected_item->in_user_item) return;
+  if (astra_selector.selected_item->type == user_item && astra_to_user_item(astra_selector.selected_item)->in_user_item) return;
 
   //到达最前端
   if (astra_selector.selected_index == 0)
@@ -159,10 +181,11 @@ void astra_selector_jump_to_next_layer()
   {
     astra_exit_animation_finished = false;
     // astra_selector.selected_item->in_user_item = true;
-    astra_selector.selected_item->entering_user_item = true;
-    astra_selector.selected_item->exiting_user_item = false;
-    astra_selector.selected_item->user_item_inited = false;
-    astra_selector.selected_item->user_item_looping = false;
+    astra_user_item_t* _selected_user_item = astra_to_user_item(astra_selector.selected_item);
+    _selected_user_item->entering_user_item = true;
+    _selected_user_item->exiting_user_item = false;
+    _selected_user_item->user_item_inited = false;
+    _selected_user_item->user_item_looping = false;
     return;
   }
 
@@ -178,15 +201,15 @@ void astra_selector_jump_to_next_layer()
 
 void astra_selector_jump_to_prev_layer()
 {
-  //todo 这个if待测试
-  if (astra_selector.selected_item->type == user_item && astra_selector.selected_item->in_user_item)
+  if (astra_selector.selected_item->type == user_item && astra_to_user_item(astra_selector.selected_item)->in_user_item)
   {
     astra_exit_animation_finished = false; //需要重新绘制退场动画
     // astra_selector.selected_item->in_user_item = false;
-    astra_selector.selected_item->entering_user_item = false;
-    astra_selector.selected_item->exiting_user_item = true;
-    astra_selector.selected_item->user_item_inited = false;
-    astra_selector.selected_item->user_item_looping = false;
+    astra_user_item_t* _selected_user_item = astra_to_user_item(astra_selector.selected_item);
+    _selected_user_item->entering_user_item = false;
+    _selected_user_item->exiting_user_item = true;
+    _selected_user_item->user_item_inited = false;
+    _selected_user_item->user_item_looping = false;
     return;
   }
 
@@ -224,7 +247,7 @@ bool astra_push_item_to_list(astra_list_item_t *_parent, astra_list_item_t *_chi
   _child->layer = _parent->layer + 1;
   _child->child_num = 0;
 
-  oled_set_font(u8g2_font_my_chinese);
+  astra_set_font(u8g2_font_my_chinese);
   if (_parent->child_num == 0) _child->y_list_item_trg = oled_get_str_height() + LIST_FONT_TOP_MARGIN - 1;
   else _child->y_list_item_trg = _parent->child_list_item[_parent->child_num - 1]->y_list_item_trg + LIST_ITEM_SPACING;
 

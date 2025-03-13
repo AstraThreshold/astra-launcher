@@ -8,6 +8,9 @@
 #include "astra_ui_draw_driver.h"
 #include <stdbool.h>
 
+static void* astra_font;
+extern void astra_set_font(void* _font);
+
 extern bool astra_exit_animation_finished;
 
 /*** 信息栏 ***/
@@ -56,6 +59,7 @@ extern void astra_push_pop_up(char *_content, const uint16_t _span);
 #define LIST_ITEM_SPACING 15
 #define LIST_ITEM_OFFSET 8
 #define LIST_ITEM_LEFT_MARGIN 4
+#define LIST_ITEM_RIGHT_MARGIN 10
 #define LIST_INFO_BAR_HEIGHT 3
 #define LIST_FONT_TOP_MARGIN 4
 
@@ -79,20 +83,33 @@ typedef struct astra_list_item_t
   uint8_t child_num;
   struct astra_list_item_t *child_list_item[MAX_LIST_CHILD_NUM];
   struct astra_list_item_t *parent;
+} astra_list_item_t;
+
+typedef struct astra_user_item_t
+{
+  astra_list_item_t base_item;
 
   bool in_user_item;
   bool entering_user_item;
   bool exiting_user_item;
   void (*init_function)();
   void (*loop_function)();  //user_item的逻辑和item写在一起 方便渲染
+  void (*exit_function)();
   bool user_item_inited;
   bool user_item_looping;
-} astra_list_item_t;
+} astra_user_item_t;
 
-extern astra_list_item_t astra_list_item_root; //根节点 根列表项
-extern bool astra_bind_value_to_list_item(astra_list_item_t *_item, void *_value);
-extern bool astra_bind_init_function_to_user_item(astra_list_item_t *_user_item, void (*_init_function)());
-extern bool astra_bind_loop_function_to_user_item(astra_list_item_t *_user_item, void (*_loop_function)());
+extern astra_list_item_t *astra_get_root_list();
+
+extern astra_user_item_t *astra_to_user_item(astra_list_item_t *_astra_list_item);
+extern astra_list_item_t *astra_new_list_item(astra_list_item_type_t _type, char *_content, void *_value);
+//正确用法：astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(...));
+extern astra_list_item_t *astra_new_user_item(char *_content, void (*_init_function)(), void (*_loop_function)(), void (*_exit_function)());
+//正确用法：astra_push_item_to_list(astra_get_root_list(), astra_new_user_item(...));
+
+//此种方法合理且安全，本质是将user item类转换为了基类，用于渲染
+//在此过程中，派生类的专有变量不会丢失内容，selector发现是user type后再转换回派生类执行对应内部函数即可
+
 extern bool astra_push_item_to_list(astra_list_item_t *_parent, astra_list_item_t *_child);
 /*** 列表项 ***/
 
@@ -105,6 +122,7 @@ typedef struct astra_selector_t
 } astra_selector_t;
 
 extern astra_selector_t astra_selector;
+extern astra_selector_t* astra_get_selector();
 extern bool astra_bind_item_to_selector(astra_list_item_t *_item);
 extern void astra_selector_go_next_item();
 extern void astra_selector_go_prev_item();
@@ -120,6 +138,7 @@ typedef struct astra_camera_t
 } astra_camera_t;
 
 extern astra_camera_t astra_camera;
+extern astra_camera_t* astra_get_camera();
 extern void astra_bind_selector_to_camera(astra_selector_t *_selector);
 /*** 相机 ***/
 

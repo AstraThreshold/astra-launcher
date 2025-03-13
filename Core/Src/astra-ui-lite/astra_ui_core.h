@@ -19,6 +19,10 @@ extern void astra_refresh_camera_position();
 
 extern void astra_refresh_widget_core_position();
 
+extern void astra_init_list();
+
+extern void astra_init_core();
+
 extern void astra_refresh_list_item_position();
 
 extern void astra_refresh_selector_position();

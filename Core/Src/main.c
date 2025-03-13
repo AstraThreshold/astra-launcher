@@ -84,17 +84,17 @@ void test_user_item_loop_function()
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
 }
 
-astra_list_item_t astra_list_item_test1 = {list_item, "返回主页面"};
-astra_list_item_t astra_list_item_test2 = {button_item, "玩得开心"};
-astra_list_item_t astra_list_item_test3 = {switch_item, "你好世界", 0};
-astra_list_item_t astra_list_item_test4 = {slider_item, "返回主页返回主页"};
-astra_list_item_t astra_list_item_test5 = {list_item, "你好世界"};
-astra_list_item_t astra_list_item_test6 = {user_item, "Just Test1"};
-astra_list_item_t astra_list_item_test7 = {user_item, "Just Test11"};
-astra_list_item_t astra_list_item_test8 = {user_item, "Just Test111"};
-astra_list_item_t astra_list_item_test9 = {user_item, "astra ui lite"};
-astra_list_item_t astra_list_item_test10 = {user_item, "Just Test00"};
-astra_list_item_t astra_list_item_test11 = {user_item, "Just Test000"};
+// astra_list_item_t astra_list_item_test1 = {list_item, "返回主页面"};
+// astra_list_item_t astra_list_item_test2 = {button_item, "玩得开心"};
+// astra_list_item_t astra_list_item_test3 = {switch_item, "你好世界", 0};
+// astra_list_item_t astra_list_item_test4 = {slider_item, "返回主页返回主页"};
+// astra_list_item_t astra_list_item_test5 = {list_item, "你好世界"};
+// astra_list_item_t astra_list_item_test6 = {user_item, "Just Test1"};
+// astra_list_item_t astra_list_item_test7 = {user_item, "Just Test11"};
+// astra_list_item_t astra_list_item_test8 = {user_item, "Just Test111"};
+// astra_list_item_t astra_list_item_test9 = {user_item, "test user item"};
+// astra_list_item_t astra_list_item_test10 = {user_item, "Just Test00"};
+// astra_list_item_t astra_list_item_test11 = {user_item, "Just Test000"};
 
 uint8_t button_test_value = 0;
 uint8_t switch_test_value = 1;
@@ -122,24 +122,25 @@ void astra_ui_entry_prompt_2()
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  astra_bind_init_function_to_user_item(&astra_list_item_test9, test_user_item_init_function);
-  astra_bind_loop_function_to_user_item(&astra_list_item_test9, test_user_item_loop_function);
+  // astra_bind_init_function_to_user_item(&astra_list_item_test9, test_user_item_init_function);
+  // astra_bind_loop_function_to_user_item(&astra_list_item_test9, test_user_item_loop_function);
+  //
+  // astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test1);
+  // astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test2);
+  // astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test3);
+  // astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test9);
+  // astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test10);
+  // // astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test11);
+  // astra_push_item_to_list(&astra_list_item_test3, &astra_list_item_test4);
+  // astra_push_item_to_list(&astra_list_item_test3, &astra_list_item_test5);
+  // astra_push_item_to_list(&astra_list_item_test3, &astra_list_item_test6);
+  // astra_push_item_to_list(&astra_list_item_test3, &astra_list_item_test7);
+  // astra_push_item_to_list(&astra_list_item_test3, &astra_list_item_test8);
+  //
+  // astra_bind_value_to_list_item(&astra_list_item_test2, &button_test_value);
+  // astra_bind_value_to_list_item(&astra_list_item_test3, &switch_test_value);
+  // astra_bind_value_to_list_item(&astra_list_item_test4, &slider_test_value);
 
-  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test1);
-  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test2);
-  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test3);
-  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test9);
-  astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test10);
-  // astra_push_item_to_list(&astra_list_item_root, &astra_list_item_test11);
-  astra_push_item_to_list(&astra_list_item_test3, &astra_list_item_test4);
-  astra_push_item_to_list(&astra_list_item_test3, &astra_list_item_test5);
-  astra_push_item_to_list(&astra_list_item_test3, &astra_list_item_test6);
-  astra_push_item_to_list(&astra_list_item_test3, &astra_list_item_test7);
-  astra_push_item_to_list(&astra_list_item_test3, &astra_list_item_test8);
-
-  astra_bind_value_to_list_item(&astra_list_item_test2, &button_test_value);
-  astra_bind_value_to_list_item(&astra_list_item_test3, &switch_test_value);
-  astra_bind_value_to_list_item(&astra_list_item_test4, &slider_test_value);
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -169,6 +170,25 @@ int main(void)
   HAL_ADCEx_Calibration_Start(&hadc2);
 
   astra_ui_driver_init();
+  astra_init_core();
+
+  astra_list_item_t* test_sec_list = astra_new_list_item(list_item, "second page", NULL);
+  astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(list_item, "你好世界!", NULL));
+  astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(list_item, "hello", NULL));
+  astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(button_item, "world!", NULL));
+  astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(switch_item, "astra ui", NULL));
+  astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(slider_item, "lite version!", NULL));
+  astra_push_item_to_list(astra_get_root_list(), test_sec_list);
+  astra_push_item_to_list(astra_get_root_list(), astra_new_user_item("user item test!", test_user_item_init_function, test_user_item_loop_function, null_function));
+  astra_push_item_to_list(test_sec_list, astra_new_list_item(list_item, "你好世界!", NULL));
+  astra_push_item_to_list(test_sec_list, astra_new_list_item(list_item, "你好世界!", NULL));
+  astra_push_item_to_list(test_sec_list, astra_new_list_item(list_item, "你好世界!", NULL));
+  astra_push_item_to_list(test_sec_list, astra_new_list_item(list_item, "你好世界!", NULL));
+  astra_push_item_to_list(test_sec_list, astra_new_list_item(list_item, "你好世界!", NULL));
+  astra_push_item_to_list(test_sec_list, astra_new_list_item(list_item, "你好世界!", NULL));
+  astra_push_item_to_list(test_sec_list, astra_new_list_item(list_item, "你好世界!", NULL));
+  astra_push_item_to_list(test_sec_list, astra_new_list_item(list_item, "你好世界!", NULL));
+
 
   launcher_set_terminal_area(4, 26, 124, 62);
   static uint32_t _tick = 0;
