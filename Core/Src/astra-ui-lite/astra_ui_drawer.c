@@ -5,6 +5,7 @@
 #include "astra_ui_drawer.h"
 
 #include <math.h>
+#include <stdio.h>
 
 #include "astra_ui_core.h"
 
@@ -274,7 +275,6 @@ void astra_draw_list_appearance()
 //todo 视野外的部分将不会被渲染 但是现在坐标值小于屏幕范围的左值待定 并未缜密测试
 void astra_draw_list_item()
 {
-  oled_set_draw_color(1);
   //selector内包含的item的parent即是当前正在被绘制的页面
   for (unsigned char i = 0; i < astra_selector.selected_item->parent->child_num; i++)
   {
@@ -293,32 +293,37 @@ void astra_draw_list_item()
       }
     } else if (astra_selector.selected_item->parent->child_list_item[i]->type == switch_item)
     {
-      if (_y_list_item + 1 + 6 > LIST_INFO_BAR_HEIGHT && _y_list_item + 1 < SCREEN_HEIGHT)
+      if (_y_list_item + 7 > LIST_INFO_BAR_HEIGHT && _y_list_item + 1 < SCREEN_HEIGHT)
       {
         oled_draw_circle(4 + _x_list_item, _y_list_item + 1, 3);
         oled_draw_V_line(4 + _x_list_item, _y_list_item, 3);
 
-        //todo 绘制开关控件指示器部分
-        oled_draw_H_line(OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN, _y_list_item + 2, 7); //横线
-        if ((bool)astra_selector.selected_item->parent->child_list_item[i]->value == true); //todo
-
-      }
-    } else if (astra_selector.selected_item->parent->child_list_item[i]->type == button_item)
-    {
-      if (_y_list_item > LIST_INFO_BAR_HEIGHT && _y_list_item - 1 < SCREEN_HEIGHT)
-      {
-        oled_draw_box(2 + _x_list_item, _y_list_item - 1, 4, 4);
-        oled_draw_H_line(3 + _x_list_item, _y_list_item + 4, 4);
-        oled_draw_V_line(7 + _x_list_item, _y_list_item, 5);
+        //开关控件指示器部分
+        oled_draw_frame(OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN - 7, _y_list_item - 2, 11, 7);
+        if ((bool)astra_selector.selected_item->parent->child_list_item[i]->value == true)
+        {
+          oled_draw_box(OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN - 1, _y_list_item , 3, 3);
+          oled_draw_pixel(OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN - 4, _y_list_item + 1);
+        }
+        else
+        {
+          oled_draw_box(OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN - 5, _y_list_item, 3, 3);
+          oled_draw_pixel(OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN, _y_list_item + 1);
+        }
       }
     } else if (astra_selector.selected_item->parent->child_list_item[i]->type == slider_item)
     {
-      if (_y_list_item + 2 + 3 > LIST_INFO_BAR_HEIGHT && _y_list_item - 2 < SCREEN_HEIGHT)
+      if (_y_list_item + 5 > LIST_INFO_BAR_HEIGHT && _y_list_item - 2 < SCREEN_HEIGHT)
       {
         oled_draw_V_line(3 + _x_list_item, _y_list_item - 1, 5);
         oled_draw_V_line(6 + _x_list_item, _y_list_item - 1, 5);
         oled_draw_box(2 + _x_list_item, _y_list_item - 2, 3, 3);
         oled_draw_box(5 + _x_list_item, _y_list_item + 2, 3, 3);
+
+        //滑块控件指示器部分
+        char _value_str[10] = {};
+        sprintf(_value_str, "%d", astra_selector.selected_item->parent->child_list_item[i]->value);
+        oled_draw_str(OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN - 4, _y_list_item + oled_get_str_height() / 2, _value_str);
       }
     } else
     {

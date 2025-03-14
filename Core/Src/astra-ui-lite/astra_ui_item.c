@@ -107,7 +107,7 @@ astra_list_item_t *astra_new_user_item(char *_content, void (*_init_function)(),
   return (astra_list_item_t*)_astra_user_item;  //转换回基类 但保留专有数据
 }
 
-astra_selector_t astra_selector = {0, };
+astra_selector_t astra_selector = {};
 
 astra_selector_t *astra_get_selector()
 {
