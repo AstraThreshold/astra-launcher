@@ -178,7 +178,7 @@ int main(void)
   astra_list_item_t* test_sec_list = astra_new_list_item(list_item, "second page", NULL);
   astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(list_item, "你好世界!", NULL));
   astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(list_item, "hello", NULL));
-  astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(button_item, "world!", NULL));
+  astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(switch_item, "world!", NULL));
   astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(switch_item, "astra ui", NULL));
   astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(slider_item, "lite version!", NULL));
   astra_push_item_to_list(astra_get_root_list(), test_sec_list);

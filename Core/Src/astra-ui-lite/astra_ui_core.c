@@ -130,7 +130,9 @@ void astra_refresh_selector_position()
 {
   astra_set_font(u8g2_font_my_chinese);
   astra_selector.y_selector_trg = astra_selector.selected_item->y_list_item_trg - oled_get_str_height() + 1;
-  astra_selector.w_selector_trg = oled_get_UTF8_width(astra_selector.selected_item->content) + 12;
+  if (astra_selector.selected_item->type == switch_item || astra_selector.selected_item->type == slider_item)
+    astra_selector.w_selector_trg = OLED_WIDTH - 18;
+  else astra_selector.w_selector_trg = oled_get_UTF8_width(astra_selector.selected_item->content) + 12;
   astra_selector.h_selector_trg = 15;
   astra_animation(&astra_selector.y_selector, astra_selector.y_selector_trg, 92);
   astra_animation(&astra_selector.w_selector, astra_selector.w_selector_trg, 92);
