@@ -66,10 +66,7 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 void test_user_item_init_function()
 {
-  // oled_clear_buffer();
-  // oled_draw_str(20, 20, "Just Test");
-  // oled_send_buffer();
-  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
 }
 
 void test_user_item_loop_function()
@@ -81,6 +78,10 @@ void test_user_item_loop_function()
   oled_set_draw_color(2);
   oled_draw_box(0,0,128,64);
   oled_draw_str(3, 30, "this is a test user item");
+}
+
+void test_user_item_exit_function()
+{
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
 }
 
@@ -122,6 +123,8 @@ void astra_ui_entry_prompt_2()
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
+
   // astra_bind_init_function_to_user_item(&astra_list_item_test9, test_user_item_init_function);
   // astra_bind_loop_function_to_user_item(&astra_list_item_test9, test_user_item_loop_function);
   //
@@ -179,7 +182,7 @@ int main(void)
   astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(switch_item, "astra ui", NULL));
   astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(slider_item, "lite version!", NULL));
   astra_push_item_to_list(astra_get_root_list(), test_sec_list);
-  astra_push_item_to_list(astra_get_root_list(), astra_new_user_item("user item test!", test_user_item_init_function, test_user_item_loop_function, null_function));
+  astra_push_item_to_list(astra_get_root_list(), astra_new_user_item("user item test!", test_user_item_init_function, test_user_item_loop_function, test_user_item_exit_function));
   astra_push_item_to_list(test_sec_list, astra_new_list_item(list_item, "你好世界!", NULL));
   astra_push_item_to_list(test_sec_list, astra_new_list_item(list_item, "你好世界!", NULL));
   astra_push_item_to_list(test_sec_list, astra_new_list_item(list_item, "你好世界!", NULL));

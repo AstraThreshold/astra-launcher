@@ -161,7 +161,11 @@ void astra_ui_main_core()
       if (_selected_user_item->entering_user_item)
         _selected_user_item->in_user_item = 1;
       else if (_selected_user_item->exiting_user_item)
+      {
+        if (_selected_user_item->user_item_inited && _selected_user_item->user_item_looping)
+          _selected_user_item->exit_function();
         _selected_user_item->in_user_item = 0;
+      }
     }
   }
 
