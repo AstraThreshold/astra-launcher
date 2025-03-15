@@ -300,7 +300,7 @@ void astra_draw_list_item()
 
         //开关控件指示器部分
         oled_draw_frame(OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN - 7, _y_list_item - 2, 11, 7);
-        if ((bool)astra_selector.selected_item->parent->child_list_item[i]->value == true)
+        if (*(bool*)astra_selector.selected_item->parent->child_list_item[i]->value == true)
         {
           oled_draw_box(OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN - 1, _y_list_item , 3, 3);
           oled_draw_pixel(OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN - 4, _y_list_item + 1);

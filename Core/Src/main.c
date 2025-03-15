@@ -103,17 +103,7 @@ uint8_t slider_test_value = 100;
 
 void null_function() {}
 
-void astra_ui_entry_prompt_1()
-{
-  astra_push_pop_up("按键1被按下.",2000);
-  key1Cnt++;
-}
-
-void astra_ui_entry_prompt_2()
-{
-  astra_push_pop_up("key 2 pressed.",2000);
-  key2Cnt++;
-}
+bool _test_bool = false;
 /* USER CODE END 0 */
 
 /**
@@ -178,8 +168,8 @@ int main(void)
   astra_list_item_t* test_sec_list = astra_new_list_item(list_item, "second page", NULL);
   astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(list_item, "你好世界!", NULL));
   astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(list_item, "hello", NULL));
-  astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(switch_item, "world!", NULL));
-  astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(switch_item, "astra ui", NULL));
+  astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(switch_item, "world!", &_test_bool));
+  astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(switch_item, "astra ui", &_test_bool));
   astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(slider_item, "lite version!", NULL));
   astra_push_item_to_list(astra_get_root_list(), test_sec_list);
   astra_push_item_to_list(astra_get_root_list(), astra_new_user_item("user item test!", test_user_item_init_function, test_user_item_loop_function, test_user_item_exit_function));
@@ -221,7 +211,7 @@ int main(void)
     // if (_tick % 808 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
 
     ad_astra();
-    launcher_key_call_back(1, astra_selector_go_prev_item, astra_selector_go_next_item, astra_selector_jump_to_prev_layer, astra_selector_jump_to_next_layer);
+    launcher_key_call_back(1, astra_selector_go_prev_item, astra_selector_go_next_item, astra_selector_exit_current_item, astra_selector_jump_to_selected_item);
 
     if (!in_astra) launcher_draw_home_page();
 

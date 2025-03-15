@@ -173,7 +173,11 @@ void astra_selector_go_prev_item()
 
 bool astra_exit_animation_finished = true;
 
-void astra_selector_jump_to_next_layer()
+/** @brief 确认当前选择的item
+  * @note 如果选择了list 就进入选择的list
+  * @note 如果选择了特殊item 就翻转/调整对应的值
+  */
+void astra_selector_jump_to_selected_item()
 {
   if (!in_astra) return;
 
@@ -188,6 +192,13 @@ void astra_selector_jump_to_next_layer()
     _selected_user_item->user_item_looping = false;
     return;
   }
+  
+  if (astra_selector.selected_item->type == switch_item)
+  {
+    bool* _selected_item_value = astra_selector.selected_item->value;
+    *_selected_item_value = !*_selected_item_value;
+    return;
+  }
 
   if (astra_selector.selected_item->child_num == 0) return;
 
@@ -199,7 +210,7 @@ void astra_selector_jump_to_next_layer()
   astra_selector.selected_item = astra_selector.selected_item->child_list_item[0];
 }
 
-void astra_selector_jump_to_prev_layer()
+void astra_selector_exit_current_item()
 {
   if (astra_selector.selected_item->type == user_item && astra_to_user_item(astra_selector.selected_item)->in_user_item)
   {
