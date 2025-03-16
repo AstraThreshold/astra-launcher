@@ -75,7 +75,6 @@ typedef struct astra_list_item_t
 {
   astra_list_item_type_t type;
   char *content;
-  void *value;
 
   uint8_t layer;
   float y_list_item, y_list_item_trg;
@@ -83,6 +82,25 @@ typedef struct astra_list_item_t
   struct astra_list_item_t *child_list_item[MAX_LIST_CHILD_NUM];
   struct astra_list_item_t *parent;
 } astra_list_item_t;
+
+typedef struct astra_switch_item_t
+{
+  astra_list_item_t base_item;
+
+  bool *value;
+} astra_switch_item_t;
+
+typedef struct astra_slider_item_t
+{
+  astra_list_item_t base_item;
+
+  int16_t *value;
+  int16_t value_backup;
+  bool is_confirmed;
+  uint8_t value_step;
+  int16_t value_max;
+  int16_t value_min;
+} astra_slider_item_t;
 
 typedef struct astra_user_item_t
 {
@@ -100,9 +118,13 @@ typedef struct astra_user_item_t
 
 extern astra_list_item_t *astra_get_root_list();
 
+extern astra_switch_item_t *astra_to_switch_item(astra_list_item_t *_astra_list_item);
+extern astra_slider_item_t *astra_to_slider_item(astra_list_item_t *_astra_list_item);
 extern astra_user_item_t *astra_to_user_item(astra_list_item_t *_astra_list_item);
-extern astra_list_item_t *astra_new_list_item(astra_list_item_type_t _type, char *_content, void *_value);
+extern astra_list_item_t *astra_new_list_item(char *_content);
 //正确用法：astra_push_item_to_list(astra_get_root_list(), astra_new_list_item(...));
+extern astra_list_item_t *astra_new_switch_item(char *_content, bool *_value);
+extern astra_list_item_t *astra_new_slider_item(char *_content, int16_t *_value, uint8_t _step, int16_t _min, int16_t _max);
 extern astra_list_item_t *astra_new_user_item(char *_content, void (*_init_function)(), void (*_loop_function)(), void (*_exit_function)());
 //正确用法：astra_push_item_to_list(astra_get_root_list(), astra_new_user_item(...));
 

@@ -17,6 +17,7 @@ extern u8g2_t u8g2;
 #define OLED_HEIGHT 64
 #define OLED_WIDTH 128
 
+#define get_ticks() launcher_get_tick_ms()
 #define delay(ms) HAL_Delay(ms)
 #define oled_set_font(font) u8g2_SetFont(&u8g2, font)
 #define oled_draw_str(x, y, str) u8g2_DrawStr(&u8g2, x, y, str)

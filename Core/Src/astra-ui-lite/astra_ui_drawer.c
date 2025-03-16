@@ -300,7 +300,7 @@ void astra_draw_list_item()
 
         //开关控件指示器部分
         oled_draw_frame(OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN - 7, _y_list_item - 2, 11, 7);
-        if (*(bool*)astra_selector.selected_item->parent->child_list_item[i]->value == true)
+        if (*astra_to_switch_item(astra_selector.selected_item->parent->child_list_item[i])->value == true)
         {
           oled_draw_box(OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN - 1, _y_list_item , 3, 3);
           oled_draw_pixel(OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN - 4, _y_list_item + 1);
@@ -322,8 +322,33 @@ void astra_draw_list_item()
 
         //滑块控件指示器部分
         char _value_str[10] = {};
-        sprintf(_value_str, "%d", astra_selector.selected_item->parent->child_list_item[i]->value);
-        oled_draw_str(OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN - 4, _y_list_item + oled_get_str_height() / 2, _value_str);
+        int16_t* _value = astra_to_slider_item(astra_selector.selected_item->parent->child_list_item[i])->value;
+        sprintf(_value_str, "%d", *_value);
+
+        int16_t _x_value = OLED_WIDTH - LIST_ITEM_RIGHT_MARGIN - oled_get_str_width(_value_str) + 2;
+
+        //如果选中了就闪烁 否则就一直显示
+        if (astra_to_slider_item(astra_selector.selected_item->parent->child_list_item[i])->is_confirmed)
+        {
+          static uint32_t _last_tick = 0;
+          static bool _is_visiable = false;
+          uint32_t _ticks = launcher_get_tick_ms();
+
+          if (_is_visiable)
+          {
+            oled_set_draw_color(1);
+            oled_draw_R_box(_x_value, _y_list_item - 4, oled_get_UTF8_width(_value_str) + 4, oled_get_str_height() - 2, 1);
+          }
+
+          oled_set_draw_color(2);
+          oled_draw_str(_x_value + 2, _y_list_item + oled_get_str_height() / 2, _value_str);
+
+          if (_ticks - _last_tick >= 1000)
+          {
+            _is_visiable = !_is_visiable;
+            _last_tick = _ticks;
+          }
+        } else oled_draw_str(_x_value + 2, _y_list_item + oled_get_str_height() / 2, _value_str);
       }
     } else
     {
