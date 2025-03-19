@@ -29,12 +29,12 @@ void ad_astra()
     if (!_key_clicked)
     {
       _key_clicked = true;
-      _key_start_time = launcher_get_tick_ms();
+      _key_start_time = get_ticks();
       //变量上限是0xFFFF 65535
     }
-    if (launcher_get_tick_ms() - _key_start_time > 1000 && _key_clicked)
+    if (get_ticks() - _key_start_time > 1000 && _key_clicked)
     {
-      _key_press_span = launcher_get_tick_ms() - _key_start_time;
+      _key_press_span = get_ticks() - _key_start_time;
       if (_key_press_span <= 2500)
       {
         sprintf(_msg, "继续长按%.2f秒进入.", (2500 - _key_press_span) / 1000.0f);
@@ -91,8 +91,8 @@ void astra_refresh_camera_position()
   if (astra_camera.selector->y_selector_trg + astra_camera.y_camera_trg < 0)  //向上超出屏幕 需要向上移动
     astra_camera.y_camera_trg = 0 - astra_camera.selector->y_selector_trg + LIST_FONT_TOP_MARGIN;
 
-  astra_animation(&astra_camera.x_camera, astra_camera.x_camera_trg, 96);
-  astra_animation(&astra_camera.y_camera, astra_camera.y_camera_trg, 96);
+  astra_animation(&astra_camera.x_camera, astra_camera.x_camera_trg, 95);
+  astra_animation(&astra_camera.y_camera, astra_camera.y_camera_trg, 97);
 }
 
 void astra_refresh_widget_core_position()

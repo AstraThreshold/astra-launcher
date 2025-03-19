@@ -9,7 +9,6 @@
 #include <sys/types.h>
 
 #include "astra_ui_core.h"
-#include "../astra-launcher/launcher_delay.h"
 
 void astra_set_font(void *_font)
 {
@@ -23,7 +22,7 @@ void astra_push_info_bar(char *_content, const uint16_t _span)
   //设定显示时间的概念，超过了显示时间，就将ytrg设为初始位置，如果在显示时间之内，有新的消息涌入，则y和ytrg都不变，继续显示，且显示时间清零
   //只有显示时间到了的时候，才会复位
 
-  astra_info_bar.time = launcher_get_tick_ms();
+  astra_info_bar.time = get_ticks();
   astra_info_bar.content = _content;
   astra_info_bar.span = _span;
   astra_info_bar.is_running = false; //每次进入该函数都代表有新的消息涌入，所以需要重置is_running
@@ -31,7 +30,7 @@ void astra_push_info_bar(char *_content, const uint16_t _span)
   //展开弹窗 收回弹窗和同步时间戳需要在循环中进行 所以移到了drawer中
   if (!astra_info_bar.is_running)
   {
-    astra_info_bar.time_start = launcher_get_tick_ms();
+    astra_info_bar.time_start = get_ticks();
     astra_info_bar.y_info_bar_trg = 0;
     astra_info_bar.is_running = true;
   }
@@ -44,7 +43,7 @@ astra_pop_up_t astra_pop_up = {0, 1, 0 - 2 * POP_UP_HEIGHT, 0 - 2 * POP_UP_HEIGH
 
 void astra_push_pop_up(char *_content, const uint16_t _span)
 {
-  astra_pop_up.time = launcher_get_tick_ms();
+  astra_pop_up.time = get_ticks();
   astra_pop_up.content = _content;
   astra_pop_up.span = _span;
   astra_pop_up.is_running = false;
@@ -52,7 +51,7 @@ void astra_push_pop_up(char *_content, const uint16_t _span)
   //弹出
   if (!astra_pop_up.is_running)
   {
-    astra_pop_up.time_start = launcher_get_tick_ms();
+    astra_pop_up.time_start = get_ticks();
     astra_pop_up.y_pop_up_trg = 20;
     astra_pop_up.is_running = true;
   }

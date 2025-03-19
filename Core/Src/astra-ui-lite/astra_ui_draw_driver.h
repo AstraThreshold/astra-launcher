@@ -7,6 +7,7 @@
 
 /* 此处自行添加头文件 */
 #include "../u8g2/u8g2.h"
+#include "../astra-launcher/launcher_delay.h"
 #include "main.h"
 #include "spi.h"
 /* 此处自行添加头文件 */
