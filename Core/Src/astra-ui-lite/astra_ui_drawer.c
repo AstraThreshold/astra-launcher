@@ -357,7 +357,7 @@ void astra_draw_list_item()
     }
 
     astra_set_font(u8g2_font_my_chinese);
-    if (_y_list_item + oled_get_str_height() / 2 > LIST_INFO_BAR_HEIGHT && _y_list_item + oled_get_str_height() / 2 < SCREEN_HEIGHT)
+    if (_y_list_item + oled_get_str_height() / 2 > LIST_INFO_BAR_HEIGHT && _y_list_item - oled_get_str_height() / 2 < SCREEN_HEIGHT)
       oled_draw_UTF8(10 + _x_list_item, _y_list_item + oled_get_str_height() / 2,
                    astra_selector.selected_item->parent->child_list_item[i]->content);
   }
