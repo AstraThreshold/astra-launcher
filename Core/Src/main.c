@@ -85,9 +85,16 @@ void test_user_item_exit_function()
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
 }
 
-uint8_t button_test_value = 0;
-uint8_t switch_test_value = 1;
-int16_t slider_test_value = 116;
+bool pulse_light = true;
+bool rgb_light = false;
+int16_t rgb_mode = 1;
+bool power_on_sound = false;
+bool key_sound = false;
+bool new_message_sound = false;
+bool key_flip = false;
+bool p_mode = false;
+bool mcu_serial_channel = false;
+bool external_serial_channel = false;
 
 void null_function() {}
 
@@ -133,23 +140,23 @@ int main(void)
   astra_ui_driver_init();
   astra_init_core();
 
-  astra_list_item_t* test_sec_list = astra_new_list_item("second page");
-  astra_push_item_to_list(astra_get_root_list(), astra_new_list_item("你好世界!"));
-  astra_push_item_to_list(astra_get_root_list(), astra_new_list_item("hello"));
-  astra_push_item_to_list(astra_get_root_list(), astra_new_list_item("world!"));
-  astra_push_item_to_list(astra_get_root_list(), astra_new_switch_item("test switch item", &_test_bool));
-  astra_push_item_to_list(astra_get_root_list(), astra_new_slider_item("test slider item", &slider_test_value, 4, -128, 128));
-  astra_push_item_to_list(astra_get_root_list(), test_sec_list);
-  astra_push_item_to_list(astra_get_root_list(), astra_new_user_item("user item test!", test_user_item_init_function, test_user_item_loop_function, test_user_item_exit_function));
-  astra_push_item_to_list(test_sec_list, astra_new_list_item("你好世界!"));
-  astra_push_item_to_list(test_sec_list, astra_new_list_item("你好世界!"));
-  astra_push_item_to_list(test_sec_list, astra_new_list_item("你好世界!"));
-  astra_push_item_to_list(test_sec_list, astra_new_list_item("你好世界!"));
-  astra_push_item_to_list(test_sec_list, astra_new_list_item("你好世界!"));
-  astra_push_item_to_list(test_sec_list, astra_new_list_item("你好世界!"));
-  astra_push_item_to_list(test_sec_list, astra_new_list_item("你好世界!"));
-  astra_push_item_to_list(test_sec_list, astra_new_list_item("你好世界!"));
+  astra_list_item_t* launcher_setting_list_item = astra_new_list_item("开发板设置");
 
+  astra_push_item_to_list(astra_get_root_list(), launcher_setting_list_item);
+  astra_push_item_to_list(astra_get_root_list(), astra_new_switch_item("切换屏幕", &_test_bool));
+  astra_push_item_to_list(astra_get_root_list(), astra_new_user_item("硬件接线图...", test_user_item_init_function, test_user_item_loop_function, test_user_item_exit_function));
+  astra_push_item_to_list(astra_get_root_list(), astra_new_user_item("「astraLauncher」", test_user_item_init_function, test_user_item_loop_function, test_user_item_exit_function));
+
+  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("心跳灯开关", &pulse_light));
+  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("RGB灯开关", &rgb_light));
+  astra_push_item_to_list(launcher_setting_list_item, astra_new_slider_item("RGB灯模式", &rgb_mode, 1, 1, 4));
+  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("开机音", &power_on_sound));
+  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("按键音", &key_sound));
+  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("新消息提醒", &new_message_sound));
+  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("翻转按键", &key_flip));
+  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("P模式/UI模式", &p_mode));
+  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("MCU串口通道", &mcu_serial_channel));
+  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("外部串口通道", &external_serial_channel));
 
   launcher_set_terminal_area(4, 26, 124, 62);
   static uint32_t _tick = 0;
