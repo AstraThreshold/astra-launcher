@@ -265,6 +265,7 @@ void astra_selector_jump_to_selected_item()
     if (_selected_slider_item->is_confirmed)
     {
       //如果已选中且又长按确认键 直接退出即可 因为在选中之后 对于值的改变是实时生效的
+      astra_push_pop_up("ok.", 1000);
       _selected_slider_item->is_confirmed = false;
       return;
     }
@@ -287,6 +288,7 @@ void astra_selector_exit_current_item()
     //如果已选中又长按退出键
     astra_slider_item_t* _selected_slider_item = astra_to_slider_item(astra_selector.selected_item);
 
+    astra_push_pop_up("canceled.", 1000);
     _selected_slider_item->is_confirmed = false;
     *_selected_slider_item->value = _selected_slider_item->value_backup;
     return;
