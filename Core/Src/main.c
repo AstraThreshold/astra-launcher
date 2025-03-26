@@ -85,9 +85,10 @@ void test_user_item_loop_function()
   uint32_t _time = get_ticks();
 
   oled_set_draw_color(1);
-  oled_draw_UTF8(4, y_logo - 2, "「astraLauncher」");
-  oled_set_draw_color(2);
   oled_draw_R_box(2, y_box - 1, oled_get_UTF8_width("「astraLauncher」") + 4, oled_get_str_height() + 2, 1);
+  oled_set_draw_color(2);
+  oled_draw_UTF8(4, y_logo - 2, "「astraLauncher」");
+
   oled_set_draw_color(1);
   oled_draw_str(106, y_version, "v1.0");
   oled_draw_UTF8(2, y_name, "by 无理造物.");
@@ -227,13 +228,13 @@ int main(void)
     /* USER CODE BEGIN 3 */
     oled_clear_buffer();
 
-    if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "你好,\rworld!\r1");
-    if (_tick % 301 == 1) launcher_push_str_to_terminal(uart, "hello,\r你好\r2");
-    if (_tick % 400 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r3");
-    if (_tick % 500 == 1) launcher_push_str_to_terminal(f411, "hello,\r你好\r4");
-    if (_tick % 600 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
-    if (_tick % 708 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
-    if (_tick % 808 == 1) launcher_push_str_to_terminal(info, "你好,\nworld!\r5");
+    if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "hello,\rworld!\r1");
+    if (_tick % 301 == 1) launcher_push_str_to_terminal(uart, "hello,\rworld\r2");
+    if (_tick % 400 == 1) launcher_push_str_to_terminal(info, "hello,\nworld!\r3");
+    if (_tick % 500 == 1) launcher_push_str_to_terminal(f411, "hello,\rhello\r4");
+    if (_tick % 600 == 1) launcher_push_str_to_terminal(info, "hello,\nworld!\r5");
+    if (_tick % 708 == 1) launcher_push_str_to_terminal(info, "hello,\nhello!\r6");
+    if (_tick % 808 == 1) launcher_push_str_to_terminal(info, "hello,\nworld!\r7");
 
     ad_astra();
     launcher_key_call_back(1, astra_selector_go_prev_item, astra_selector_go_next_item, astra_selector_exit_current_item, astra_selector_jump_to_selected_item);
