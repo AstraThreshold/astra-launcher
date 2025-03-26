@@ -92,7 +92,7 @@ void test_user_item_loop_function()
   oled_draw_str(106, y_version, "v1.0");
   oled_draw_UTF8(2, y_name, "by 无理造物.");
   oled_draw_UTF8(2, y_astra, "由「astra UI Lite」v1.0");
-  oled_draw_UTF8(2, y_astra + 14, "驱动.");
+  oled_draw_UTF8(2, y_astra + 14, "轻量驱动.");
   oled_draw_frame(x_board, 38, 28, 20);
   oled_draw_frame(x_board + 2, 40, 24, 10);
   oled_draw_box(x_board + 2, 40, 2, 10);
@@ -116,7 +116,7 @@ void test_user_item_loop_function()
   if (_time - time_start > 400) animation(&y_box, 2, 92);
   if (_time - time_start > 450) animation(&y_astra, 36, 91);
   if (_time - time_start > 500) animation(&y_name, 62, 94);
-  if (_time - time_start > 550) animation(&x_board, 98, 92);
+  if (_time - time_start > 550) animation(&x_board, 102, 92);
   if (_time - time_start > 620) animation(&y_wire, 56, 86);
   if (_time - time_start > 1400 && _time - time_start < 1600) oled_draw_box(x_board + 5, 42, 19, 6);
   if (_time - time_start > 1800 && _time - time_start < 1900) oled_draw_box(x_board + 5, 42, 19, 6);

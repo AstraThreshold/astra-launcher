@@ -18,12 +18,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5343b0dc-1f45-4adb-b911-448c822f9191" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/../Core/Src/astra-launcher/launcher_home_page.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Core/Src/astra-launcher/launcher_home_page.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Core/Src/main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Core/Src/u8g2/u8g2_font_myfont.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Core/Src/u8g2/u8g2_font_myfont.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/str.map" beforeDir="false" afterPath="$PROJECT_DIR$/str.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/str.txt" beforeDir="false" afterPath="$PROJECT_DIR$/str.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/u8g2_font_my_chinese.c" beforeDir="false" afterPath="$PROJECT_DIR$/u8g2_font_my_chinese.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
