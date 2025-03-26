@@ -28,6 +28,8 @@ typedef enum
   f411,
 } launcher_terminal_prompter_t;
 
+extern void animation(int16_t *_pos, int16_t _posTrg, int16_t _speed);
+
 extern void launcher_draw_status_box(uint8_t _x, uint8_t _y, launcher_status_t _status);
 
 extern void launcher_draw_data(uint8_t _x, uint8_t _y, double _data, char *_unit);
