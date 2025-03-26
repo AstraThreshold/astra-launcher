@@ -92,7 +92,7 @@ void astra_refresh_camera_position()
     astra_camera.y_camera_trg = 0 - astra_camera.selector->y_selector_trg + LIST_FONT_TOP_MARGIN;
 
   astra_animation(&astra_camera.x_camera, astra_camera.x_camera_trg, 95);
-  astra_animation(&astra_camera.y_camera, astra_camera.y_camera_trg, 97);
+  astra_animation(&astra_camera.y_camera, astra_camera.y_camera_trg, 96);
 }
 
 void astra_refresh_widget_core_position()
@@ -134,7 +134,7 @@ void astra_refresh_selector_position()
     astra_selector.w_selector_trg = OLED_WIDTH - 18;
   else astra_selector.w_selector_trg = oled_get_UTF8_width(astra_selector.selected_item->content) + 12;
   astra_selector.h_selector_trg = 15;
-  astra_animation(&astra_selector.y_selector, astra_selector.y_selector_trg, 92);
+  astra_animation(&astra_selector.y_selector, astra_selector.y_selector_trg, 91);
   astra_animation(&astra_selector.w_selector, astra_selector.w_selector_trg, 92);
   astra_animation(&astra_selector.h_selector, astra_selector.h_selector_trg, 93);
 }
@@ -190,9 +190,9 @@ void astra_ui_main_core()
     }
   } else
   {
-    astra_refresh_camera_position();
     astra_refresh_main_core_position();
     astra_refresh_selector_position();
+    astra_refresh_camera_position();
     astra_draw_list();
   }
 
