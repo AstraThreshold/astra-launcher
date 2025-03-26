@@ -73,7 +73,8 @@ static int16_t y_name = -200;
 static int16_t y_astra = -200;
 static int16_t y_box = 200;
 static int16_t x_board = -200;
-static int16_t y_wire = 200;
+static int16_t y_wire_1 = 200;
+static int16_t y_wire_2 = 200;
 
 void test_user_item_init_function()
 {
@@ -108,9 +109,13 @@ void test_user_item_loop_function()
   oled_draw_box(x_board + 7, 53, 4, 3);
   oled_draw_box(x_board + 2, 53, 4, 3);
 
-  oled_draw_box(x_board + 7, y_wire, 4, 3);
-  oled_draw_V_line(x_board + 9, y_wire + 3, 3);
-  oled_draw_V_line(x_board + 10, y_wire + 6, 2);
+  oled_draw_box(x_board + 7, y_wire_1, 4, 3);
+  oled_draw_V_line(x_board + 9, y_wire_1 + 3, 3);
+  oled_draw_V_line(x_board + 8, y_wire_1 + 6, 2);
+
+  oled_draw_box(x_board + 12, y_wire_2, 4, 3);
+  oled_draw_V_line(x_board + 14, y_wire_2 + 3, 3);
+  oled_draw_V_line(x_board + 15, y_wire_2 + 6, 2);
 
   if (_time - time_start > 300) animation(&y_logo, 15, 94);
   if (_time - time_start > 350) animation(&y_version, 14, 88);
@@ -118,10 +123,11 @@ void test_user_item_loop_function()
   if (_time - time_start > 450) animation(&y_astra, 36, 91);
   if (_time - time_start > 500) animation(&y_name, 62, 94);
   if (_time - time_start > 550) animation(&x_board, 102, 92);
-  if (_time - time_start > 620) animation(&y_wire, 56, 86);
+  if (_time - time_start > 620) animation(&y_wire_1, 56, 86);
   if (_time - time_start > 1400 && _time - time_start < 1600) oled_draw_box(x_board + 5, 42, 19, 6);
   if (_time - time_start > 1800 && _time - time_start < 1900) oled_draw_box(x_board + 5, 42, 19, 6);
   if (_time - time_start > 2200) oled_draw_box(x_board + 5, 42, 19, 6);
+  if (_time - time_start > 2400) animation(&y_wire_2, 56, 86);
 }
 
 void test_user_item_exit_function()
@@ -133,7 +139,8 @@ void test_user_item_exit_function()
   y_astra = -200;
   y_box = 200;
   x_board = -200;
-  y_wire = 200;
+  y_wire_1 = 200;
+  y_wire_2 = 200;
 }
 
 bool pulse_light = true;
