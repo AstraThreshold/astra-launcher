@@ -17,6 +17,17 @@ int16_t terminal_y_max = 0;
 
 int32_t terminal_buffer_size = 0;
 
+// 安全字符串拷贝函数
+static char* terminal_strdup(const char* src) {
+  if (!src) return NULL;
+  size_t len = strlen(src) + 1;
+  char* dest = (char*)malloc(len);
+  if (dest) {
+    memcpy(dest, src, len);
+  }
+  return dest;
+}
+
 void launcher_draw_status_box(uint8_t _x, uint8_t _y, launcher_status_t _status)
 {
   oled_set_font(u8g2_font_spleen5x8_mr);
@@ -202,7 +213,7 @@ void launcher_push_str_to_terminal(launcher_terminal_prompter_t _type, char *_st
     terminal_buffer_head->x = terminal_x_min + 26;
     terminal_buffer_head->y = terminal_y_min;
     terminal_buffer_head->type = _type;
-    terminal_buffer_head->str = _str;
+    terminal_buffer_head->str = terminal_strdup(_str);
     terminal_buffer_head->next = NULL;
     terminal_buffer_size++;
     return;
@@ -215,7 +226,7 @@ void launcher_push_str_to_terminal(launcher_terminal_prompter_t _type, char *_st
   _node->x = terminal_x_min + 26;
   _node->y = _p->y + get_node_line_cnt(_p) * LINE_HEIGHT;
   _node->type = _type;
-  _node->str = _str;
+  _node->str = terminal_strdup(_str);
   _node->next = NULL;
   terminal_buffer_size++;
 
@@ -248,6 +259,7 @@ void launcher_terminal_buffer_pop_front()
   if (terminal_buffer_head == NULL) return;
   terminal_buffer_t *_old = terminal_buffer_head;
   terminal_buffer_head = terminal_buffer_head->next;
+  free(_old->str);    // 新增：释放字符串内存
   free(_old);
   _old = NULL;
   terminal_buffer_size--;

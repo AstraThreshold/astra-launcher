@@ -21,6 +21,7 @@
 #include "adc.h"
 #include "dma.h"
 #include "spi.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -66,6 +67,10 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+uint8_t dma_rx_buffer[DMA_RX_BUFFER_SIZE];  // DMA接收缓冲区
+volatile uint16_t dma_rx_len = 0;           // 接收到的数据长度
+volatile uint8_t dma_rx_flag = 0;           // 接收完成标志
+
 uint32_t time_start = 0;
 static int16_t y_logo = 200;
 static int16_t y_version = 200;
@@ -83,51 +88,51 @@ void test_user_item_init_function()
 
 void test_user_item_loop_function()
 {
-  uint32_t _time = get_ticks();
-
-  oled_set_draw_color(1);
-  oled_draw_R_box(2, y_box - 1, oled_get_UTF8_width("「astraLauncher」") + 4, oled_get_str_height() + 2, 1);
-  oled_set_draw_color(2);
-  oled_draw_UTF8(4, y_logo - 2, "「astraLauncher」");
-
-  oled_set_draw_color(1);
-  oled_draw_str(106, y_version, "v1.0");
-  oled_draw_UTF8(2, y_name, "by 无理造物.");
-  oled_draw_UTF8(2, y_astra, "由「astra UI Lite」v1.0");
-  oled_draw_UTF8(2, y_astra + 14, "轻量驱动.");
-  oled_draw_frame(x_board, 38, 28, 20);
-  oled_draw_frame(x_board + 2, 40, 24, 10);
-  oled_draw_box(x_board + 2, 40, 2, 10);
-  oled_draw_pixel(x_board + 25, 51);
-  oled_draw_pixel(x_board + 25, 53);
-  oled_draw_pixel(x_board + 25, 55);
-  oled_draw_box(x_board + 21, 51, 3, 2);
-  oled_draw_box(x_board + 21, 54, 3, 2);
-  oled_draw_box(x_board + 17, 53, 3, 3);
-
-  oled_draw_box(x_board + 12, 53, 4, 3);
-  oled_draw_box(x_board + 7, 53, 4, 3);
-  oled_draw_box(x_board + 2, 53, 4, 3);
-
-  oled_draw_box(x_board + 7, y_wire_1, 4, 3);
-  oled_draw_V_line(x_board + 9, y_wire_1 + 3, 3);
-  oled_draw_V_line(x_board + 8, y_wire_1 + 6, 2);
-
-  oled_draw_box(x_board + 12, y_wire_2, 4, 3);
-  oled_draw_V_line(x_board + 14, y_wire_2 + 3, 3);
-  oled_draw_V_line(x_board + 15, y_wire_2 + 6, 2);
-
-  if (_time - time_start > 300) animation(&y_logo, 15, 94);
-  if (_time - time_start > 350) animation(&y_version, 14, 88);
-  if (_time - time_start > 400) animation(&y_box, 2, 92);
-  if (_time - time_start > 450) animation(&y_astra, 36, 91);
-  if (_time - time_start > 500) animation(&y_name, 62, 94);
-  if (_time - time_start > 550) animation(&x_board, 102, 92);
-  if (_time - time_start > 620) animation(&y_wire_1, 56, 86);
-  if (_time - time_start > 1400 && _time - time_start < 1600) oled_draw_box(x_board + 5, 42, 19, 6);
-  if (_time - time_start > 1800 && _time - time_start < 1900) oled_draw_box(x_board + 5, 42, 19, 6);
-  if (_time - time_start > 2200) oled_draw_box(x_board + 5, 42, 19, 6);
-  if (_time - time_start > 2400) animation(&y_wire_2, 56, 86);
+  // uint32_t _time = get_ticks();
+  //
+  // oled_set_draw_color(1);
+  // oled_draw_R_box(2, y_box - 1, oled_get_UTF8_width("「astraLauncher」") + 4, oled_get_str_height() + 2, 1);
+  // oled_set_draw_color(2);
+  // oled_draw_UTF8(4, y_logo - 2, "「astraLauncher」");
+  //
+  // oled_set_draw_color(1);
+  // oled_draw_str(106, y_version, "v1.0");
+  // oled_draw_UTF8(2, y_name, "by 无理造物.");
+  // oled_draw_UTF8(2, y_astra, "由「astra UI Lite」v1.1");
+  // oled_draw_UTF8(2, y_astra + 14, "驱动.");
+  // oled_draw_frame(x_board, 38, 28, 20);
+  // oled_draw_frame(x_board + 2, 40, 24, 10);
+  // oled_draw_box(x_board + 2, 40, 2, 10);
+  // oled_draw_pixel(x_board + 25, 51);
+  // oled_draw_pixel(x_board + 25, 53);
+  // oled_draw_pixel(x_board + 25, 55);
+  // oled_draw_box(x_board + 21, 51, 3, 2);
+  // oled_draw_box(x_board + 21, 54, 3, 2);
+  // oled_draw_box(x_board + 17, 53, 3, 3);
+  //
+  // oled_draw_box(x_board + 12, 53, 4, 3);
+  // oled_draw_box(x_board + 7, 53, 4, 3);
+  // oled_draw_box(x_board + 2, 53, 4, 3);
+  //
+  // oled_draw_box(x_board + 7, y_wire_1, 4, 3);
+  // oled_draw_V_line(x_board + 9, y_wire_1 + 3, 3);
+  // oled_draw_V_line(x_board + 8, y_wire_1 + 6, 2);
+  //
+  // oled_draw_box(x_board + 12, y_wire_2, 4, 3);
+  // oled_draw_V_line(x_board + 14, y_wire_2 + 3, 3);
+  // oled_draw_V_line(x_board + 15, y_wire_2 + 6, 2);
+  //
+  // if (_time - time_start > 300) animation(&y_logo, 15, 94);
+  // if (_time - time_start > 350) animation(&y_version, 14, 88);
+  // if (_time - time_start > 400) animation(&y_box, 2, 92);
+  // if (_time - time_start > 450) animation(&y_astra, 36, 91);
+  // if (_time - time_start > 500) animation(&y_name, 62, 94);
+  // if (_time - time_start > 550) animation(&x_board, 102, 92);
+  // if (_time - time_start > 620) animation(&y_wire_1, 56, 86);
+  // if (_time - time_start > 1400 && _time - time_start < 1600) oled_draw_box(x_board + 5, 42, 19, 6);
+  // if (_time - time_start > 1800 && _time - time_start < 1900) oled_draw_box(x_board + 5, 42, 19, 6);
+  // if (_time - time_start > 2200) oled_draw_box(x_board + 5, 42, 19, 6);
+  // if (_time - time_start > 2400) animation(&y_wire_2, 56, 86);
 }
 
 void test_user_item_exit_function()
@@ -144,19 +149,13 @@ void test_user_item_exit_function()
 }
 
 bool pulse_light = true;
-bool rgb_light = false;
-int16_t rgb_mode = 1;
-bool power_on_sound = false;
-bool key_sound = false;
-bool new_message_sound = false;
 bool key_flip = false;
-bool p_mode = false;
+bool dark_mode = false;
+int16_t p_mode = 1;
 bool mcu_serial_channel = false;
 bool external_serial_channel = false;
 
-void null_function() {}
-
-bool _test_bool = false;
+bool screen_switch = false;
 /* USER CODE END 0 */
 
 /**
@@ -191,9 +190,13 @@ int main(void)
   MX_DMA_Init();
   MX_ADC1_Init();
   MX_ADC2_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_ADCEx_Calibration_Start(&hadc1);
   HAL_ADCEx_Calibration_Start(&hadc2);
+
+  // 启动DMA接收（循环模式，持续接收数据）
+  HAL_UART_Receive_DMA(&huart2, dma_rx_buffer, DMA_RX_BUFFER_SIZE);
 
   astra_ui_driver_init();
   astra_init_core();
@@ -201,30 +204,29 @@ int main(void)
   astra_list_item_t* launcher_setting_list_item = astra_new_list_item("开发板设置");
 
   astra_push_item_to_list(astra_get_root_list(), launcher_setting_list_item);
-  astra_push_item_to_list(astra_get_root_list(), astra_new_switch_item("切换屏幕", &_test_bool));
-  astra_push_item_to_list(astra_get_root_list(), astra_new_user_item("硬件接线图...", test_user_item_init_function, test_user_item_loop_function, test_user_item_exit_function));
+  astra_push_item_to_list(astra_get_root_list(), astra_new_switch_item("切换屏幕", &screen_switch));
+  astra_push_item_to_list(astra_get_root_list(), astra_new_user_item("接线图...", test_user_item_init_function, test_user_item_loop_function, test_user_item_exit_function));
   astra_push_item_to_list(astra_get_root_list(), astra_new_user_item("关于开发板...", test_user_item_init_function, test_user_item_loop_function, test_user_item_exit_function));
 
   astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("心跳灯开关", &pulse_light));
-  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("RGB灯开关", &rgb_light));
-  astra_push_item_to_list(launcher_setting_list_item, astra_new_slider_item("RGB灯模式", &rgb_mode, 1, 1, 4));
-  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("开机音", &power_on_sound));
-  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("按键音", &key_sound));
-  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("新消息提醒", &new_message_sound));
-  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("翻转按键", &key_flip));
-  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("P模式/UI模式", &p_mode));
+  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("反转按键", &key_flip));
+  astra_push_item_to_list(launcher_setting_list_item, astra_new_slider_item("数据显示样式", &p_mode, 1, 1, 3));
+  astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("反转显示", &dark_mode));
   astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("MCU串口通道", &mcu_serial_channel));
   astra_push_item_to_list(launcher_setting_list_item, astra_new_switch_item("外部串口通道", &external_serial_channel));
 
   launcher_set_terminal_area(4, 26, 124, 62);
-  static uint32_t _tick = 0;
 
-  launcher_push_str_to_terminal(info, "launcher Rev1.0\nmade by forpaindream");
+  launcher_push_str_to_terminal(info, "astraLauncher \nRev1.0 made by \nforpaindream.");
 
   char msg[100] = {};
   sprintf(msg, "启动时间: %dms.", launcher_get_tick_ms());
   astra_push_pop_up(msg,1500);
 
+  uint16_t _tick = 0;
+
+  // 使能IDLE中断
+  __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -235,13 +237,24 @@ int main(void)
     /* USER CODE BEGIN 3 */
     oled_clear_buffer();
 
+    if (dma_rx_flag) {
+      // 处理接收到的数据（长度为dma_rx_len）
+      // 例如回显数据：
+
+      //push进去的地址，指向的是原来的地址，所以这样写的话，dma_rx_buffer有变化，所有指向它的内容都会变化
+      launcher_push_str_to_terminal(f411, dma_rx_buffer);
+      if (!in_astra) launcher_draw_home_page();
+      //给dma_rx_buffer清零
+      memset(dma_rx_buffer, '\0', DMA_RX_BUFFER_SIZE);
+
+      // 重置标志位
+      dma_rx_flag = 0;
+      dma_rx_len = 0;
+    }
+
     if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "hello,\rworld!\r1");
-    if (_tick % 301 == 1) launcher_push_str_to_terminal(uart, "hello,\rworld\r2");
-    if (_tick % 400 == 1) launcher_push_str_to_terminal(info, "hello,\nworld!\r3");
-    if (_tick % 500 == 1) launcher_push_str_to_terminal(f411, "hello,\rhello\r4");
-    if (_tick % 600 == 1) launcher_push_str_to_terminal(info, "hello,\nworld!\r5");
-    if (_tick % 708 == 1) launcher_push_str_to_terminal(info, "hello,\nhello!\r6");
-    if (_tick % 808 == 1) launcher_push_str_to_terminal(info, "hello,\nworld!\r7");
+    if (_tick % 201 == 1) launcher_push_str_to_terminal(uart, "hello,\rworld\r2");
+    if (_tick % 251 == 1) launcher_push_str_to_terminal(info, "hello,\nworld!\r3");
 
     ad_astra();
     launcher_key_call_back(1, astra_selector_go_prev_item, astra_selector_go_next_item, astra_selector_exit_current_item, astra_selector_jump_to_selected_item);

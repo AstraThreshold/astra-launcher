@@ -21,6 +21,8 @@ typedef enum
   Stop,
 } launcher_status_t;
 
+extern launcher_status_t launcher_status;
+
 typedef enum
 {
   info,

@@ -41,7 +41,7 @@ void ad_astra()
         astra_push_info_bar(_msg, 2000);
       } else if (_key_press_span > 2500)
       {
-        astra_push_info_bar("玩得开心! :p", 2000);
+        astra_push_info_bar("have fun! :p", 2000);
         in_astra = true;
         astra_init_list();
         _key_clicked = false;

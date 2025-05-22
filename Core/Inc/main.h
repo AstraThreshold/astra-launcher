@@ -53,7 +53,11 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+#define DMA_RX_BUFFER_SIZE 256
 
+  extern uint8_t dma_rx_buffer[DMA_RX_BUFFER_SIZE];  // DMA接收缓冲区
+  extern volatile uint16_t dma_rx_len;           // 接收到的数据长度
+  extern volatile uint8_t dma_rx_flag;           // 接收完成标志
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
