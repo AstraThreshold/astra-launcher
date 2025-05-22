@@ -252,9 +252,9 @@ int main(void)
       dma_rx_len = 0;
     }
 
-    if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "hello,\rworld!\r1");
-    if (_tick % 201 == 1) launcher_push_str_to_terminal(uart, "hello,\rworld\r2");
-    if (_tick % 251 == 1) launcher_push_str_to_terminal(info, "hello,\nworld!\r3");
+    // if (_tick % 150 == 1) launcher_push_str_to_terminal(info, "hello,\rworld!\r1");
+    // if (_tick % 201 == 1) launcher_push_str_to_terminal(uart, "hello,\rworld\r2");
+    // if (_tick % 251 == 1) launcher_push_str_to_terminal(info, "hello,\nworld!\r3");
 
     ad_astra();
     launcher_key_call_back(1, astra_selector_go_prev_item, astra_selector_go_next_item, astra_selector_exit_current_item, astra_selector_jump_to_selected_item);
